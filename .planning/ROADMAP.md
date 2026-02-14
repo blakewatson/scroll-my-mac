@@ -27,7 +27,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Success Criteria** (what must be TRUE):
   1. App launches as an unsandboxed macOS app with a visible main window
   2. App detects whether Accessibility permission is granted and shows clear status
-  3. If permission is missing, app guides the user to System Settings and prompts restart after grant
+  3. If permission is missing, app guides the user to System Settings and detects grant automatically (no restart needed)
   4. Main window shows an on/off toggle for scroll mode (toggle wired up in Phase 2)
 **Plans**: 2 plans
 
