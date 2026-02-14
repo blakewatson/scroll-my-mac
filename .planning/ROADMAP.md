@@ -29,11 +29,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. App detects whether Accessibility permission is granted and shows clear status
   3. If permission is missing, app guides the user to System Settings and prompts restart after grant
   4. Main window shows an on/off toggle for scroll mode (toggle wired up in Phase 2)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
+- [ ] 01-01-PLAN.md — Xcode project, app shell, window lifecycle, permission detection and onboarding UI
+- [ ] 01-02-PLAN.md — Full settings view with scroll mode toggle, safety timeout manager
 
 ### Phase 2: Core Scroll Mode
 **Goal**: User can toggle scroll mode via hotkey and scroll any area by clicking and dragging
@@ -99,7 +99,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Permissions & App Shell | 0/TBD | Not started | - |
+| 1. Permissions & App Shell | 0/2 | Planned | - |
 | 2. Core Scroll Mode | 0/TBD | Not started | - |
 | 3. Click Safety | 0/TBD | Not started | - |
 | 4. Inertia | 0/TBD | Not started | - |
