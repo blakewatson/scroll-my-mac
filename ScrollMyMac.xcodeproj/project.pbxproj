@@ -11,6 +11,8 @@
 		A10000010000000000000002 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000002 /* AppDelegate.swift */; };
 		A10000010000000000000003 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000003 /* AppState.swift */; };
 		A10000010000000000000004 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000004 /* SettingsView.swift */; };
+		A10000010000000000000005 /* PermissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000005 /* PermissionManager.swift */; };
+		A10000010000000000000006 /* PermissionSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000006 /* PermissionSetupView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,6 +23,8 @@
 		A20000010000000000000010 /* ScrollMyMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScrollMyMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A20000010000000000000011 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A20000010000000000000012 /* ScrollMyMac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ScrollMyMac.entitlements; sourceTree = "<group>"; };
+		A20000010000000000000005 /* PermissionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionManager.swift; sourceTree = "<group>"; };
+		A20000010000000000000006 /* PermissionSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionSetupView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +71,7 @@
 		A40000010000000000000004 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				A20000010000000000000005 /* PermissionManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -83,6 +88,7 @@
 			isa = PBXGroup;
 			children = (
 				A20000010000000000000004 /* SettingsView.swift */,
+				A20000010000000000000006 /* PermissionSetupView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -159,6 +165,8 @@
 				A10000010000000000000002 /* AppDelegate.swift in Sources */,
 				A10000010000000000000003 /* AppState.swift in Sources */,
 				A10000010000000000000004 /* SettingsView.swift in Sources */,
+				A10000010000000000000005 /* PermissionManager.swift in Sources */,
+				A10000010000000000000006 /* PermissionSetupView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
