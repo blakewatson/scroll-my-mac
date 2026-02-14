@@ -13,6 +13,7 @@
 		A10000010000000000000004 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000004 /* SettingsView.swift */; };
 		A10000010000000000000005 /* PermissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000005 /* PermissionManager.swift */; };
 		A10000010000000000000006 /* PermissionSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000006 /* PermissionSetupView.swift */; };
+		A10000010000000000000007 /* SafetyTimeoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000007 /* SafetyTimeoutManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +26,7 @@
 		A20000010000000000000012 /* ScrollMyMac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ScrollMyMac.entitlements; sourceTree = "<group>"; };
 		A20000010000000000000005 /* PermissionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionManager.swift; sourceTree = "<group>"; };
 		A20000010000000000000006 /* PermissionSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionSetupView.swift; sourceTree = "<group>"; };
+		A20000010000000000000007 /* SafetyTimeoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafetyTimeoutManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				A20000010000000000000005 /* PermissionManager.swift */,
+				A20000010000000000000007 /* SafetyTimeoutManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -167,6 +170,7 @@
 				A10000010000000000000004 /* SettingsView.swift in Sources */,
 				A10000010000000000000005 /* PermissionManager.swift in Sources */,
 				A10000010000000000000006 /* PermissionSetupView.swift in Sources */,
+				A10000010000000000000007 /* SafetyTimeoutManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
