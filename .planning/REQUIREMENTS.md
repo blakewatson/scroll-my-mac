@@ -1,7 +1,7 @@
 # Requirements: Scroll My Mac
 
 **Defined:** 2026-02-14
-**Core Value:** Users can scroll any scrollable area by clicking and dragging with the mouse pointer, with natural inertia — no scroll wheel or trackpad required.
+**Core Value:** Users can scroll any scrollable area by clicking and dragging with the mouse pointer, with natural inertia -- no scroll wheel or trackpad required.
 
 ## v1 Requirements
 
@@ -12,7 +12,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **SCRL-01**: User can scroll any scrollable area by clicking and dragging the mouse in scroll mode
 - [ ] **SCRL-02**: Scrolling works in all directions (vertical and horizontal)
 - [ ] **SCRL-03**: Clicking without significant movement (~8px) passes through as a normal click
-- [ ] **SCRL-04**: Releasing a drag produces iOS-style inertia — momentum proportional to drag speed with natural deceleration
+- [ ] **SCRL-04**: Releasing a drag produces iOS-style inertia -- momentum proportional to drag speed with natural deceleration
 
 ### Activation
 
@@ -61,25 +61,25 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SCRL-01 | — | Pending |
-| SCRL-02 | — | Pending |
-| SCRL-03 | — | Pending |
-| SCRL-04 | — | Pending |
-| ACTV-01 | — | Pending |
-| ACTV-02 | — | Pending |
-| ACTV-03 | — | Pending |
-| SAFE-01 | — | Pending |
-| SAFE-02 | — | Pending |
-| SAFE-03 | — | Pending |
-| APP-01 | — | Pending |
-| APP-02 | — | Pending |
-| APP-03 | — | Pending |
+| SCRL-01 | Phase 2 | Pending |
+| SCRL-02 | Phase 2 | Pending |
+| SCRL-03 | Phase 3 | Pending |
+| SCRL-04 | Phase 4 | Pending |
+| ACTV-01 | Phase 2 | Pending |
+| ACTV-02 | Phase 2 | Pending |
+| ACTV-03 | Phase 5 | Pending |
+| SAFE-01 | Phase 3 | Pending |
+| SAFE-02 | Phase 3 | Pending |
+| SAFE-03 | Phase 3 | Pending |
+| APP-01 | Phase 1 | Pending |
+| APP-02 | Phase 1 | Pending |
+| APP-03 | Phase 5 | Pending |
 
 **Coverage:**
 - v1 requirements: 13 total
-- Mapped to phases: 0
-- Unmapped: 13 ⚠️
+- Mapped to phases: 13
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-14*
-*Last updated: 2026-02-14 after initial definition*
+*Last updated: 2026-02-14 after roadmap creation*
