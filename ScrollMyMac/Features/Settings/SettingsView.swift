@@ -66,6 +66,11 @@ struct MainSettingsView: View {
                     Text("When enabled, clicks without dragging pass through as normal clicks. When disabled, all mouse events become scrolls.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+
+                    Toggle("Axis lock", isOn: $appState.isAxisLockEnabled)
+                    Text("When enabled, scrolling locks to the dominant direction (vertical or horizontal). When disabled, scrolling moves freely in both directions.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
 
                 Section("Safety") {
