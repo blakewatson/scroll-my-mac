@@ -37,7 +37,7 @@ class HotkeyManager {
             return
         }
 
-        let eventMask: CGEventMask = 1 << CGEventType.keyDown.rawValue
+        let eventMask: CGEventMask = 1 << CGEventType.keyUp.rawValue
 
         eventTap = CGEvent.tapCreate(
             tap: .cgSessionEventTap,
@@ -112,7 +112,7 @@ private func hotkeyEventCallback(
         return Unmanaged.passUnretained(event)
     }
 
-    guard type == .keyDown, let userInfo else {
+    guard type == .keyUp, let userInfo else {
         return Unmanaged.passUnretained(event)
     }
 

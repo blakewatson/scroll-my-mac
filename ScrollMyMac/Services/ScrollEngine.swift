@@ -14,10 +14,6 @@ class ScrollEngine {
     /// Whether the engine is currently intercepting mouse events.
     private(set) var isActive: Bool = false
 
-    /// When true, drag direction locks to a single axis after initial movement.
-    /// When false, both axes scroll simultaneously (free scroll).
-    var useAxisLock: Bool = true
-
     /// Called with cursor position (CG coordinates) during mouseDown and mouseDragged.
     /// Used by OverlayManager to track the dot to the cursor.
     var onDragPositionChanged: ((CGPoint) -> Void)?
@@ -154,12 +150,11 @@ class ScrollEngine {
     // MARK: - Mouse Event Handlers
 
     func handleMouseDown(event: CGEvent, proxy: CGEventTapProxy) -> Unmanaged<CGEvent>? {
-        // Click during inertia: stop coasting and consume the click.
-        // Do NOT enter pending-click or drag state — just absorb it.
+        // Click during inertia: stop coasting and continue processing the
+        // mouseDown normally so the user can immediately start a new scroll
+        // (or click through) without needing a second click.
         if inertiaAnimator.isCoasting {
             inertiaAnimator.stopCoasting()
-            resetDragState()
-            return nil
         }
 
         // Allow replayed clicks to pass through without interception.
@@ -244,7 +239,7 @@ class ScrollEngine {
         velocityTracker.addSample(deltaX: deltaX, deltaY: deltaY)
 
         // Axis lock detection
-        if useAxisLock && lockedAxis == nil {
+        if lockedAxis == nil {
             lockedAxis = detectAxis(deltaX: deltaX, deltaY: deltaY)
         }
 
@@ -262,20 +257,16 @@ class ScrollEngine {
             phase = 2 // kCGScrollPhaseChanged
         }
 
-        // Post synthetic scroll event based on axis lock state
-        if useAxisLock, let axis = lockedAxis {
+        // Post synthetic scroll event on the locked axis
+        if let axis = lockedAxis {
             switch axis {
             case .vertical:
                 postScrollEvent(wheel1: scrollY, wheel2: 0, phase: phase)
             case .horizontal:
                 postScrollEvent(wheel1: 0, wheel2: scrollX, phase: phase)
             }
-        } else if !useAxisLock {
-            // Free scroll: both axes
-            postScrollEvent(wheel1: scrollY, wheel2: scrollX, phase: phase)
         } else {
-            // Axis lock is on but not yet locked — still accumulating.
-            // Post both axes during the detection period so movement isn't lost.
+            // Not yet locked — still accumulating. Post both axes so movement isn't lost.
             postScrollEvent(wheel1: scrollY, wheel2: scrollX, phase: phase)
         }
 
@@ -308,7 +299,7 @@ class ScrollEngine {
             if let velocity = velocityTracker.computeVelocity() {
                 inertiaAnimator.startCoasting(
                     velocity: velocity,
-                    axis: useAxisLock ? lockedAxis : nil
+                    axis: lockedAxis
                 )
             }
         }

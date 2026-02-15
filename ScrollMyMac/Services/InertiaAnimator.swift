@@ -37,6 +37,8 @@ class InertiaAnimator {
     private var lastPositionY: CGFloat = 0
     private var lockedAxis: ScrollEngine.Axis?
     private var isFirstFrame: Bool = true
+    private var scrollRemainderX: CGFloat = 0
+    private var scrollRemainderY: CGFloat = 0
 
     // MARK: - API
 
@@ -70,6 +72,8 @@ class InertiaAnimator {
 
         lastPositionX = 0
         lastPositionY = 0
+        scrollRemainderX = 0
+        scrollRemainderY = 0
         isFirstFrame = true
         startTime = CACurrentMediaTime()
         isCoasting = true
@@ -137,9 +141,13 @@ class InertiaAnimator {
             momentumPhase = 2 // kCGMomentumScrollPhaseContinue
         }
 
-        // Convert to Int32 for scroll event posting.
-        let scrollDeltaY = Int32(deltaY)
-        let scrollDeltaX = Int32(deltaX)
+        // Accumulate fractional remainders so sub-pixel deltas aren't lost.
+        scrollRemainderY += deltaY
+        scrollRemainderX += deltaX
+        let scrollDeltaY = Int32(scrollRemainderY)
+        let scrollDeltaX = Int32(scrollRemainderX)
+        scrollRemainderY -= CGFloat(scrollDeltaY)
+        scrollRemainderX -= CGFloat(scrollDeltaX)
 
         onMomentumScroll?(scrollDeltaY, scrollDeltaX, momentumPhase)
     }

@@ -38,13 +38,6 @@ class AppState {
         }
     }
 
-    var isAxisLockEnabled: Bool {
-        didSet {
-            UserDefaults.standard.set(isAxisLockEnabled, forKey: "axisLockEnabled")
-            scrollEngine.useAxisLock = isAxisLockEnabled
-        }
-    }
-
     var hasCompletedOnboarding: Bool {
         didSet { UserDefaults.standard.set(hasCompletedOnboarding, forKey: "hasCompletedOnboarding") }
     }
@@ -64,7 +57,6 @@ class AppState {
     init() {
         self.isSafetyModeEnabled = UserDefaults.standard.object(forKey: "safetyModeEnabled") as? Bool ?? true
         self.isClickThroughEnabled = UserDefaults.standard.object(forKey: "clickThroughEnabled") as? Bool ?? true
-        self.isAxisLockEnabled = UserDefaults.standard.object(forKey: "axisLockEnabled") as? Bool ?? true
         self.hasCompletedOnboarding = UserDefaults.standard.bool(forKey: "hasCompletedOnboarding")
     }
 
@@ -79,7 +71,6 @@ class AppState {
 
 
         scrollEngine.clickThroughEnabled = isClickThroughEnabled
-        scrollEngine.useAxisLock = isAxisLockEnabled
 
         scrollEngine.shouldPassThroughClick = { cgPoint in
             // Allow clicks on the app's own windows (e.g. the settings toggle).

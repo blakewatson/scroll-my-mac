@@ -16,7 +16,11 @@ struct ScrollMyMacApp: App {
                 .environment(appState)
                 .onAppear {
                     appState.setupServices()
-                    appState.hotkeyManager.start()
+                    // Hotkey manager starts automatically when isAccessibilityGranted is set to true.
+                    // If permission is already granted, start it now.
+                    if appState.isAccessibilityGranted {
+                        appState.hotkeyManager.start()
+                    }
                 }
         }
         .commands {

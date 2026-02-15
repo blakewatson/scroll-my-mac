@@ -67,11 +67,7 @@ struct MainSettingsView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
 
-                    Toggle("Axis lock", isOn: $appState.isAxisLockEnabled)
-                    Text("When enabled, scrolling locks to the dominant direction (vertical or horizontal). When disabled, scrolling moves freely in both directions.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
+}
 
                 Section("Safety") {
                     Toggle("Safety timeout", isOn: $appState.isSafetyModeEnabled)

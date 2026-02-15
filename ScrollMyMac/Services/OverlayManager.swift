@@ -9,6 +9,7 @@ class OverlayManager {
     // MARK: - Private State
 
     private var overlayWindow: NSPanel?
+    private var trackingTimer: Timer?
 
     /// Offset from cursor tip to dot center (pixels).
     private let cursorOffset: CGFloat = 16.0
@@ -19,6 +20,7 @@ class OverlayManager {
     func show() {
         guard overlayWindow == nil else {
             overlayWindow?.orderFrontRegardless()
+            startMouseTracking()
             return
         }
 
@@ -40,12 +42,30 @@ class OverlayManager {
         overlayWindow = panel
         updatePosition()
         panel.orderFrontRegardless()
+        startMouseTracking()
     }
 
     /// Hides and destroys the overlay panel.
     func hide() {
+        stopMouseTracking()
         overlayWindow?.orderOut(nil)
         overlayWindow = nil
+    }
+
+    // MARK: - Mouse Tracking
+
+    private func startMouseTracking() {
+        guard trackingTimer == nil else { return }
+        // Poll NSEvent.mouseLocation at ~60fps. This is reliable regardless of
+        // which app is frontmost or whether it generates mouseMoved events.
+        trackingTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / 60.0, repeats: true) { [weak self] _ in
+            self?.updatePosition()
+        }
+    }
+
+    private func stopMouseTracking() {
+        trackingTimer?.invalidate()
+        trackingTimer = nil
     }
 
     /// Updates the overlay position relative to the cursor.
