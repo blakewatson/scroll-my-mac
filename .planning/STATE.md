@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-02-14)
 ## Current Position
 
 Phase: 1 of 5 (Permissions & App Shell)
-Plan: 1 of 2 in current phase
-Status: Executing
-Last activity: 2026-02-14 -- Completed 01-01-PLAN.md
+Plan: 2 of 2 in current phase
+Status: Complete
+Last activity: 2026-02-14 -- Completed 01-02-PLAN.md (Phase 1 complete)
 
-Progress: [█░░░░░░░░░] 10%
+Progress: [██░░░░░░░░] 20%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: 3min
-- Total execution time: 0.05 hours
+- Total plans completed: 2
+- Average duration: 30min
+- Total execution time: 0.98 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-permissions-app-shell | 1 | 3min | 3min |
+| 01-permissions-app-shell | 2 | 59min | 30min |
 
 **Recent Trend:**
-- Last 5 plans: 3min
-- Trend: Starting
+- Last 5 plans: 3min, 56min
+- Trend: Building
 
 *Updated after each plan completion*
 
@@ -43,8 +43,10 @@ Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
 - Used manually-crafted pbxproj for Xcode project (most reliable from CLI)
-- Safety mode toggle uses explicit Binding wrapper due to @ObservationIgnored limitation
+- Safety mode toggle changed from @ObservationIgnored to didSet persistence for SwiftUI reactivity
 - Dual permission buttons: system prompt (AXIsProcessTrustedWithOptions) + deep link fallback
+- SafetyTimeoutManager uses Timer polling (0.5s) rather than event tap for Phase 1 simplicity
+- Safety notification uses ZStack overlay with ultraThinMaterial and 3s auto-dismiss
 
 ### Pending Todos
 
@@ -57,5 +59,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-14
-Stopped at: Completed 01-01-PLAN.md
+Stopped at: Completed 01-02-PLAN.md (Phase 1 complete)
 Resume file: None
