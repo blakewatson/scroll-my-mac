@@ -55,6 +55,10 @@ class ScrollEngine {
 
     private let axisLockThreshold: CGFloat = 5.0
 
+    // Inertia state
+    private var velocityTracker = VelocityTracker()
+    private let inertiaAnimator = InertiaAnimator()
+
     // Click-through state
     private static let replayMarker: Int64 = 0x534D4D // "SMM" — tags synthetic click events
     private var pendingMouseDown: Bool = false
@@ -67,6 +71,11 @@ class ScrollEngine {
 
     /// Creates the CGEventTap (if not already created) and enables it.
     func start() {
+        // Wire up momentum scroll callback (idempotent).
+        inertiaAnimator.onMomentumScroll = { [weak self] wheel1, wheel2, momentumPhase in
+            self?.postMomentumScrollEvent(wheel1: wheel1, wheel2: wheel2, momentumPhase: momentumPhase)
+        }
+
         guard eventTap == nil else {
             // Tap already exists — just re-enable.
             if let tap = eventTap {
@@ -104,6 +113,9 @@ class ScrollEngine {
     /// Disables the event tap and resets drag state.
     /// The tap is NOT destroyed — call `start()` to re-enable.
     func stop() {
+        // Stop any inertia animation immediately (F6 toggle-off kills inertia).
+        inertiaAnimator.stopCoasting()
+
         // Post scroll-ended if a scroll was in progress, so apps see a clean end.
         if isDragging {
             postScrollEvent(wheel1: 0, wheel2: 0, phase: 4) // kCGScrollPhaseEnded
@@ -120,6 +132,9 @@ class ScrollEngine {
 
     /// Tears down the event tap completely. Call on app termination.
     func tearDown() {
+        // Stop any inertia animation immediately.
+        inertiaAnimator.stopCoasting()
+
         // Post scroll-ended if a scroll was in progress, so apps see a clean end.
         if isDragging {
             postScrollEvent(wheel1: 0, wheel2: 0, phase: 4) // kCGScrollPhaseEnded
@@ -139,6 +154,14 @@ class ScrollEngine {
     // MARK: - Mouse Event Handlers
 
     func handleMouseDown(event: CGEvent, proxy: CGEventTapProxy) -> Unmanaged<CGEvent>? {
+        // Click during inertia: stop coasting and consume the click.
+        // Do NOT enter pending-click or drag state — just absorb it.
+        if inertiaAnimator.isCoasting {
+            inertiaAnimator.stopCoasting()
+            resetDragState()
+            return nil
+        }
+
         // Allow replayed clicks to pass through without interception.
         if event.getIntegerValueField(.eventSourceUserData) == ScrollEngine.replayMarker {
             return Unmanaged.passUnretained(event)
@@ -217,6 +240,9 @@ class ScrollEngine {
         lastDragPoint = currentPoint
         onDragPositionChanged?(currentPoint)
 
+        // Track raw velocity (before axis lock) for inertia on release.
+        velocityTracker.addSample(deltaX: deltaX, deltaY: deltaY)
+
         // Axis lock detection
         if useAxisLock && lockedAxis == nil {
             lockedAxis = detectAxis(deltaX: deltaX, deltaY: deltaY)
@@ -277,6 +303,14 @@ class ScrollEngine {
         if isDragging {
             // Post scroll ended event with zero deltas.
             postScrollEvent(wheel1: 0, wheel2: 0, phase: 4) // kCGScrollPhaseEnded
+
+            // Start inertia coasting if velocity is above threshold.
+            if let velocity = velocityTracker.computeVelocity() {
+                inertiaAnimator.startCoasting(
+                    velocity: velocity,
+                    axis: useAxisLock ? lockedAxis : nil
+                )
+            }
         }
         onDragStateChanged?(false)
         resetDragState()
@@ -308,6 +342,24 @@ class ScrollEngine {
         guard let scrollEvent else { return }
 
         scrollEvent.setIntegerValueField(.scrollWheelEventScrollPhase, value: phase)
+        scrollEvent.post(tap: .cgSessionEventTap)
+    }
+
+    private func postMomentumScrollEvent(wheel1: Int32, wheel2: Int32, momentumPhase: Int64) {
+        let scrollEvent = CGEvent(
+            scrollWheelEvent2Source: nil,
+            units: .pixel,
+            wheelCount: 3,
+            wheel1: wheel1,
+            wheel2: wheel2,
+            wheel3: 0
+        )
+
+        guard let scrollEvent else { return }
+
+        // During momentum: scrollPhase = 0 (none), only momentumPhase carries state.
+        scrollEvent.setIntegerValueField(.scrollWheelEventScrollPhase, value: 0)
+        scrollEvent.setIntegerValueField(.scrollWheelEventMomentumPhase, value: momentumPhase)
         scrollEvent.post(tap: .cgSessionEventTap)
     }
 
@@ -347,6 +399,7 @@ class ScrollEngine {
         lockedAxis = nil
         accumulatedDelta = .zero
         isFirstDragEvent = true
+        velocityTracker.reset()
     }
 }
 
