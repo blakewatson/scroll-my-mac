@@ -5,7 +5,7 @@
 See: .planning/PROJECT.md (updated 2026-02-14)
 
 **Core value:** Users can scroll any scrollable area by clicking and dragging with the mouse pointer, with natural inertia -- no scroll wheel or trackpad required.
-**Current focus:** Phase 1 - Permissions & App Shell
+**Current focus:** Phase 1 complete — ready for Phase 2
 
 ## Current Position
 

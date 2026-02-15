@@ -12,7 +12,7 @@ This roadmap delivers a macOS accessibility app that converts click-and-drag int
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Permissions & App Shell** - Accessibility permission flow and basic SwiftUI window
+- [x] **Phase 1: Permissions & App Shell** - Accessibility permission flow and basic SwiftUI window
 - [ ] **Phase 2: Core Scroll Mode** - Drag-to-scroll with hotkey toggle and visual indicator
 - [ ] **Phase 3: Click Safety** - Click-through detection, escape bail-out, and graceful error handling
 - [ ] **Phase 4: Inertia** - Momentum scrolling with natural deceleration
@@ -32,8 +32,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 2 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Xcode project, app shell, window lifecycle, permission detection and onboarding UI
-- [ ] 01-02-PLAN.md — Full settings view with scroll mode toggle, safety timeout manager
+- [x] 01-01-PLAN.md — Xcode project, app shell, window lifecycle, permission detection and onboarding UI
+- [x] 01-02-PLAN.md — Full settings view with scroll mode toggle, safety timeout manager
 
 ### Phase 2: Core Scroll Mode
 **Goal**: User can toggle scroll mode via hotkey and scroll any area by clicking and dragging
@@ -99,7 +99,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Permissions & App Shell | 0/2 | Planned | - |
+| 1. Permissions & App Shell | 2/2 | Complete | 2026-02-14 |
 | 2. Core Scroll Mode | 0/TBD | Not started | - |
 | 3. Click Safety | 0/TBD | Not started | - |
 | 4. Inertia | 0/TBD | Not started | - |
