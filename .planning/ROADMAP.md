@@ -60,11 +60,11 @@ Plans:
   2. Pressing Escape exits scroll mode instantly regardless of other state
   3. Stationary clicks (no movement at all) always pass through as normal clicks
   4. If Accessibility permission is revoked while the app is running, the app disables scroll mode gracefully without freezing input
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
+- [ ] 03-01-PLAN.md — Hold-and-decide click-through in ScrollEngine, modifier/double-click pass-through, click-through setting in UI
+- [ ] 03-02-PLAN.md — Permission health check polling, mid-toggle/mid-drag cleanup, graceful permission revocation handling
 
 ### Phase 4: Inertia
 **Goal**: Released drags produce natural momentum scrolling that feels like iOS/trackpad
