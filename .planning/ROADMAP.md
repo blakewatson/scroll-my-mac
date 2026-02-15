@@ -45,11 +45,11 @@ Plans:
   3. Scrolling works in all directions (up, down, left, right)
   4. A visual indicator (cursor change or alternative) shows when scroll mode is active vs inactive
   5. The on/off toggle in the main window reflects and controls scroll mode state
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
+- [ ] 02-01-PLAN.md — ScrollEngine (CGEventTap drag-to-scroll) and HotkeyManager (F6 global hotkey)
+- [ ] 02-02-PLAN.md — OverlayManager (floating indicator dot), service wiring, UI toggle activation
 
 ### Phase 3: Click Safety
 **Goal**: User can safely click things while scroll mode is active, and always bail out with Escape
@@ -100,7 +100,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Permissions & App Shell | 2/2 | Complete | 2026-02-14 |
-| 2. Core Scroll Mode | 0/TBD | Not started | - |
+| 2. Core Scroll Mode | 0/2 | Not started | - |
 | 3. Click Safety | 0/TBD | Not started | - |
 | 4. Inertia | 0/TBD | Not started | - |
 | 5. Settings & Polish | 0/TBD | Not started | - |
