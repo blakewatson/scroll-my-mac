@@ -18,6 +18,10 @@ class ScrollEngine {
     /// When false, both axes scroll simultaneously (free scroll).
     var useAxisLock: Bool = true
 
+    /// Called with cursor position (CG coordinates) during mouseDown and mouseDragged.
+    /// Used by OverlayManager to track the dot to the cursor.
+    var onDragPositionChanged: ((CGPoint) -> Void)?
+
     // MARK: - Axis
 
     enum Axis {
@@ -30,7 +34,7 @@ class ScrollEngine {
     fileprivate var eventTap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
 
-    private var isDragging: Bool = false
+    private(set) var isDragging: Bool = false
     private var dragOrigin: CGPoint = .zero
     private var lastDragPoint: CGPoint = .zero
     private var lockedAxis: Axis?
@@ -111,6 +115,7 @@ class ScrollEngine {
         lockedAxis = nil
         accumulatedDelta = .zero
         isFirstDragEvent = true
+        onDragPositionChanged?(location)
         return nil // Suppress the click while in scroll mode.
     }
 
@@ -123,6 +128,7 @@ class ScrollEngine {
         let deltaX = currentPoint.x - lastDragPoint.x
         let deltaY = currentPoint.y - lastDragPoint.y
         lastDragPoint = currentPoint
+        onDragPositionChanged?(currentPoint)
 
         // Axis lock detection
         if useAxisLock && lockedAxis == nil {

@@ -40,8 +40,7 @@ struct MainSettingsView: View {
             Form {
                 Section("Scroll Mode") {
                     Toggle("Enable Scroll Mode", isOn: $appState.isScrollModeActive)
-                        .disabled(true)
-                    Text("Toggle will be activated in a future update.")
+                    Text("Press F6 or use this toggle to activate scroll mode.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
