@@ -47,10 +47,7 @@ struct MainSettingsView: View {
                 }
 
                 Section("Safety") {
-                    Toggle("Safety timeout", isOn: Binding(
-                        get: { appState.isSafetyModeEnabled },
-                        set: { appState.isSafetyModeEnabled = $0 }
-                    ))
+                    Toggle("Safety timeout", isOn: $appState.isSafetyModeEnabled)
                     Text("Automatically deactivates scroll mode after 10 seconds of no mouse movement.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
