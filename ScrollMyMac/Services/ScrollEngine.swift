@@ -104,6 +104,10 @@ class ScrollEngine {
     /// Disables the event tap and resets drag state.
     /// The tap is NOT destroyed — call `start()` to re-enable.
     func stop() {
+        // Post scroll-ended if a scroll was in progress, so apps see a clean end.
+        if isDragging {
+            postScrollEvent(wheel1: 0, wheel2: 0, phase: 4) // kCGScrollPhaseEnded
+        }
         if let tap = eventTap {
             CGEvent.tapEnable(tap: tap, enable: false)
         }
@@ -116,6 +120,10 @@ class ScrollEngine {
 
     /// Tears down the event tap completely. Call on app termination.
     func tearDown() {
+        // Post scroll-ended if a scroll was in progress, so apps see a clean end.
+        if isDragging {
+            postScrollEvent(wheel1: 0, wheel2: 0, phase: 4) // kCGScrollPhaseEnded
+        }
         if let tap = eventTap {
             CGEvent.tapEnable(tap: tap, enable: false)
             if let source = runLoopSource {
