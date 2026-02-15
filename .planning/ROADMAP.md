@@ -73,10 +73,11 @@ Plans:
   1. Releasing a drag at speed produces continued scrolling with gradual deceleration
   2. Faster drags produce more momentum; slow drags produce little or no momentum
   3. Inertia scrolling feels smooth (frame-synchronized, no stuttering or jumping)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 04-01: TBD
+- [ ] 04-01-PLAN.md — VelocityTracker, InertiaAnimator (CADisplayLink + exponential decay), ScrollEngine integration
+- [ ] 04-02-PLAN.md — Axis-lock settings toggle, full inertia behavior verification
 
 ### Phase 5: Settings & Polish
 **Goal**: User can customize their hotkey and have the app start automatically at login
@@ -101,5 +102,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 1. Permissions & App Shell | 2/2 | Complete | 2026-02-14 |
 | 2. Core Scroll Mode | 0/2 | Not started | - |
 | 3. Click Safety | 0/TBD | Not started | - |
-| 4. Inertia | 0/TBD | Not started | - |
+| 4. Inertia | 0/2 | Not started | - |
 | 5. Settings & Polish | 0/TBD | Not started | - |
