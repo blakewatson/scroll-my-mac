@@ -15,6 +15,7 @@
 		A10000010000000000000006 /* PermissionSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000006 /* PermissionSetupView.swift */; };
 		A10000010000000000000007 /* SafetyTimeoutManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000007 /* SafetyTimeoutManager.swift */; };
 		A10000010000000000000008 /* ScrollEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000008 /* ScrollEngine.swift */; };
+		A10000010000000000000009 /* HotkeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000009 /* HotkeyManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,7 @@
 		A20000010000000000000006 /* PermissionSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionSetupView.swift; sourceTree = "<group>"; };
 		A20000010000000000000007 /* SafetyTimeoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafetyTimeoutManager.swift; sourceTree = "<group>"; };
 		A20000010000000000000008 /* ScrollEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollEngine.swift; sourceTree = "<group>"; };
+		A20000010000000000000009 /* HotkeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +80,7 @@
 				A20000010000000000000005 /* PermissionManager.swift */,
 				A20000010000000000000007 /* SafetyTimeoutManager.swift */,
 				A20000010000000000000008 /* ScrollEngine.swift */,
+				A20000010000000000000009 /* HotkeyManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -175,6 +178,7 @@
 				A10000010000000000000006 /* PermissionSetupView.swift in Sources */,
 				A10000010000000000000007 /* SafetyTimeoutManager.swift in Sources */,
 				A10000010000000000000008 /* ScrollEngine.swift in Sources */,
+				A10000010000000000000009 /* HotkeyManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
