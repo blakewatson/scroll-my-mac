@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-02-14)
 
 ## Current Position
 
-Phase: 3 of 5 (Click Safety)
-Plan: 1 of 2 in current phase
-Status: In Progress
-Last activity: 2026-02-15 -- Completed 03-01-PLAN.md (Hold-and-decide click-through)
+Phase: 3 of 5 (Click Safety) -- COMPLETE
+Plan: 2 of 2 in current phase
+Status: Phase Complete
+Last activity: 2026-02-15 -- Completed 03-02-PLAN.md (Permission health monitoring and mid-drag cleanup)
 
-Progress: [█████░░░░░] 50%
+Progress: [██████░░░░] 60%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
-- Average duration: 1.8h
-- Total execution time: 7.06 hours
+- Total plans completed: 6
+- Average duration: 1.5h
+- Total execution time: 7.1 hours
 
 **By Phase:**
 
@@ -29,11 +29,11 @@ Progress: [█████░░░░░] 50%
 |-------|-------|-------|----------|
 | 01-permissions-app-shell | 2 | 59min | 30min |
 | 02-core-scroll-mode | 2 | 6h 3min | 3h 2min |
-| 03-click-safety | 1 | 2min | 2min |
+| 03-click-safety | 2 | 4min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 6h, 3min, 56min, 3min, 2min
-- Trend: Variable (checkpoint testing cycles)
+- Last 5 plans: 3min, 56min, 3min, 2min, 2min
+- Trend: Fast execution on well-specified plans
 
 *Updated after each plan completion*
 
@@ -62,6 +62,9 @@ Recent decisions affecting current work:
 - Click replayed at original mouseDown position (matches user intent)
 - Synchronous isReplayingClick flag prevents re-entry (same run loop)
 - stop() discards pending clicks without replaying
+- Permission health poll every 2s during scroll mode (Timer-based)
+- No auto-re-enable scroll mode after permission re-grant (user presses F6)
+- stop()/tearDown() post kCGScrollPhaseEnded if mid-drag for clean app behavior
 
 ### Pending Todos
 
@@ -74,5 +77,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Completed 03-01-PLAN.md
-Resume file: .planning/phases/03-click-safety/03-01-SUMMARY.md
+Stopped at: Completed 03-02-PLAN.md (Phase 3 complete)
+Resume file: .planning/phases/03-click-safety/03-02-SUMMARY.md
