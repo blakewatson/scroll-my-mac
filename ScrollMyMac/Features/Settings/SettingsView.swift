@@ -14,6 +14,10 @@ struct SettingsView: View {
         }
         .onAppear {
             syncPermissionState()
+            // If onboarding is complete but permission was revoked, poll for re-grant.
+            if appState.hasCompletedOnboarding && !appState.isAccessibilityGranted {
+                permissionManager.startPolling()
+            }
         }
         .onChange(of: permissionManager.isAccessibilityGranted) { _, granted in
             appState.isAccessibilityGranted = granted
@@ -38,9 +42,28 @@ struct MainSettingsView: View {
 
         ZStack {
             Form {
+                if !appState.isAccessibilityGranted {
+                    Section {
+                        Label("Accessibility permission required. Re-grant in System Settings > Privacy & Security > Accessibility.", systemImage: "exclamationmark.triangle.fill")
+                            .foregroundStyle(.orange)
+                            .font(.callout)
+                        Button("Open Accessibility Settings") {
+                            if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
+                                NSWorkspace.shared.open(url)
+                            }
+                        }
+                    }
+                }
+
                 Section("Scroll Mode") {
                     Toggle("Enable Scroll Mode", isOn: $appState.isScrollModeActive)
+                        .disabled(!appState.isAccessibilityGranted)
                     Text("Press F6 or use this toggle to activate scroll mode.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+
+                    Toggle("Click-through", isOn: $appState.isClickThroughEnabled)
+                    Text("When enabled, clicks without dragging pass through as normal clicks. When disabled, all mouse events become scrolls.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

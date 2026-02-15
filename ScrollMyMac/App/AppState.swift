@@ -1,4 +1,5 @@
 import Foundation
+import AppKit
 import ApplicationServices
 
 @Observable
@@ -13,10 +14,28 @@ class AppState {
         }
     }
 
-    var isAccessibilityGranted: Bool = false
+    var isAccessibilityGranted: Bool = false {
+        didSet {
+            if isAccessibilityGranted {
+                hotkeyManager.start()
+            } else {
+                hotkeyManager.stop()
+                if isScrollModeActive {
+                    isScrollModeActive = false
+                }
+            }
+        }
+    }
 
     var isSafetyModeEnabled: Bool {
         didSet { UserDefaults.standard.set(isSafetyModeEnabled, forKey: "safetyModeEnabled") }
+    }
+
+    var isClickThroughEnabled: Bool {
+        didSet {
+            UserDefaults.standard.set(isClickThroughEnabled, forKey: "clickThroughEnabled")
+            scrollEngine.clickThroughEnabled = isClickThroughEnabled
+        }
     }
 
     var hasCompletedOnboarding: Bool {
@@ -33,6 +52,7 @@ class AppState {
 
     init() {
         self.isSafetyModeEnabled = UserDefaults.standard.object(forKey: "safetyModeEnabled") as? Bool ?? true
+        self.isClickThroughEnabled = UserDefaults.standard.object(forKey: "clickThroughEnabled") as? Bool ?? true
         self.hasCompletedOnboarding = UserDefaults.standard.bool(forKey: "hasCompletedOnboarding")
     }
 
@@ -44,8 +64,18 @@ class AppState {
             self?.toggleScrollMode()
         }
 
-        scrollEngine.onDragPositionChanged = { [weak self] cgPoint in
-            self?.overlayManager.updatePosition(cgPoint: cgPoint)
+
+
+        scrollEngine.clickThroughEnabled = isClickThroughEnabled
+
+        scrollEngine.shouldPassThroughClick = { cgPoint in
+            // Allow clicks on the app's own windows (e.g. the settings toggle).
+            // CG coordinates are top-left origin; NSWindow frames are bottom-left.
+            guard let screenHeight = NSScreen.main?.frame.height else { return false }
+            let nsPoint = NSPoint(x: cgPoint.x, y: screenHeight - cgPoint.y)
+            return NSApp.windows.contains { window in
+                window.isVisible && !window.ignoresMouseEvents && window.frame.contains(nsPoint)
+            }
         }
     }
 
@@ -70,12 +100,9 @@ class AppState {
         }
 
         scrollEngine.start()
-        overlayManager.show()
-        overlayManager.updatePosition()
     }
 
     private func deactivateScrollMode() {
         scrollEngine.stop()
-        overlayManager.hide()
     }
 }
