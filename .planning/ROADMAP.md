@@ -52,14 +52,13 @@ Plans:
 - [ ] 02-02-PLAN.md — OverlayManager (floating indicator dot), service wiring, UI toggle activation
 
 ### Phase 3: Click Safety
-**Goal**: User can safely click things while scroll mode is active, and always bail out with Escape
+**Goal**: User can safely click things while scroll mode is active
 **Depends on**: Phase 2
 **Requirements**: SCRL-03, SAFE-01, SAFE-02, SAFE-03
 **Success Criteria** (what must be TRUE):
   1. Clicking without significant movement (~8px) passes through as a normal click
-  2. Pressing Escape exits scroll mode instantly regardless of other state
-  3. Stationary clicks (no movement at all) always pass through as normal clicks
-  4. If Accessibility permission is revoked while the app is running, the app disables scroll mode gracefully without freezing input
+  2. Stationary clicks (no movement at all) always pass through as normal clicks
+  3. If Accessibility permission is revoked while the app is running, the app disables scroll mode gracefully without freezing input
 **Plans**: 2 plans
 
 Plans:
