@@ -352,11 +352,12 @@ private func scrollEventCallback(
     userInfo: UnsafeMutableRawPointer?
 ) -> Unmanaged<CGEvent>? {
 
-    // Handle tap disabled by timeout — re-enable.
+    // Handle tap disabled by timeout — re-enable if we still have permission.
     if type == .tapDisabledByTimeout {
         if let userInfo {
             let engine = Unmanaged<ScrollEngine>.fromOpaque(userInfo).takeUnretainedValue()
-            if let tap = engine.eventTap {
+            // Only re-enable if we still have Accessibility permission.
+            if AXIsProcessTrusted(), let tap = engine.eventTap {
                 CGEvent.tapEnable(tap: tap, enable: true)
             }
         }

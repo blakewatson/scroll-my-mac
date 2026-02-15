@@ -48,6 +48,10 @@ class AppState {
     let hotkeyManager = HotkeyManager()
     let overlayManager = OverlayManager()
 
+    // MARK: - Permission Health Check
+
+    private var permissionHealthTimer: Timer?
+
     // MARK: - Init
 
     init() {
@@ -100,9 +104,38 @@ class AppState {
         }
 
         scrollEngine.start()
+        startPermissionHealthCheck()
     }
 
     private func deactivateScrollMode() {
         scrollEngine.stop()
+        stopPermissionHealthCheck()
+    }
+
+    // MARK: - Permission Health Monitoring
+
+    private func startPermissionHealthCheck() {
+        permissionHealthTimer?.invalidate()
+        permissionHealthTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in
+            guard let self else { return }
+            if !AXIsProcessTrusted() {
+                self.handlePermissionLost()
+            }
+        }
+    }
+
+    private func stopPermissionHealthCheck() {
+        permissionHealthTimer?.invalidate()
+        permissionHealthTimer = nil
+    }
+
+    private func handlePermissionLost() {
+        stopPermissionHealthCheck()
+        // Setting isScrollModeActive to false triggers deactivateScrollMode via didSet,
+        // which calls scrollEngine.stop() — cleaning up drag state.
+        isScrollModeActive = false
+        // Setting isAccessibilityGranted to false triggers its didSet,
+        // which stops hotkeyManager and shows the permission warning in UI.
+        isAccessibilityGranted = false
     }
 }
