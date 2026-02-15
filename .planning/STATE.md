@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-14)
 
 **Core value:** Users can scroll any scrollable area by clicking and dragging with the mouse pointer, with natural inertia -- no scroll wheel or trackpad required.
-**Current focus:** Phase 2 complete — core scroll mode functional with F6 toggle, drag-to-scroll, axis lock, and UI sync
+**Current focus:** Phase 3 in progress — click-through with hold-and-decide dead zone detection
 
 ## Current Position
 
-Phase: 2 of 5 (Core Scroll Mode)
-Plan: 2 of 2 in current phase
-Status: Phase Complete
-Last activity: 2026-02-15 -- Completed 02-02-PLAN.md (Overlay wiring and UI activation)
+Phase: 3 of 5 (Click Safety)
+Plan: 1 of 2 in current phase
+Status: In Progress
+Last activity: 2026-02-15 -- Completed 03-01-PLAN.md (Hold-and-decide click-through)
 
-Progress: [████░░░░░░] 40%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
-- Average duration: 2.5h
-- Total execution time: 7.03 hours
+- Total plans completed: 5
+- Average duration: 1.8h
+- Total execution time: 7.06 hours
 
 **By Phase:**
 
@@ -29,9 +29,10 @@ Progress: [████░░░░░░] 40%
 |-------|-------|-------|----------|
 | 01-permissions-app-shell | 2 | 59min | 30min |
 | 02-core-scroll-mode | 2 | 6h 3min | 3h 2min |
+| 03-click-safety | 1 | 2min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 6h, 3min, 56min, 3min
+- Last 5 plans: 6h, 3min, 56min, 3min, 2min
 - Trend: Variable (checkpoint testing cycles)
 
 *Updated after each plan completion*
@@ -57,6 +58,10 @@ Recent decisions affecting current work:
 - Horizontal and vertical scroll directions flipped (sign fix) after user testing
 - Added click pass-through for app's own windows via shouldPassThroughClick callback
 - Added isAccessibilityGranted didSet to auto-start/stop hotkeyManager and show permission warning when revoked
+- 8px dead zone threshold for click vs drag discrimination in hold-and-decide model
+- Click replayed at original mouseDown position (matches user intent)
+- Synchronous isReplayingClick flag prevents re-entry (same run loop)
+- stop() discards pending clicks without replaying
 
 ### Pending Todos
 
@@ -69,5 +74,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Phase 3 context gathered
-Resume file: .planning/phases/03-click-safety/03-CONTEXT.md
+Stopped at: Completed 03-01-PLAN.md
+Resume file: .planning/phases/03-click-safety/03-01-SUMMARY.md
