@@ -85,9 +85,8 @@ class AppState {
 
     // MARK: - Scroll Mode Toggle
 
-    /// Toggles scroll mode, ignoring the toggle if a drag is in progress.
+    /// Toggles scroll mode. Works even mid-drag — stop() handles cleanup.
     func toggleScrollMode() {
-        guard !scrollEngine.isDragging else { return }
         isScrollModeActive.toggle()
     }
 
@@ -137,5 +136,19 @@ class AppState {
         // Setting isAccessibilityGranted to false triggers its didSet,
         // which stops hotkeyManager and shows the permission warning in UI.
         isAccessibilityGranted = false
+        // Start polling so we detect when permission is re-granted.
+        startPermissionRecoveryPolling()
+    }
+
+    private func startPermissionRecoveryPolling() {
+        permissionHealthTimer?.invalidate()
+        permissionHealthTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            guard let self else { return }
+            if AXIsProcessTrusted() {
+                self.permissionHealthTimer?.invalidate()
+                self.permissionHealthTimer = nil
+                self.isAccessibilityGranted = true
+            }
+        }
     }
 }

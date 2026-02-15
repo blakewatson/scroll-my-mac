@@ -56,7 +56,7 @@ class ScrollEngine {
     private let axisLockThreshold: CGFloat = 5.0
 
     // Click-through state
-    private var isReplayingClick: Bool = false
+    private static let replayMarker: Int64 = 0x534D4D // "SMM" — tags synthetic click events
     private var pendingMouseDown: Bool = false
     private var pendingClickState: Int64 = 1
     private var pendingMouseDownLocation: CGPoint = .zero
@@ -140,7 +140,7 @@ class ScrollEngine {
 
     func handleMouseDown(event: CGEvent, proxy: CGEventTapProxy) -> Unmanaged<CGEvent>? {
         // Allow replayed clicks to pass through without interception.
-        if isReplayingClick {
+        if event.getIntegerValueField(.eventSourceUserData) == ScrollEngine.replayMarker {
             return Unmanaged.passUnretained(event)
         }
 
@@ -258,7 +258,7 @@ class ScrollEngine {
 
     func handleMouseUp(event: CGEvent, proxy: CGEventTapProxy) -> Unmanaged<CGEvent>? {
         // Allow replayed clicks to pass through without interception.
-        if isReplayingClick {
+        if event.getIntegerValueField(.eventSourceUserData) == ScrollEngine.replayMarker {
             return Unmanaged.passUnretained(event)
         }
 
@@ -312,8 +312,6 @@ class ScrollEngine {
     }
 
     private func replayClick(at position: CGPoint, clickState: Int64) {
-        isReplayingClick = true
-
         let source = CGEventSource(stateID: .hidSystemState)
 
         guard let down = CGEvent(
@@ -327,17 +325,19 @@ class ScrollEngine {
             mouseCursorPosition: position,
             mouseButton: .left
         ) else {
-            isReplayingClick = false
             return
         }
 
+        // Tag synthetic events so the event tap passes them through.
+        // CGEvent.post() is asynchronous — a boolean flag would be cleared
+        // before the events reach the callback.
         down.setIntegerValueField(.mouseEventClickState, value: clickState)
         up.setIntegerValueField(.mouseEventClickState, value: clickState)
+        down.setIntegerValueField(.eventSourceUserData, value: ScrollEngine.replayMarker)
+        up.setIntegerValueField(.eventSourceUserData, value: ScrollEngine.replayMarker)
 
         down.post(tap: .cghidEventTap)
         up.post(tap: .cghidEventTap)
-
-        isReplayingClick = false
     }
 
     private func resetDragState() {
