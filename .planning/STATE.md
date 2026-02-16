@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-14)
 
 **Core value:** Users can scroll any scrollable area by clicking and dragging with the mouse pointer, with natural inertia -- no scroll wheel or trackpad required.
-**Current focus:** Phase 5 in progress — Settings & Polish
+**Current focus:** All phases complete — v1.0 feature-complete
 
 ## Current Position
 
 Phase: 5 of 5 (Settings & Polish)
-Plan: 1 of 2 in current phase
-Status: In Progress
-Last activity: 2026-02-16 -- Completed 05-01-PLAN.md (Hotkey customization)
+Plan: 2 of 2 in current phase
+Status: Complete
+Last activity: 2026-02-16 -- Completed 05-02-PLAN.md (Settings consolidation and launch at login)
 
-Progress: [█████████░] 90%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8
-- Average duration: 1.2h
-- Total execution time: 7.3 hours
+- Total plans completed: 9
+- Average duration: 1.1h
+- Total execution time: ~7.4 hours
 
 **By Phase:**
 
@@ -31,10 +31,10 @@ Progress: [█████████░] 90%
 | 02-core-scroll-mode | 2 | 6h 3min | 3h 2min |
 | 03-click-safety | 2 | 4min | 2min |
 | 04-inertia | 2 | 8min | 4min |
-| 05-settings-polish | 1 | 3min | 3min |
+| 05-settings-polish | 2 | 8min | 4min |
 
 **Recent Trend:**
-- Last 5 plans: 3min, 2min, 2min, 3min, 5min
+- Last 5 plans: 2min, 2min, 3min, 5min, 5min
 - Trend: Fast execution on well-specified plans
 
 *Updated after each plan completion*
@@ -77,6 +77,12 @@ Recent decisions affecting current work:
 - Hotkey modifier flags stored as UInt64 raw value for CGEventFlags/NSEvent.ModifierFlags interop
 - keyCode=-1 sentinel convention for "no hotkey set" (stops HotkeyManager)
 - Strip .function/.numericPad flags when validating user modifier input
+- Launch at login excluded from reset to defaults (system-level setting)
+- Removed applicationWillBecomeActive to avoid conflict with silent login launch
+- Service init moved to AppState.init for reliable silent launch wiring
+- Hotkey keyDown consumed to prevent macOS funk sound on unhandled keys
+- SMAppService.mainApp for login item management (no helper app needed)
+- getppid()==1 && SMAppService status check for login item launch detection
 
 ### Pending Todos
 
@@ -89,5 +95,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Completed 05-01-PLAN.md (Hotkey customization)
-Resume file: .planning/phases/05-settings-polish/05-01-SUMMARY.md
+Stopped at: Completed 05-02-PLAN.md (Settings consolidation and launch at login) -- ALL PHASES COMPLETE
+Resume file: .planning/phases/05-settings-polish/05-02-SUMMARY.md
