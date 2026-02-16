@@ -41,7 +41,7 @@ class HotkeyManager {
             return
         }
 
-        let eventMask: CGEventMask = 1 << CGEventType.keyUp.rawValue
+        let eventMask: CGEventMask = (1 << CGEventType.keyDown.rawValue) | (1 << CGEventType.keyUp.rawValue)
 
         eventTap = CGEvent.tapCreate(
             tap: .cgSessionEventTap,
@@ -124,17 +124,19 @@ private func hotkeyEventCallback(
         return Unmanaged.passUnretained(event)
     }
 
-    guard type == .keyUp, let userInfo else {
+    guard (type == .keyDown || type == .keyUp), let userInfo else {
         return Unmanaged.passUnretained(event)
     }
 
     let manager = Unmanaged<HotkeyManager>.fromOpaque(userInfo).takeUnretainedValue()
 
     if manager.matches(event) {
-        DispatchQueue.main.async {
-            manager.onToggle?()
+        if type == .keyUp {
+            DispatchQueue.main.async {
+                manager.onToggle?()
+            }
         }
-        return nil // Consume the hotkey event.
+        return nil // Consume both keyDown and keyUp to prevent system sounds.
     }
 
     return Unmanaged.passUnretained(event) // Pass through non-matching keys.
