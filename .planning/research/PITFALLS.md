@@ -1,293 +1,263 @@
 # Pitfalls Research
 
-**Domain:** macOS Accessibility/Input Control App (Scroll My Mac)
-**Researched:** 2026-02-14
-**Confidence:** HIGH (verified with official Apple documentation and established open-source projects)
+**Domain:** OSK-aware click pass-through for existing CGEventTap interceptor
+**Researched:** 2026-02-16
+**Confidence:** MEDIUM (CGWindowListCopyWindowInfo behavior well-documented; Accessibility Keyboard specifics based on training data + community patterns, not verified against live system)
 
 ## Critical Pitfalls
 
-### Pitfall 1: Event Tap Timeout Auto-Disable
+### Pitfall 1: Calling CGWindowListCopyWindowInfo Inside the Event Tap Callback
 
 **What goes wrong:**
-macOS automatically disables event taps when callbacks take too long to process. Your scroll mode suddenly stops working with no obvious error. The app appears functional but the event tap silently fails.
+Calling `CGWindowListCopyWindowInfo` on every `mouseDown` inside the CGEventTap callback causes the callback to block for tens to hundreds of milliseconds. macOS enforces strict timing on event tap callbacks and will send `kCGEventTapDisabledByTimeout`, silently disabling the tap. Scroll mode stops working with no visible error.
 
 **Why it happens:**
-macOS sends `kCGEventTapDisabledByTimeout` when the callback doesn't return quickly enough. Developers often don't handle this event type, assuming once created, event taps stay active.
+`CGWindowListCopyWindowInfo` is a cross-process IPC call to WindowServer. It enumerates all windows in the session, serializes their metadata into dictionaries, and returns a CFArray. This is inherently slow -- developers underestimate the cost because it "works fine" in isolation but breaks under the real-time constraints of an event tap callback.
 
 **How to avoid:**
-1. Handle `kCGEventTapDisabledByTimeout` in your callback
-2. When received, call `CGEventTapEnable(eventTap, true)` to re-enable
-3. Keep callback processing minimal - defer heavy work to dispatch queues
-4. Log timeout events to detect problematic code paths
+Never call `CGWindowListCopyWindowInfo` inside the event tap callback. Instead, cache the OSK window bounds outside the callback and do a simple `CGRect.contains(point)` hit test in the callback itself. Two caching strategies:
+
+1. **Timer-based polling (simplest, recommended for this use case):** Poll `CGWindowListCopyWindowInfo` on a background timer (every 0.5-1s) to update cached OSK bounds. The OSK moves infrequently (user drags it), so stale data risk is minimal.
+
+2. **AXObserver-based (more complex, more accurate):** Use `AXObserverCreate` + `kAXMovedNotification` / `kAXResizedNotification` on the AssistiveControl process to get notified when the OSK window moves. More accurate but significantly more code.
+
+The event tap callback should only read from a cached `CGRect?` (nil = no OSK visible, non-nil = OSK bounds). This is O(1) with no IPC.
 
 **Warning signs:**
-- Scroll mode stops working randomly after extended use
-- Works fine in testing but fails in real usage with complex apps
-- Users report "it just stopped working"
+- Event tap disabled by timeout errors in logs after adding OSK detection
+- Scroll mode randomly stops working when many windows are open
+- Works in testing (few windows) but fails in real usage (dozens of windows)
 
 **Phase to address:**
-Phase 1 (Core Event Infrastructure) - Build timeout recovery into the event tap from the start
+Phase 1 of OSK milestone -- cache architecture must be established before any hit-test logic.
 
 **Sources:**
 - [Apple: CGEventType.tapDisabledByTimeout](https://developer.apple.com/documentation/coregraphics/cgeventtype/tapdisabledbytimeout)
-- [Hammerspoon event tap implementation](https://github.com/Hammerspoon/hammerspoon/blob/master/extensions/eventtap/libeventtap.m)
+- [Apple: CGWindowListCopyWindowInfo](https://developer.apple.com/documentation/coregraphics/1455137-cgwindowlistcopywindowinfo)
+- [JDK-8238435: Remove use of CGEventTap](https://bugs.openjdk.org/browse/JDK-8238435) -- documents tap timeout issues
+- [alt-tab-macos issue #45](https://github.com/lwouis/alt-tab-macos/issues/45) -- documents CGWindowListCopyWindowInfo performance
 
 ---
 
-### Pitfall 2: Accessibility Permission State Not Reloaded Without Restart
+### Pitfall 2: Race Condition Between OSK Movement and Cached Bounds
 
 **What goes wrong:**
-User grants Accessibility permission while the app is running, but the app doesn't detect it. The user thinks permission is granted (checkbox is checked) but the app still doesn't work.
+User drags the Accessibility Keyboard to a new position. The cached bounds still reflect the old position. A click lands where the OSK used to be and gets intercepted (false negative -- click should have passed through). Or a click lands where the OSK now is but the cache shows empty space, so it gets intercepted instead of passed through (also false negative).
 
 **Why it happens:**
-The Accessibility feature is not activated until the app is relaunched. Unlike some permissions that update in real-time, TCC accessibility state is cached at launch.
+`CGWindowListCopyWindowInfo` is a snapshot API with no change notification mechanism. There is no public API to be notified when a window moves. The TOCTOU (time-of-check/time-of-use) gap between polling the window list and the user clicking is inherent.
 
 **How to avoid:**
-1. Check Accessibility state using `AXIsProcessTrustedWithOptions`
-2. Observe state changes (see drag-scroll v1.2.0 approach)
-3. Prompt user to restart the app when permissions are newly granted
-4. Display clear UI indicating "Restart required after granting permission"
+1. **Accept imperfection.** The OSK is dragged rarely (seconds/minutes between repositions). A 0.5-1s polling interval means at most a 1-second window where cached bounds are stale. This is acceptable because:
+   - The user just finished dragging the OSK (their hand is still on the mouse).
+   - They are unlikely to immediately click the exact spot where the OSK just was or just arrived.
+2. **Add padding to the cached bounds.** Expand the hit-test rect by 10-20px on all sides. This catches near-misses from slight position drift without significantly expanding the pass-through zone.
+3. **Refresh cache on mouseDown (but off the callback).** When a mouseDown arrives and the cursor is near the cached OSK bounds (within, say, 50px), trigger an immediate cache refresh on the next run loop iteration. This won't help the current click but will be accurate for the next one.
 
 **Warning signs:**
-- User reports "I checked the box but nothing happens"
-- Permission checkbox is checked but app logs show no accessibility access
-- Works after restart but never after initial grant
+- Users report OSK clicks occasionally being "swallowed" right after moving the OSK
+- Inconsistent pass-through behavior that users cannot reproduce reliably
 
 **Phase to address:**
-Phase 2 (Permission Handling) - Implement robust permission state management with user guidance
+Phase 1 -- build padding into the hit-test from the start. Do not treat this as a post-ship polish item.
 
 **Sources:**
-- [Apple Developer Forums: TCC Accessibility permission](https://developer.apple.com/forums/thread/703188)
-- [drag-scroll v1.2.0 changelog](https://github.com/emreyolcu/drag-scroll)
+- [Apple Developer Forums: kCGWindowListOptionOnScreenOnly wrong ordering](https://developer.apple.com/forums/thread/713113) -- documents TOCTOU race
 
 ---
 
-### Pitfall 3: Sandbox Incompatibility with Event Posting
+### Pitfall 3: Misidentifying the Accessibility Keyboard Process/Window
 
 **What goes wrong:**
-App works perfectly in development, passes all tests, then fails silently when sandboxed or submitted to Mac App Store. CGEventPost and CGEventTap stop working.
+The OSK detection logic uses the wrong process name, window name, or window layer. It either never detects the OSK (false negatives -- all OSK clicks intercepted) or matches unrelated system windows (false positives -- clicks near random windows pass through).
 
 **Why it happens:**
-You cannot sandbox an app that controls another app. Posting keyboard or mouse events using functions like `CGEventPost` is not allowed from a sandboxed app. Input Monitoring privilege can work in sandboxed apps, but Accessibility cannot.
+The Accessibility Keyboard is owned by the `AssistiveControl` process, which also manages other assistive features (Switch Control, Dwell Control). Developers may filter by window name (`kCGWindowName`), but that key requires Screen Recording permission -- without it, the key is absent from the dictionary. Or they may match the process name but catch non-keyboard AssistiveControl windows.
 
 **How to avoid:**
-1. Decide distribution model early: App Store (sandboxed) vs Direct (notarized)
-2. For scroll injection functionality, you MUST distribute outside App Store
-3. Use Developer ID signing + notarization for direct distribution
-4. Test in sandboxed environment early to confirm incompatibility
+1. **Filter by `kCGWindowOwnerName == "AssistiveControl"` first.** This does NOT require Screen Recording permission. `kCGWindowOwnerName` is always available.
+2. **Filter by `kCGWindowLayer`.** The Accessibility Keyboard renders at an elevated window level (above normal app windows). Use `kCGWindowLayer` to distinguish it from normal windows. Empirically verify the layer value on your target macOS version by printing all AssistiveControl windows.
+3. **Filter by `kCGWindowBounds` size.** The keyboard window has a recognizable minimum size (roughly 800x200+ pixels). Tiny AssistiveControl windows are likely toolbar panels, not the keyboard.
+4. **Do NOT rely on `kCGWindowName`.** It requires Screen Recording permission. Use owner name + layer + bounds instead.
+5. **Empirically verify.** Before writing any detection logic, run a diagnostic that prints all `CGWindowListCopyWindowInfo` entries for AssistiveControl. Document the exact keys and values. The Accessibility Keyboard may appear as multiple windows (the keyboard panel, the toolbar, resize handles).
 
 **Warning signs:**
-- CGEventPost returns without error but events don't appear
-- Works in Xcode debug but not when exported
-- AXIsProcessTrustedWithOptions never prompts in sandboxed builds
+- Detection works in development but not after distribution (Screen Recording permission not requested)
+- Detection matches too many windows (clicking near any system UI passes through)
+- Detection works on your macOS version but fails on others
 
 **Phase to address:**
-Phase 0 (Project Setup) - Establish distribution strategy before writing any code. This affects architecture fundamentally.
+Phase 1 -- empirical verification of window properties must happen before any detection logic is written. This is a "measure twice, cut once" task.
 
 **Sources:**
-- [Apple Developer Forums: Accessibility permission in sandboxed app](https://developer.apple.com/forums/thread/707680)
-- [Apple Developer Forums: CGEventPost in sandboxed apps](https://developer.apple.com/forums/thread/724603)
+- [Apple: CGWindowListCopyWindowInfo](https://developer.apple.com/documentation/coregraphics/cgwindowlistcopywindowinfo(_:_:))
+- [Apple Developer Forums: window name not available in macOS 10.15](https://developer.apple.com/forums/thread/126860)
 
 ---
 
-### Pitfall 4: Permission Revocation While App Running Causes Crash/Hang
+### Pitfall 4: Breaking the Existing shouldPassThroughClick Architecture
 
 **What goes wrong:**
-User revokes Accessibility permission while the app is running. Mouse becomes unresponsive, requiring a reboot. App may crash or enter undefined state.
+The OSK detection is added by modifying the existing `shouldPassThroughClick` closure in AppState, but the new code introduces blocking calls or changes the semantics. The existing pass-through for app-owned windows (settings panel) breaks, or the callback now takes too long for all clicks, not just OSK-area clicks.
 
 **Why it happens:**
-Event taps hold system resources. Revoking permission while the tap is active doesn't cleanly release the tap. The drag-scroll project explicitly warns: "revoking accessibility access while running risks making your mouse unresponsive, requiring a reboot."
+The current `shouldPassThroughClick` closure (line 112-120 of AppState.swift) iterates `NSApp.windows` -- a fast, in-process operation. Developers may add OSK detection inline, turning a microsecond check into a millisecond-or-worse IPC call. Or they may restructure the closure in a way that changes the evaluation order, breaking the existing app-window pass-through.
 
 **How to avoid:**
-1. Monitor permission state changes using `DistributedNotificationCenter`
-2. Gracefully disable event tap before system forcibly revokes
-3. Provide clear UI warning about not revoking while scroll mode is active
-4. Test permission revocation scenario explicitly
+1. **Keep the existing NSApp.windows check untouched.** Add OSK detection as a second, independent check. The closure should short-circuit: if the click is on an app window, return true immediately without checking OSK bounds.
+2. **OSK check must be a simple rect-contains test against cached data.** No IPC in the callback path.
+3. **Structure as OR logic:**
+   ```swift
+   scrollEngine.shouldPassThroughClick = { cgPoint in
+       // Check 1: App's own windows (existing, unchanged)
+       if self.isClickOnOwnWindow(cgPoint) { return true }
+       // Check 2: OSK bounds (new, cache-based)
+       if self.isClickOnOSK(cgPoint) { return true }
+       return false
+   }
+   ```
+4. **Test the existing behavior first.** Before adding OSK detection, verify the settings-panel click pass-through still works. Regression here would be a significant UX break.
 
 **Warning signs:**
-- Testing never includes permission revocation while app is active
-- Mouse becomes stuck during development
-- User reports requiring reboot after using your app
+- Settings panel clicks stop working after adding OSK detection
+- All clicks feel slightly sluggish (blocking call added to hot path)
+- Test coverage only exercises the new OSK path, not the existing app-window path
 
 **Phase to address:**
-Phase 2 (Permission Handling) - Implement graceful degradation when permissions change
-
-**Sources:**
-- [drag-scroll README warning](https://github.com/emreyolcu/drag-scroll)
-- [Macworld: How to fix macOS Accessibility permission](https://www.macworld.com/article/347452/how-to-fix-macos-accessibility-permission-when-an-app-cant-be-enabled.html)
+Phase 1 -- the integration point is the very first thing to design. Do not bolt on OSK detection without understanding the existing closure.
 
 ---
 
-### Pitfall 5: System-Wide Cursor Change Not Supported
+### Pitfall 5: OSK Visibility State Tracking (Minimized, Hidden, Closed)
 
 **What goes wrong:**
-Developer assumes they can change the cursor system-wide to indicate scroll mode, but macOS doesn't support system-wide cursor themes. The cursor changes only in the app's own windows or not at all.
+The OSK detection reports the keyboard as present even when it is minimized to the Dock, hidden behind other windows, or closed. Clicks in the cached bounds area pass through incorrectly, creating "dead zones" on screen where clicks are never intercepted.
 
 **Why it happens:**
-macOS doesn't support system-wide cursor themes (.cur or .ani files) as Windows does. NSCursor changes only apply within your app's windows. CGEventTap can observe but not modify the cursor in other apps' windows.
+`CGWindowListCopyWindowInfo` with `.optionOnScreenOnly` excludes minimized windows, but the cached bounds may be stale from before the minimize. If polling interval is 1s, there is up to 1s where the cache says "OSK is here" but it is already minimized. Worse, if the user disables the Accessibility Keyboard in System Settings, the AssistiveControl process may terminate, and the cache still holds the last-known bounds.
 
 **How to avoid:**
-1. Use alternative visual indicators: menu bar icon change, overlay window, color flash
-2. Consider a small floating indicator window (NSPanel with appropriate level)
-3. Accept that cursor change may not be possible and design UX accordingly
-4. Test cursor behavior across different apps before committing to that UX
+1. **Always use `.optionOnScreenOnly` flag** when polling. This excludes minimized and off-screen windows.
+2. **Set cache to nil when no matching window is found.** If a poll returns no AssistiveControl windows, immediately clear the cached bounds. Do not retain stale bounds.
+3. **Handle the "OSK toggled off" case.** When the Accessibility Keyboard is disabled in System Settings, AssistiveControl may exit. The next poll will find no matching windows and clear the cache. The 0.5-1s latency is acceptable here.
+4. **Consider observing `NSWorkspace.didTerminateApplicationNotification`** for the AssistiveControl process. This gives immediate cache invalidation when the OSK process exits.
 
 **Warning signs:**
-- Cursor changes work in your own app's window but nowhere else
-- NSCursor.set() doesn't affect cursor in Safari, Finder, etc.
-- Planning features around cursor changes without prototyping first
+- "Dead zone" on screen where clicks always pass through even without OSK visible
+- Users report clicks not working in a specific screen area after minimizing the OSK
+- Bug only appears when OSK has been used and then dismissed
 
 **Phase to address:**
-Phase 1 (Core Scroll Mechanism) - Validate UX approach early with prototype; likely need alternative to cursor change
-
-**Sources:**
-- [Custom Cursor Mac Guide](https://focusee.imobie.com/record-tips/how-to-get-a-custom-cursor-on-mac.htm)
-- [Apple Support: Pointers in macOS](https://support.apple.com/guide/mac-help/pointers-in-macos-mh35695/mac)
+Phase 1 -- cache invalidation logic must be part of the initial cache design.
 
 ---
 
-### Pitfall 6: Click-Through Detection Conflicts with Apps
+### Pitfall 6: Coordinate System Mismatch (CG vs NS)
 
 **What goes wrong:**
-Click detection works in most apps but fails in specific applications like games, virtual machines, design software. Drop-down menus don't work. Some apps receive events twice or not at all.
+The hit test incorrectly compares CG coordinates (top-left origin, from `event.location`) with NS/screen coordinates (bottom-left origin). Clicks pass through in the wrong location -- mirrored vertically from where the OSK actually is.
 
 **Why it happens:**
-Applications with their own mouse interpreters (games, VMs, design tools) handle events differently. Your event tap may intercept events these apps expect to receive unmodified. Determining "click vs drag" requires timing thresholds that conflict with app-specific behavior.
+The existing codebase already handles this for app-window detection (line 115-116 of AppState.swift converts CG to NS coordinates). But `CGWindowListCopyWindowInfo` returns bounds in CG coordinate space (top-left origin). If the developer converts the event location to NS coordinates and then compares against CG-origin bounds, the hit test is vertically flipped.
 
 **How to avoid:**
-1. Implement app exclusion list (by bundle ID)
-2. Provide user-configurable exclusions
-3. Test with: Safari, Finder, Terminal, a game, Parallels/VMware, Figma
-4. Consider "pass-through" mode that forwards events unmodified to excluded apps
+1. **Keep everything in CG coordinate space for the OSK check.** The event location (`event.location`) is already in CG coordinates. `kCGWindowBounds` from `CGWindowListCopyWindowInfo` is also in CG coordinates. Compare directly without conversion.
+2. **Do NOT reuse the NS coordinate conversion from the app-window check.** The two checks operate in different coordinate systems for good reason: NSApp.windows use NS coordinates, CGWindowList uses CG coordinates.
+3. **Use `CGRectMakeWithDictionaryRepresentation`** to parse `kCGWindowBounds` into a `CGRect`. This handles the dictionary-to-rect conversion correctly.
 
 **Warning signs:**
-- Works in Finder but fails in Photoshop
-- Users report specific apps behaving strangely
-- Virtual machine input completely broken
+- OSK detection works on the primary display but fails on secondary displays (different coordinate offsets)
+- Hit test seems "off" vertically -- clicks above the OSK pass through, clicks on it get intercepted
+- Works only when the menu bar is at the top of the screen
 
 **Phase to address:**
-Phase 3 (Click-Through Implementation) - Include app exclusion mechanism and extensive cross-app testing
-
-**Sources:**
-- [BetterMouse documentation](https://better-mouse.com/)
-- [Mac Mouse Fix issue #28](https://github.com/noah-nuebling/mac-mouse-fix/issues/28)
+Phase 1 -- coordinate system handling must be correct from the first implementation. This is not something to "fix later."
 
 ---
 
 ## Technical Debt Patterns
 
-Shortcuts that seem reasonable but create long-term problems.
-
 | Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
 |----------|-------------------|----------------|-----------------|
-| Hardcoded scroll sensitivity | Ship faster | Every user has different needs | Never - add settings from start |
-| Single event tap for all events | Simpler code | Can't selectively disable/enable | Prototype only |
-| Polling for permission changes | Works reliably | Battery drain, CPU usage | Never - use notification observers |
-| Synchronous scroll event posting | Simpler flow | Blocks callback, triggers timeout | Never - use async dispatch |
-| Skipping notarization during dev | Faster iteration | Discovers signing issues late | Dev only - test notarized builds weekly |
+| Polling CGWindowListCopyWindowInfo on every mouseDown | Simplest implementation | Event tap timeout, janky scrolling | Never -- always cache |
+| Hardcoding "AssistiveControl" process name | Works today | May break on future macOS versions if Apple renames the process | Acceptable with a comment noting the assumption and a UserDefaults override for debugging |
+| Skipping multi-display coordinate testing | Faster development | Broken hit tests on external monitors | Never for coordinate-based detection |
+| Using kCGWindowName for identification | More precise matching | Requires Screen Recording permission users did not agree to | Never -- use owner name + layer + bounds instead |
+| Not invalidating cache when OSK closes | Fewer code paths | Phantom "dead zones" where clicks pass through | Never -- nil cache when no matching window found |
 
 ## Integration Gotchas
 
-Common mistakes when connecting to external services/APIs.
-
 | Integration | Common Mistake | Correct Approach |
 |-------------|----------------|------------------|
-| CGEventTap | Creating tap before checking permissions | Check `AXIsProcessTrustedWithOptions` first, then create tap |
-| Input Monitoring | Assuming same as Accessibility | Different TCC entries; use `CGPreflightListenEventAccess()` for Input Monitoring |
-| Menu Bar (SwiftUI) | Using SettingsLink in MenuBarExtra | SettingsLink doesn't work reliably; use NSApp.sendAction for settings |
-| System Settings deep link | Hardcoding preference pane paths | Use `x-apple.systempreferences:` URL scheme which is version-stable |
-| Run at Login | Using deprecated login items | Use SMAppService (macOS 13+) or ServiceManagement framework |
+| CGWindowListCopyWindowInfo | Calling with `.optionAll` (includes off-screen, minimized) | Use `.excludeDesktopElements` + `.optionOnScreenOnly` |
+| kCGWindowBounds parsing | Manually extracting x/y/width/height from dictionary | Use `CGRectMakeWithDictionaryRepresentation` |
+| Event tap + window query | Synchronous window query inside callback | Cache outside callback, read cache inside callback |
+| shouldPassThroughClick | Replacing entire closure when adding new check | Extend with additional OR condition, keep existing checks |
+| CG coordinate space | Mixing CG (top-left) and NS (bottom-left) coordinates | Keep OSK detection entirely in CG space; only convert for NSWindow comparisons |
 
 ## Performance Traps
 
-Patterns that work at small scale but fail as usage grows.
-
 | Trap | Symptoms | Prevention | When It Breaks |
 |------|----------|------------|----------------|
-| Heavy computation in event callback | Events lag, then tap disables | Dispatch to background queue, return immediately | Any sustained use |
-| Creating new scroll events synchronously | Jerky scrolling, delays | Pre-create event objects, reuse and modify | >10 scroll events/second |
-| Logging every event | Disk I/O blocks callback | Log to memory buffer, flush periodically | Debug builds with high mouse activity |
-| Not releasing CGEvent objects | Memory grows unbounded | Always CFRelease returned events | Hours of continuous use |
-
-## Security Mistakes
-
-Domain-specific security issues beyond general web security.
-
-| Mistake | Risk | Prevention |
-|---------|------|------------|
-| Not validating event source | Could process synthetic events from other apps as legitimate | Check event source with CGEventGetIntegerValueField |
-| Storing sensitive preferences unencrypted | Hotkey bindings could reveal user patterns | Use Keychain for any sensitive settings |
-| Broadcasting scroll activation state | Other apps could detect activity patterns | Keep state internal, don't use DistributedNotificationCenter for state |
-| Running as root for HID tap | Major security vulnerability | Never require root; use proper permissions instead |
+| CGWindowListCopyWindowInfo per mouseDown | Event tap timeouts, scroll stuttering | Cache-and-read pattern | Immediately on systems with 20+ windows |
+| Polling window list too frequently (<100ms) | CPU spike, WindowServer load | 500ms-1000ms poll interval | Sustained use with many windows open |
+| Iterating full window list when only one window needed | Unnecessary allocations per poll cycle | Filter early: break after finding AssistiveControl match | Systems with 50+ windows |
+| Creating new CGRect objects in callback | GC pressure in hot path | Cache as stored property, update only on poll | High-frequency click patterns |
 
 ## UX Pitfalls
 
-Common user experience mistakes in this domain.
-
 | Pitfall | User Impact | Better Approach |
 |---------|-------------|-----------------|
-| No visual feedback when scroll mode activates | User doesn't know if hotkey worked | Immediate visual/audio confirmation |
-| Permission prompt with no explanation | User denies permission out of caution | Explain why permission is needed BEFORE system prompt |
-| Scroll mode gets "stuck" | User can't click anything, panic | Always provide escape hatch (Esc key, timeout, click count) |
-| Inertia that can't be stopped | User overshoots, frustration | Click immediately stops inertia; provide sensitivity settings |
-| No way to disable globally | User forced to quit app | Menu bar toggle, global disable hotkey |
-| Conflicts with trackpad gestures | Breaks native macOS scrolling | Detect input device; only activate for mouse, not trackpad |
+| OSK clicks swallowed silently | User thinks keyboard is broken; cannot type | Always err toward passing clicks through near the OSK (generous bounds) |
+| Pass-through zone too large | Scrolling stops working near the OSK; user confused | Use actual window bounds + small padding (10-20px), not an oversized region |
+| No feedback when pass-through activates | User does not understand why click behavior changes near OSK | Not needed -- pass-through should be invisible. The click just works. |
+| OSK detection active when OSK is not enabled | Unnecessary overhead, possible false positives | Only poll when Accessibility Keyboard is known to be enabled (check on app launch + periodically) |
 
 ## "Looks Done But Isn't" Checklist
 
-Things that appear complete but are missing critical pieces.
-
-- [ ] **Event Tap:** Often missing timeout recovery handler - verify `kCGEventTapDisabledByTimeout` is handled
-- [ ] **Permissions:** Often missing restart prompt after grant - verify permission flow includes restart guidance
-- [ ] **Click Detection:** Often missing movement threshold - verify small movements don't trigger scroll
-- [ ] **Scroll Events:** Often missing device-specific testing - verify with trackpad AND mouse AND Magic Mouse
-- [ ] **Inertia:** Often missing deceleration curve tuning - verify feels natural, matches system behavior
-- [ ] **Menu Bar:** Often missing accessibility labels - verify VoiceOver can navigate all controls
-- [ ] **Hotkey:** Often missing conflict detection - verify chosen hotkey doesn't conflict with common apps
-- [ ] **Notarization:** Often missing hardened runtime - verify app launches on fresh Mac without developer tools
+- [ ] **Cache invalidation:** Verify cache clears when OSK is minimized, closed, or disabled in System Settings
+- [ ] **Multi-display:** Verify hit test works on secondary displays with different resolutions and arrangements
+- [ ] **Coordinate system:** Verify CG coordinates are used consistently (not accidentally converting to NS for the OSK check)
+- [ ] **Existing pass-through:** Verify settings panel clicks still work after adding OSK detection
+- [ ] **AssistiveControl windows:** Verify only the keyboard window is matched, not Switch Control or Dwell panels
+- [ ] **Event tap performance:** Verify no event tap timeouts occur under normal use (check Console.app for kCGEventTapDisabledByTimeout)
+- [ ] **OSK not running:** Verify no errors or unexpected behavior when AssistiveControl process is not running at all
+- [ ] **Padding bounds:** Verify edge clicks on the OSK border pass through correctly (not off-by-one on bounds)
 
 ## Recovery Strategies
 
-When pitfalls occur despite prevention, how to recover.
-
 | Pitfall | Recovery Cost | Recovery Steps |
 |---------|---------------|----------------|
-| Event tap timeout disabled | LOW | Re-enable tap in callback; no user action needed |
-| Permission revocation while active | MEDIUM | Force quit app; user restarts app and re-grants permission |
-| Mouse stuck during development | HIGH | System reboot required; add safety timeout to event tap |
-| Sandbox discovery late | HIGH | Refactor for direct distribution; delay release |
-| Click-through broken in specific app | LOW | Add to exclusion list; ship update |
-| Cursor change doesn't work | MEDIUM | Redesign UX for alternative indicator; requires UI changes |
+| CGWindowListCopyWindowInfo in callback | MEDIUM | Refactor to cache pattern; requires extracting polling logic |
+| Wrong coordinate system | LOW | Fix comparison to use CG coordinates consistently; localized change |
+| Wrong process name matching | LOW | Update filter string; single constant change |
+| Cache not invalidated | LOW | Add nil-assignment in poll when no window found; small logic fix |
+| Existing pass-through broken | LOW | Revert closure to original; add OSK check as separate condition |
+| Dead zone from stale cache | LOW | Add `.optionOnScreenOnly` flag and nil-on-empty logic |
 
 ## Pitfall-to-Phase Mapping
 
-How roadmap phases should address these pitfalls.
-
 | Pitfall | Prevention Phase | Verification |
 |---------|------------------|--------------|
-| Event tap timeout | Phase 1: Core Infrastructure | Log shows timeout recovery; tap stays active under load |
-| Permission not reloaded | Phase 2: Permissions | Grant permission while running; verify restart prompt appears |
-| Sandbox incompatibility | Phase 0: Project Setup | Distribution strategy documented; notarization tested |
-| Permission revocation crash | Phase 2: Permissions | Revoke while running; verify graceful degradation |
-| Cursor change limitation | Phase 1: Core Scroll | Prototype validates chosen indicator approach |
-| Click-through conflicts | Phase 3: Click-Through | Tested in 5+ diverse apps including VM and game |
-| Hotkey conflicts | Phase 4: Hotkey System | Default hotkey tested against top 10 productivity apps |
-| Inertia feel | Phase 5: Inertia | User testing confirms natural feel |
+| CGWindowListCopyWindowInfo in callback | Phase 1: Cache architecture | Run with Console.app open; no tapDisabledByTimeout events |
+| Race condition on OSK movement | Phase 1: Cache + padding | Move OSK, immediately click old position; click passes to underlying app |
+| Wrong process/window identification | Phase 1: Empirical discovery | Print all AssistiveControl window properties; document exact filter criteria |
+| Breaking existing pass-through | Phase 1: Integration | Settings panel click-through works identically before and after change |
+| OSK visibility state | Phase 1: Cache invalidation | Minimize OSK; verify no dead zone remains. Disable OSK; verify no errors |
+| Coordinate system mismatch | Phase 1: Hit-test implementation | Click center of OSK on primary and secondary display; both pass through |
 
 ## Sources
 
-- [Apple Developer: CGEventTap documentation](https://developer.apple.com/documentation/coregraphics/cgevent)
-- [Apple Developer: tapDisabledByTimeout](https://developer.apple.com/documentation/coregraphics/cgeventtype/tapdisabledbytimeout)
-- [Apple Developer Forums: Accessibility in sandboxed apps](https://developer.apple.com/forums/thread/707680)
-- [Apple Developer Forums: CGEventPost issues](https://developer.apple.com/forums/thread/724603)
-- [Apple Developer Forums: TCC Accessibility permission](https://developer.apple.com/forums/thread/703188)
-- [drag-scroll GitHub project](https://github.com/emreyolcu/drag-scroll) - Similar macOS drag-to-scroll implementation
-- [Mac Mouse Fix GitHub](https://github.com/noah-nuebling/mac-mouse-fix) - Comprehensive mouse utility with similar challenges
-- [Hammerspoon event tap implementation](https://github.com/Hammerspoon/hammerspoon)
-- [Apple Support: Pointers in macOS](https://support.apple.com/guide/mac-help/pointers-in-macos-mh35695/mac)
-- [Macworld: Accessibility permission fixes](https://www.macworld.com/article/347452/how-to-fix-macos-accessibility-permission-when-an-app-cant-be-enabled.html)
-- [Apple Notarization documentation](https://developer.apple.com/documentation/xcode/notarizing_macos_software_before_distribution)
+- [Apple: CGWindowListCopyWindowInfo](https://developer.apple.com/documentation/coregraphics/1455137-cgwindowlistcopywindowinfo)
+- [Apple: CGEventType.tapDisabledByTimeout](https://developer.apple.com/documentation/coregraphics/cgeventtype/tapdisabledbytimeout)
+- [Apple: CGWindowLevelForKey](https://developer.apple.com/documentation/coregraphics/cgwindowlevelforkey(_:))
+- [Apple Developer Forums: window name not available in macOS 10.15](https://developer.apple.com/forums/thread/126860)
+- [Apple Developer Forums: kCGWindowListOptionOnScreenOnly wrong ordering](https://developer.apple.com/forums/thread/713113)
+- [alt-tab-macos issue #45: Window list performance](https://github.com/lwouis/alt-tab-macos/issues/45)
+- [AeroSpace issue #445: Unreliable AX window notifications](https://github.com/nikitabobko/AeroSpace/issues/445)
+- [FB12113281: Event taps stop receiving events](https://github.com/feedback-assistant/reports/issues/390)
+- [JDK-8238435: Remove use of CGEventTap (documents timeout issues)](https://bugs.openjdk.org/browse/JDK-8238435)
 
 ---
-*Pitfalls research for: Scroll My Mac - macOS Accessibility/Input Control App*
-*Researched: 2026-02-14*
+*Pitfalls research for: OSK-aware click pass-through — Scroll My Mac v1.1*
+*Researched: 2026-02-16*
