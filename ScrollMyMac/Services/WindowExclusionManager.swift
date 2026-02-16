@@ -20,7 +20,7 @@ class WindowExclusionManager {
 
     /// Process name for the Accessibility Keyboard.
     /// Verified empirically via CGWindowListCopyWindowInfo.
-    private let targetOwnerName = "Assistive Control"
+    private let targetOwnerName = "AssistiveControl"
 
     /// Poll interval when the OSK is on-screen (tracks repositioning).
     private let activeInterval: TimeInterval = 0.5
@@ -66,12 +66,13 @@ class WindowExclusionManager {
         excludedRects = windowList.compactMap { info in
             guard let ownerName = info[kCGWindowOwnerName as String] as? String,
                   ownerName == targetOwnerName,
+                  let layer = info[kCGWindowLayer as String] as? Int,
+                  layer < 1000,
                   let boundsDict = info[kCGWindowBounds as String] as? NSDictionary,
                   let bounds = CGRect(dictionaryRepresentation: boundsDict)
             else { return nil }
             return bounds
         }
-
         updatePollingRate(oskFound: !excludedRects.isEmpty)
     }
 
@@ -84,11 +85,10 @@ class WindowExclusionManager {
     private func scheduleTimer() {
         pollTimer?.invalidate()
         let interval = oskDetected ? activeInterval : passiveInterval
-        pollTimer = Timer.scheduledTimer(
-            withTimeInterval: interval,
-            repeats: true
-        ) { [weak self] _ in
+        let timer = Timer(timeInterval: interval, repeats: true) { [weak self] _ in
             self?.refreshCache()
         }
+        RunLoop.main.add(timer, forMode: .common)
+        pollTimer = timer
     }
 }
