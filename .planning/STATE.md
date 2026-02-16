@@ -5,16 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-02-14)
 
 **Core value:** Users can scroll any scrollable area by clicking and dragging with the mouse pointer, with natural inertia -- no scroll wheel or trackpad required.
-**Current focus:** All phases complete — v1.0 feature-complete
+**Current focus:** v1.1 OSK Compat — OSK-aware click pass-through
 
 ## Current Position
 
-Phase: 5 of 5 (Settings & Polish)
-Plan: 2 of 2 in current phase
-Status: Complete
-Last activity: 2026-02-16 -- Completed 05-02-PLAN.md (Settings consolidation and launch at login)
-
-Progress: [██████████] 100%
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-02-16 — Milestone v1.1 started
 
 ## Performance Metrics
 
