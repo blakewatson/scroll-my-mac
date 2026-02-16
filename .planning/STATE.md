@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-16)
 
 **Core value:** Users can scroll any scrollable area by clicking and dragging with the mouse pointer, with natural inertia -- no scroll wheel or trackpad required.
-**Current focus:** Phase 6 — OSK-Aware Click Pass-Through
+**Current focus:** Milestone v1.2 — Distribution Ready
 
 ## Current Position
 
-Phase: 6 of 6 (OSK-Aware Click Pass-Through)
-Plan: 1 of 1 in current phase
-Status: Phase complete
-Last activity: 2026-02-16 — Completed 06-01 WindowExclusionManager
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-02-16 — Milestone v1.2 started
 
-Progress: [############] 100% (v1.0 complete, v1.1 Phase 6 complete)
+Progress: [░░░░░░░░░░░░] 0% (v1.2 Distribution Ready)
 
 ## Performance Metrics
 
@@ -59,10 +59,10 @@ None yet.
 
 ### Blockers/Concerns
 
-None — Phase 6 complete. OSK click pass-through verified working.
+None — Starting v1.2 milestone.
 
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Completed 06-01-PLAN.md — Phase 6 complete
-Resume file: .planning/phases/06-osk-aware-click-pass-through/06-01-SUMMARY.md
+Stopped at: Starting milestone v1.2 — Distribution Ready
+Resume file: —

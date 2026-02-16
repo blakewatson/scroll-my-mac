@@ -21,11 +21,17 @@ Users can scroll any scrollable area by clicking and dragging with the mouse poi
 - ✓ Hotkey configuration (supports regular keys and modifier combos) — v1.0
 - ✓ Works with macOS Accessibility permissions — v1.0
 
+### Validated
+
+- ✓ Clicks pass through immediately when cursor is over the Accessibility Keyboard — v1.1
+- ✓ Detection is dynamic — works regardless of OSK position or size — v1.1
+- ✓ Scroll mode stays toggled on while OSK pass-through is active — v1.1
+
 ### Active
 
-- [ ] Clicks pass through immediately when cursor is over the Accessibility Keyboard (on-screen keyboard)
-- [ ] Detection is dynamic — works regardless of OSK position or size
-- [ ] Scroll mode stays toggled on while OSK pass-through is active
+- [ ] App has a custom icon (converted from source image to macOS AppIcon.appiconset)
+- [ ] App is signed with Developer ID and notarized for Gatekeeper-clean distribution
+- [ ] App is released on GitHub as a downloadable zipped .app bundle
 
 ### Out of Scope
 
@@ -33,14 +39,14 @@ Users can scroll any scrollable area by clicking and dragging with the mouse poi
 - CLI-only version — GUI selected for ease of use
 - Multi-button support — left click only for v1
 
-## Current Milestone: v1.1 OSK Compat
+## Current Milestone: v1.2 Distribution Ready
 
-**Goal:** Make scroll mode transparent over the Accessibility Keyboard so fast typing doesn't lose clicks.
+**Goal:** Package the app for public distribution with a proper icon, code signing, notarization, and a GitHub release.
 
 **Target features:**
-- OSK-aware click pass-through (dynamic window detection)
-- Scroll mode stays on while clicks pass through over OSK
-- No user configuration needed — automatic detection
+- Custom app icon (from existing source image)
+- Developer ID code signing + Apple notarization
+- GitHub release with zipped .app bundle
 
 ## Context
 
@@ -69,4 +75,4 @@ The accessibility keyboard (on-screen keyboard) is used for typing and will be u
 | Cursor change for mode indicator | Clear visual feedback without menu bar clutter | — Pending |
 
 ---
-*Last updated: 2026-02-16 after v1.1 milestone start*
+*Last updated: 2026-02-16 after v1.2 milestone start*
