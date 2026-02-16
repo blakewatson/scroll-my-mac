@@ -125,6 +125,16 @@ class AppState {
         }
     }
 
+    // MARK: - Reset to Defaults
+
+    /// Restores all app preferences to defaults. Launch at login intentionally NOT reset (system-level setting).
+    func resetToDefaults() {
+        hotkeyKeyCode = Int(kVK_F6)
+        hotkeyModifiers = 0
+        isSafetyModeEnabled = true
+        isClickThroughEnabled = true
+    }
+
     // MARK: - Scroll Mode Toggle
 
     /// Toggles scroll mode. Works even mid-drag — stop() handles cleanup.

@@ -1,4 +1,5 @@
 import SwiftUI
+import ServiceManagement
 
 struct SettingsView: View {
     @Environment(AppState.self) var appState
@@ -36,12 +37,14 @@ struct MainSettingsView: View {
     @Environment(AppState.self) var appState
     @State private var safetyTimeoutManager = SafetyTimeoutManager()
     @State private var showSafetyNotification = false
+    @State private var launchAtLogin: Bool = false
 
     var body: some View {
         @Bindable var appState = appState
 
         ZStack {
             Form {
+                // MARK: - Permission Warning
                 if !appState.isAccessibilityGranted {
                     Section {
                         Label("Accessibility permission required. Re-grant in System Settings > Privacy & Security > Accessibility.", systemImage: "exclamationmark.triangle.fill")
@@ -55,10 +58,11 @@ struct MainSettingsView: View {
                     }
                 }
 
+                // MARK: - Scroll Mode
                 Section("Scroll Mode") {
                     Toggle("Enable Scroll Mode", isOn: $appState.isScrollModeActive)
                         .disabled(!appState.isAccessibilityGranted)
-                    Text("Press F6 or use this toggle to activate scroll mode.")
+                    Text(scrollModeHelpText)
                         .font(.caption)
                         .foregroundStyle(.secondary)
 
@@ -66,14 +70,37 @@ struct MainSettingsView: View {
                     Text("When enabled, clicks without dragging pass through as normal clicks. When disabled, all mouse events become scrolls.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                }
 
-}
+                // MARK: - Hotkey
+                Section("Hotkey") {
+                    HotkeyRecorderView(keyCode: $appState.hotkeyKeyCode, modifiers: $appState.hotkeyModifiers)
+                    Text("Click the field and press a key to set your hotkey. Function keys work alone; other keys need a modifier (Cmd, Ctrl, Option, Shift).")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
 
+                // MARK: - Safety
                 Section("Safety") {
                     Toggle("Safety timeout", isOn: $appState.isSafetyModeEnabled)
                     Text("Automatically deactivates scroll mode after 10 seconds of no mouse movement.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                }
+
+                // MARK: - General
+                Section("General") {
+                    Toggle("Launch at login", isOn: $launchAtLogin)
+                    Text("Start Scroll My Mac automatically when you log in. The app launches in the background.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                // MARK: - Reset
+                Section {
+                    Button("Reset to Defaults", role: .destructive) {
+                        appState.resetToDefaults()
+                    }
                 }
             }
             .formStyle(.grouped)
@@ -92,10 +119,11 @@ struct MainSettingsView: View {
                 .allowsHitTesting(false)
             }
         }
-        .frame(minWidth: 450, idealWidth: 450, minHeight: 250)
+        .frame(minWidth: 450, idealWidth: 450, minHeight: 300)
         .navigationTitle("Scroll My Mac")
         .onAppear {
             configureSafetyTimeout()
+            launchAtLogin = SMAppService.mainApp.status == .enabled
         }
         .onChange(of: appState.isScrollModeActive) { _, isActive in
             if isActive && appState.isSafetyModeEnabled {
@@ -111,7 +139,36 @@ struct MainSettingsView: View {
                 safetyTimeoutManager.stopMonitoring()
             }
         }
+        .onChange(of: launchAtLogin) { _, enabled in
+            do {
+                if enabled {
+                    try SMAppService.mainApp.register()
+                } else {
+                    try SMAppService.mainApp.unregister()
+                }
+            } catch {
+                print("[Settings] Launch at login error: \(error)")
+                // Revert the toggle on failure
+                launchAtLogin = SMAppService.mainApp.status == .enabled
+            }
+        }
     }
+
+    // MARK: - Dynamic Help Text
+
+    private var scrollModeHelpText: String {
+        if appState.hotkeyKeyCode >= 0 {
+            let hotkeyName = HotkeyDisplayHelper.displayString(
+                keyCode: appState.hotkeyKeyCode,
+                modifiers: appState.hotkeyModifiers
+            )
+            return "Press \(hotkeyName) or use this toggle to activate scroll mode."
+        } else {
+            return "Use this toggle to activate scroll mode."
+        }
+    }
+
+    // MARK: - Safety Timeout
 
     private func configureSafetyTimeout() {
         safetyTimeoutManager.onSafetyTimeout = { [weak appState] in

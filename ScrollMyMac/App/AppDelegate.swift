@@ -1,4 +1,5 @@
 import AppKit
+import ServiceManagement
 
 class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
@@ -8,6 +9,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         if let window = NSApp.windows.first {
             window.delegate = self
+        }
+
+        // If launched by launchd as a login item, hide window (silent background launch)
+        if getppid() == 1 && SMAppService.mainApp.status == .enabled {
+            NSApp.windows.first?.orderOut(nil)
         }
     }
 
@@ -22,13 +28,5 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             NSApp.activate(ignoringOtherApps: true)
         }
         return true
-    }
-
-    func applicationWillBecomeActive(_ notification: Notification) {
-        // Belt-and-suspenders: if no visible windows when activated, show the first one
-        let hasVisibleWindows = NSApp.windows.contains { $0.isVisible }
-        if !hasVisibleWindows, let window = NSApp.windows.first {
-            window.makeKeyAndOrderFront(nil)
-        }
     }
 }
