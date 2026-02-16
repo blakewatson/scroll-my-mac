@@ -1,6 +1,7 @@
 import Foundation
 import AppKit
 import ApplicationServices
+import Carbon.HIToolbox
 
 @Observable
 class AppState {
@@ -17,7 +18,9 @@ class AppState {
     var isAccessibilityGranted: Bool = false {
         didSet {
             if isAccessibilityGranted {
-                hotkeyManager.start()
+                if hotkeyKeyCode >= 0 {
+                    hotkeyManager.start()
+                }
             } else {
                 hotkeyManager.stop()
                 if isScrollModeActive {
@@ -42,6 +45,20 @@ class AppState {
         didSet { UserDefaults.standard.set(hasCompletedOnboarding, forKey: "hasCompletedOnboarding") }
     }
 
+    var hotkeyKeyCode: Int {
+        didSet {
+            UserDefaults.standard.set(hotkeyKeyCode, forKey: "hotkeyKeyCode")
+            applyHotkeySettings()
+        }
+    }
+
+    var hotkeyModifiers: UInt64 {
+        didSet {
+            UserDefaults.standard.set(Int(bitPattern: UInt(hotkeyModifiers)), forKey: "hotkeyModifiers")
+            applyHotkeySettings()
+        }
+    }
+
     // MARK: - Services
 
     let scrollEngine = ScrollEngine()
@@ -58,6 +75,18 @@ class AppState {
         self.isSafetyModeEnabled = UserDefaults.standard.object(forKey: "safetyModeEnabled") as? Bool ?? true
         self.isClickThroughEnabled = UserDefaults.standard.object(forKey: "clickThroughEnabled") as? Bool ?? true
         self.hasCompletedOnboarding = UserDefaults.standard.bool(forKey: "hasCompletedOnboarding")
+
+        let defaults = UserDefaults.standard
+        if defaults.object(forKey: "hotkeyKeyCode") != nil {
+            self.hotkeyKeyCode = defaults.integer(forKey: "hotkeyKeyCode")
+        } else {
+            self.hotkeyKeyCode = Int(kVK_F6)
+        }
+        if defaults.object(forKey: "hotkeyModifiers") != nil {
+            self.hotkeyModifiers = UInt64(UInt(bitPattern: defaults.integer(forKey: "hotkeyModifiers")))
+        } else {
+            self.hotkeyModifiers = 0
+        }
     }
 
     // MARK: - Service Wiring
@@ -68,7 +97,7 @@ class AppState {
             self?.toggleScrollMode()
         }
 
-
+        applyHotkeySettings()
 
         scrollEngine.clickThroughEnabled = isClickThroughEnabled
 
@@ -80,6 +109,19 @@ class AppState {
             return NSApp.windows.contains { window in
                 window.isVisible && !window.ignoresMouseEvents && window.frame.contains(nsPoint)
             }
+        }
+    }
+
+    // MARK: - Hotkey Settings
+
+    /// Syncs the stored hotkey configuration to HotkeyManager.
+    /// If keyCode is -1 (no hotkey), stops the hotkey listener entirely.
+    private func applyHotkeySettings() {
+        if hotkeyKeyCode >= 0 {
+            hotkeyManager.keyCode = Int64(hotkeyKeyCode)
+            hotkeyManager.requiredModifiers = CGEventFlags(rawValue: hotkeyModifiers)
+        } else {
+            hotkeyManager.stop()
         }
     }
 
