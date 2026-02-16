@@ -30,17 +30,41 @@
 - [x] **APP-02**: Simple GUI window with on/off toggle and settings
 - [x] **APP-03**: Option to launch at login
 
-## v1.1 Requirements
-
-Requirements for OSK compatibility milestone. Each maps to roadmap phases.
+## v1.1 Requirements (Shipped)
 
 ### OSK Compatibility
 
-- [ ] **OSK-01**: Clicks pass through immediately when cursor is over the Accessibility Keyboard window (no hold-and-decide delay)
-- [ ] **OSK-02**: OSK window detection uses cached bounds from periodic CGWindowListCopyWindowInfo polling (never called in event tap callback)
-- [ ] **OSK-03**: Detection works regardless of OSK window position (supports repositioning)
-- [ ] **OSK-04**: Scroll mode remains toggled on while OSK clicks pass through
-- [ ] **OSK-05**: OSK process name is verified empirically at runtime before hardcoding detection logic
+- [x] **OSK-01**: Clicks pass through immediately when cursor is over the Accessibility Keyboard window (no hold-and-decide delay)
+- [x] **OSK-02**: OSK window detection uses cached bounds from periodic CGWindowListCopyWindowInfo polling (never called in event tap callback)
+- [x] **OSK-03**: Detection works regardless of OSK window position (supports repositioning)
+- [x] **OSK-04**: Scroll mode remains toggled on while OSK clicks pass through
+- [x] **OSK-05**: OSK process name is verified empirically at runtime before hardcoding detection logic
+
+## v1.2 Requirements
+
+Requirements for distribution milestone. Each maps to roadmap phases.
+
+### Icon
+
+- [ ] **ICON-01**: App has a properly formatted macOS AppIcon.appiconset (all required sizes generated from source image)
+- [ ] **ICON-02**: Icon appears correctly in Dock, Finder, and app switcher
+
+### Signing
+
+- [ ] **SIGN-01**: App is signed with Developer ID Application certificate
+- [ ] **SIGN-02**: App is notarized with Apple (stapled notarization ticket)
+- [ ] **SIGN-03**: App opens without Gatekeeper warnings on a clean machine
+
+### Release
+
+- [ ] **REL-01**: Build produces a zipped .app bundle ready for distribution
+- [ ] **REL-02**: Release is published on GitHub with version tag and release notes
+
+### Documentation
+
+- [ ] **DOC-01**: README.md explains what the app is, what it does, and why it exists
+- [ ] **DOC-02**: README includes personal motivation (accessibility need)
+- [ ] **DOC-03**: README includes AI-assisted development disclaimer
 
 ## Future Requirements
 
@@ -72,6 +96,9 @@ Explicitly excluded. Documented to prevent scope creep.
 | Configurable exclusion list | Keep v1.1 focused — hardcode OSK detection only |
 | Third-party OSK support | Defer until user need is established |
 | Visual indicator for pass-through zones | Zero config, transparent behavior preferred |
+| .dmg installer | Zip is sufficient for initial release |
+| Homebrew cask | Defer until user demand exists |
+| CI/CD automation | Manual build process is fine for now |
 
 ## Traceability
 
@@ -92,18 +119,29 @@ Which phases cover which requirements. Updated during roadmap creation.
 | APP-01 | Phase 1 | Complete |
 | APP-02 | Phase 1 | Complete |
 | APP-03 | Phase 5 | Complete |
-| OSK-01 | Phase 6 | Pending |
-| OSK-02 | Phase 6 | Pending |
-| OSK-03 | Phase 6 | Pending |
-| OSK-04 | Phase 6 | Pending |
-| OSK-05 | Phase 6 | Pending |
+| OSK-01 | Phase 6 | Complete |
+| OSK-02 | Phase 6 | Complete |
+| OSK-03 | Phase 6 | Complete |
+| OSK-04 | Phase 6 | Complete |
+| OSK-05 | Phase 6 | Complete |
+| ICON-01 | — | Pending |
+| ICON-02 | — | Pending |
+| SIGN-01 | — | Pending |
+| SIGN-02 | — | Pending |
+| SIGN-03 | — | Pending |
+| REL-01 | — | Pending |
+| REL-02 | — | Pending |
+| DOC-01 | — | Pending |
+| DOC-02 | — | Pending |
+| DOC-03 | — | Pending |
 
 **Coverage:**
 - v1.0 requirements: 13 total (all complete)
-- v1.1 requirements: 5 total
-- Mapped to phases: 5
-- Unmapped: 0
+- v1.1 requirements: 5 total (all complete)
+- v1.2 requirements: 10 total
+- Mapped to phases: 0 (pending roadmap)
+- Unmapped: 10
 
 ---
 *Requirements defined: 2026-02-14*
-*Last updated: 2026-02-16 after v1.1 roadmap creation*
+*Last updated: 2026-02-16 after v1.2 requirements definition*
