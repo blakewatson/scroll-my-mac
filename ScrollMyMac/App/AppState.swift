@@ -120,6 +120,7 @@ class AppState {
         if hotkeyKeyCode >= 0 {
             hotkeyManager.keyCode = Int64(hotkeyKeyCode)
             hotkeyManager.requiredModifiers = CGEventFlags(rawValue: hotkeyModifiers)
+            hotkeyManager.start()  // re-enable if previously stopped by clear
         } else {
             hotkeyManager.stop()
         }
