@@ -64,6 +64,7 @@ class AppState {
     let scrollEngine = ScrollEngine()
     let hotkeyManager = HotkeyManager()
     let overlayManager = OverlayManager()
+    let windowExclusionManager = WindowExclusionManager()
 
     // MARK: - Permission Health Check
 
@@ -109,14 +110,20 @@ class AppState {
 
         scrollEngine.clickThroughEnabled = isClickThroughEnabled
 
-        scrollEngine.shouldPassThroughClick = { cgPoint in
-            // Allow clicks on the app's own windows (e.g. the settings toggle).
+        scrollEngine.shouldPassThroughClick = { [weak self] cgPoint in
+            guard let self else { return false }
+
+            // Check 1: App's own windows (e.g. the settings toggle).
             // CG coordinates are top-left origin; NSWindow frames are bottom-left.
             guard let screenHeight = NSScreen.main?.frame.height else { return false }
             let nsPoint = NSPoint(x: cgPoint.x, y: screenHeight - cgPoint.y)
-            return NSApp.windows.contains { window in
+            let isOwnWindow = NSApp.windows.contains { window in
                 window.isVisible && !window.ignoresMouseEvents && window.frame.contains(nsPoint)
             }
+            if isOwnWindow { return true }
+
+            // Check 2: OSK / excluded windows (CG coordinates -- no conversion needed).
+            return self.windowExclusionManager.isPointExcluded(cgPoint)
         }
     }
 
@@ -165,11 +172,13 @@ class AppState {
         }
 
         scrollEngine.start()
+        windowExclusionManager.startMonitoring()
         startPermissionHealthCheck()
     }
 
     private func deactivateScrollMode() {
         scrollEngine.stop()
+        windowExclusionManager.stopMonitoring()
         stopPermissionHealthCheck()
     }
 

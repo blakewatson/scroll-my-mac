@@ -22,6 +22,7 @@
 		A10000010000000000000013 /* InertiaAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000016 /* InertiaAnimator.swift */; };
 		A10000010000000000000014 /* HotkeyDisplayHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000017 /* HotkeyDisplayHelper.swift */; };
 		A10000010000000000000015 /* HotkeyRecorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000018 /* HotkeyRecorderView.swift */; };
+		A10000010000000000000016 /* WindowExclusionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000019 /* WindowExclusionManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,7 @@
 		A20000010000000000000016 /* InertiaAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InertiaAnimator.swift; sourceTree = "<group>"; };
 		A20000010000000000000017 /* HotkeyDisplayHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyDisplayHelper.swift; sourceTree = "<group>"; };
 		A20000010000000000000018 /* HotkeyRecorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyRecorderView.swift; sourceTree = "<group>"; };
+		A20000010000000000000019 /* WindowExclusionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowExclusionManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 				A20000010000000000000013 /* OverlayManager.swift */,
 				A20000010000000000000015 /* VelocityTracker.swift */,
 				A20000010000000000000016 /* InertiaAnimator.swift */,
+				A20000010000000000000019 /* WindowExclusionManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -211,6 +214,7 @@
 				A10000010000000000000013 /* InertiaAnimator.swift in Sources */,
 				A10000010000000000000014 /* HotkeyDisplayHelper.swift in Sources */,
 				A10000010000000000000015 /* HotkeyRecorderView.swift in Sources */,
+				A10000010000000000000016 /* WindowExclusionManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
