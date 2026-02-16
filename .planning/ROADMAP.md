@@ -118,10 +118,10 @@ Plans:
   2. Moving or resizing the Accessibility Keyboard does not break pass-through detection (works at any screen position)
   3. Scroll mode remains toggled on while clicks pass through over the OSK -- moving the cursor off the OSK and dragging still scrolls normally
   4. Scrolling outside the OSK area is completely unaffected by the new detection logic
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 06-01: TBD
+- [ ] 06-01-PLAN.md — WindowExclusionManager service with OSK detection, AppState integration, human verification
 
 ## Progress
 
@@ -135,4 +135,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 3. Click Safety | v1.0 | 2/2 | Complete | 2026-02-15 |
 | 4. Inertia | v1.0 | 2/2 | Complete | 2026-02-15 |
 | 5. Settings & Polish | v1.0 | 2/2 | Complete | 2026-02-16 |
-| 6. OSK-Aware Click Pass-Through | v1.1 | 0/TBD | Not started | - |
+| 6. OSK-Aware Click Pass-Through | v1.1 | 0/1 | Not started | - |
