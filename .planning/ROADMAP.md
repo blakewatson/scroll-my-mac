@@ -87,10 +87,11 @@ Plans:
   1. User can open settings and change their hotkey to any supported key or modifier combination
   2. User can enable "launch at login" and the app starts automatically on next login
   3. Changed settings persist across app restarts
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 05-01: TBD
+- [ ] 05-01-PLAN.md — Hotkey customization: key recorder UI, display helper, AppState persistence, HotkeyManager wiring
+- [ ] 05-02-PLAN.md — Settings consolidation, launch at login, silent background launch, reset to defaults
 
 ## Progress
 
