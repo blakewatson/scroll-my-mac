@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-14)
 
 **Core value:** Users can scroll any scrollable area by clicking and dragging with the mouse pointer, with natural inertia -- no scroll wheel or trackpad required.
-**Current focus:** Phase 4 complete — ready for Phase 5 (Polish)
+**Current focus:** Phase 5 in progress — Settings & Polish
 
 ## Current Position
 
-Phase: 4 of 5 (Inertia) -- COMPLETE
-Plan: 2 of 2 in current phase (all done)
-Status: Phase Complete
-Last activity: 2026-02-15 -- Completed 04-02-PLAN.md (Axis lock settings + inertia verification)
+Phase: 5 of 5 (Settings & Polish)
+Plan: 1 of 2 in current phase
+Status: In Progress
+Last activity: 2026-02-16 -- Completed 05-01-PLAN.md (Hotkey customization)
 
-Progress: [████████░░] 80%
+Progress: [█████████░] 90%
 
 ## Performance Metrics
 
@@ -31,6 +31,7 @@ Progress: [████████░░] 80%
 | 02-core-scroll-mode | 2 | 6h 3min | 3h 2min |
 | 03-click-safety | 2 | 4min | 2min |
 | 04-inertia | 2 | 8min | 4min |
+| 05-settings-polish | 1 | 3min | 3min |
 
 **Recent Trend:**
 - Last 5 plans: 3min, 2min, 2min, 3min, 5min
@@ -73,6 +74,9 @@ Recent decisions affecting current work:
 - Removed free-scroll mode entirely — axis lock always on, too janky for diagonal scrolling
 - Sub-pixel remainder accumulation in InertiaAnimator prevents truncation drift during coasting
 - OverlayManager uses Timer-based mouse tracking at 60fps for cursor following
+- Hotkey modifier flags stored as UInt64 raw value for CGEventFlags/NSEvent.ModifierFlags interop
+- keyCode=-1 sentinel convention for "no hotkey set" (stops HotkeyManager)
+- Strip .function/.numericPad flags when validating user modifier input
 
 ### Pending Todos
 
@@ -84,6 +88,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-15
-Stopped at: Completed 04-02-PLAN.md (Phase 4 complete)
-Resume file: .planning/phases/04-inertia/04-02-SUMMARY.md
+Last session: 2026-02-16
+Stopped at: Completed 05-01-PLAN.md (Hotkey customization)
+Resume file: .planning/phases/05-settings-polish/05-01-SUMMARY.md
