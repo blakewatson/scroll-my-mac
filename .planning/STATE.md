@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-02-16)
 
 **Core value:** Users can scroll any scrollable area by clicking and dragging with the mouse pointer, with natural inertia -- no scroll wheel or trackpad required.
-**Current focus:** Milestone v1.2 — Distribution Ready
+**Current focus:** Phase 7 — App Icon (v1.2 Distribution Ready)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-02-16 — Milestone v1.2 started
+Phase: 7 of 9 (App Icon)
+Plan: 0 of ? in current phase
+Status: Ready to plan
+Last activity: 2026-02-16 — Roadmap created for v1.2 milestone
 
 Progress: [░░░░░░░░░░░░] 0% (v1.2 Distribution Ready)
 
@@ -45,13 +45,7 @@ Progress: [░░░░░░░░░░░░] 0% (v1.2 Distribution Ready)
 ### Decisions
 
 Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions from Phase 6:
-
-- **OSK process name is "AssistiveControl" (no space)** — verified empirically via CGWindowListCopyWindowInfo
-- **AssistiveControl has 3 windows:** 2 full-screen overlays (layers 2996/2997) and 1 keyboard panel (layer 101) — must filter by layer < 1000
-- **Timer run loop mode:** Use .common mode to fire during event tracking (default mode doesn't fire during drags)
-- **Adaptive polling:** 500ms when OSK detected (tracks repositioning), 2s when not detected (watches for appearance)
-- **No coordinate conversion needed** — both CGEvent.location and kCGWindowBounds use CG coordinates (top-left origin)
+No new decisions yet for v1.2.
 
 ### Pending Todos
 
@@ -59,10 +53,10 @@ None yet.
 
 ### Blockers/Concerns
 
-None — Starting v1.2 milestone.
+None.
 
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Starting milestone v1.2 — Distribution Ready
+Stopped at: Roadmap created for v1.2 — ready to plan Phase 7
 Resume file: —

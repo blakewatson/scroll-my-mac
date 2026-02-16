@@ -124,24 +124,24 @@ Which phases cover which requirements. Updated during roadmap creation.
 | OSK-03 | Phase 6 | Complete |
 | OSK-04 | Phase 6 | Complete |
 | OSK-05 | Phase 6 | Complete |
-| ICON-01 | — | Pending |
-| ICON-02 | — | Pending |
-| SIGN-01 | — | Pending |
-| SIGN-02 | — | Pending |
-| SIGN-03 | — | Pending |
-| REL-01 | — | Pending |
-| REL-02 | — | Pending |
-| DOC-01 | — | Pending |
-| DOC-02 | — | Pending |
-| DOC-03 | — | Pending |
+| ICON-01 | Phase 7 | Pending |
+| ICON-02 | Phase 7 | Pending |
+| SIGN-01 | Phase 8 | Pending |
+| SIGN-02 | Phase 8 | Pending |
+| SIGN-03 | Phase 8 | Pending |
+| REL-01 | Phase 9 | Pending |
+| REL-02 | Phase 9 | Pending |
+| DOC-01 | Phase 9 | Pending |
+| DOC-02 | Phase 9 | Pending |
+| DOC-03 | Phase 9 | Pending |
 
 **Coverage:**
 - v1.0 requirements: 13 total (all complete)
 - v1.1 requirements: 5 total (all complete)
 - v1.2 requirements: 10 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 10
+- Mapped to phases: 10/10
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-14*
-*Last updated: 2026-02-16 after v1.2 requirements definition*
+*Last updated: 2026-02-16 after v1.2 roadmap creation*
