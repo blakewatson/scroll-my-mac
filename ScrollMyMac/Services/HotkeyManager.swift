@@ -21,6 +21,10 @@ class HotkeyManager {
     /// Set to e.g. `[.maskControl, .maskShift]` for Ctrl+Shift combos.
     var requiredModifiers: CGEventFlags = []
 
+    /// Suppresses the next match until this time. Set when the hotkey is
+    /// reconfigured so the keyUp from the recorder doesn't immediately toggle.
+    var suppressUntil: Date?
+
     // MARK: - Private State
 
     fileprivate var eventTap: CFMachPort?
@@ -81,6 +85,14 @@ class HotkeyManager {
 
     /// Returns true if the event matches the configured hotkey.
     fileprivate func matches(_ event: CGEvent) -> Bool {
+        if let until = suppressUntil {
+            if Date() < until {
+                suppressUntil = nil
+                return false
+            }
+            suppressUntil = nil
+        }
+
         let eventKeyCode = event.getIntegerValueField(.keyboardEventKeycode)
         guard eventKeyCode == keyCode else { return false }
 
