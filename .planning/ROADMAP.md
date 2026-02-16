@@ -142,7 +142,10 @@ Plans:
   2. The app icon appears correctly in the Dock when the app is running
   3. The app icon appears correctly in Finder and Spotlight
   4. The app icon appears correctly in the app switcher (Cmd+Tab)
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 07-01-PLAN.md — Generate AppIcon.appiconset from source image, wire into Xcode project, verify icon display
 
 ### Phase 8: Code Signing & Notarization
 **Goal**: App installs and opens on any Mac without Gatekeeper warnings
