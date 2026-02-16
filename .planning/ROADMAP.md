@@ -2,7 +2,12 @@
 
 ## Overview
 
-This roadmap delivers a macOS accessibility app that converts click-and-drag into scrolling system-wide. The journey starts with permissions and app scaffolding, builds core scroll functionality, hardens click safety, adds inertia polish, and finishes with user-facing settings. Each phase produces a testable, progressively more complete app.
+This roadmap delivers a macOS accessibility app that converts click-and-drag into scrolling system-wide. The journey starts with permissions and app scaffolding, builds core scroll functionality, hardens click safety, adds inertia polish, and finishes with user-facing settings. v1.1 extends the app with Accessibility Keyboard awareness so typing on the on-screen keyboard is uninterrupted by scroll mode.
+
+## Milestones
+
+- **v1.0 MVP** - Phases 1-5 (shipped 2026-02-16)
+- **v1.1 OSK Compat** - Phase 6 (in progress)
 
 ## Phases
 
@@ -12,13 +17,14 @@ This roadmap delivers a macOS accessibility app that converts click-and-drag int
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [x] **Phase 1: Permissions & App Shell** - Accessibility permission flow and basic SwiftUI window
-- [ ] **Phase 2: Core Scroll Mode** - Drag-to-scroll with hotkey toggle and visual indicator
-- [ ] **Phase 3: Click Safety** - Click-through detection, escape bail-out, and graceful error handling
-- [ ] **Phase 4: Inertia** - Momentum scrolling with natural deceleration
-- [ ] **Phase 5: Settings & Polish** - Hotkey customization and launch at login
+<details>
+<summary>v1.0 MVP (Phases 1-5) - SHIPPED 2026-02-16</summary>
 
-## Phase Details
+- [x] **Phase 1: Permissions & App Shell** - Accessibility permission flow and basic SwiftUI window
+- [x] **Phase 2: Core Scroll Mode** - Drag-to-scroll with hotkey toggle and visual indicator
+- [x] **Phase 3: Click Safety** - Click-through detection, escape bail-out, and graceful error handling
+- [x] **Phase 4: Inertia** - Momentum scrolling with natural deceleration
+- [x] **Phase 5: Settings & Polish** - Hotkey customization and launch at login
 
 ### Phase 1: Permissions & App Shell
 **Goal**: User can launch the app, grant Accessibility permissions with guidance, and see a functional main window
@@ -48,8 +54,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — ScrollEngine (CGEventTap drag-to-scroll) and HotkeyManager (F6 global hotkey)
-- [ ] 02-02-PLAN.md — OverlayManager (floating indicator dot), service wiring, UI toggle activation
+- [x] 02-01-PLAN.md — ScrollEngine (CGEventTap drag-to-scroll) and HotkeyManager (F6 global hotkey)
+- [x] 02-02-PLAN.md — OverlayManager (floating indicator dot), service wiring, UI toggle activation
 
 ### Phase 3: Click Safety
 **Goal**: User can safely click things while scroll mode is active
@@ -62,8 +68,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — Hold-and-decide click-through in ScrollEngine, modifier/double-click pass-through, click-through setting in UI
-- [ ] 03-02-PLAN.md — Permission health check polling, mid-toggle/mid-drag cleanup, graceful permission revocation handling
+- [x] 03-01-PLAN.md — Hold-and-decide click-through in ScrollEngine, modifier/double-click pass-through, click-through setting in UI
+- [x] 03-02-PLAN.md — Permission health check polling, mid-toggle/mid-drag cleanup, graceful permission revocation handling
 
 ### Phase 4: Inertia
 **Goal**: Released drags produce natural momentum scrolling that feels like iOS/trackpad
@@ -76,8 +82,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — VelocityTracker, InertiaAnimator (CADisplayLink + exponential decay), ScrollEngine integration
-- [ ] 04-02-PLAN.md — Axis-lock settings toggle, full inertia behavior verification
+- [x] 04-01-PLAN.md — VelocityTracker, InertiaAnimator (CADisplayLink + exponential decay), ScrollEngine integration
+- [x] 04-02-PLAN.md — Axis-lock settings toggle, full inertia behavior verification
 
 ### Phase 5: Settings & Polish
 **Goal**: User can customize their hotkey and have the app start automatically at login
@@ -90,18 +96,43 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 05-01-PLAN.md — Hotkey customization: key recorder UI, display helper, AppState persistence, HotkeyManager wiring
-- [ ] 05-02-PLAN.md — Settings consolidation, launch at login, silent background launch, reset to defaults
+- [x] 05-01-PLAN.md — Hotkey customization: key recorder UI, display helper, AppState persistence, HotkeyManager wiring
+- [x] 05-02-PLAN.md — Settings consolidation, launch at login, silent background launch, reset to defaults
+
+</details>
+
+### v1.1 OSK Compat (In Progress)
+
+**Milestone Goal:** Make scroll mode transparent over the Accessibility Keyboard so fast typing doesn't lose clicks.
+
+- [ ] **Phase 6: OSK-Aware Click Pass-Through** - Detect Accessibility Keyboard window and bypass scroll engine for clicks over it
+
+## Phase Details
+
+### Phase 6: OSK-Aware Click Pass-Through
+**Goal**: Clicks over the Accessibility Keyboard pass through instantly so typing is never interrupted by scroll mode
+**Depends on**: Phase 5 (v1.0 complete)
+**Requirements**: OSK-01, OSK-02, OSK-03, OSK-04, OSK-05
+**Success Criteria** (what must be TRUE):
+  1. With scroll mode on, clicking anywhere on the Accessibility Keyboard immediately registers as a normal click (no hold-and-decide delay, no scroll initiation)
+  2. Moving or resizing the Accessibility Keyboard does not break pass-through detection (works at any screen position)
+  3. Scroll mode remains toggled on while clicks pass through over the OSK -- moving the cursor off the OSK and dragging still scrolls normally
+  4. Scrolling outside the OSK area is completely unaffected by the new detection logic
+**Plans**: TBD
+
+Plans:
+- [ ] 06-01: TBD
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 1. Permissions & App Shell | 2/2 | Complete | 2026-02-14 |
-| 2. Core Scroll Mode | 0/2 | Not started | - |
-| 3. Click Safety | 0/TBD | Not started | - |
-| 4. Inertia | 0/2 | Not started | - |
-| 5. Settings & Polish | 0/TBD | Not started | - |
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 1. Permissions & App Shell | v1.0 | 2/2 | Complete | 2026-02-14 |
+| 2. Core Scroll Mode | v1.0 | 2/2 | Complete | 2026-02-15 |
+| 3. Click Safety | v1.0 | 2/2 | Complete | 2026-02-15 |
+| 4. Inertia | v1.0 | 2/2 | Complete | 2026-02-15 |
+| 5. Settings & Polish | v1.0 | 2/2 | Complete | 2026-02-16 |
+| 6. OSK-Aware Click Pass-Through | v1.1 | 0/TBD | Not started | - |

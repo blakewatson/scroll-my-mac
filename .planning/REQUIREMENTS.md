@@ -92,18 +92,18 @@ Which phases cover which requirements. Updated during roadmap creation.
 | APP-01 | Phase 1 | Complete |
 | APP-02 | Phase 1 | Complete |
 | APP-03 | Phase 5 | Complete |
-| OSK-01 | — | Pending |
-| OSK-02 | — | Pending |
-| OSK-03 | — | Pending |
-| OSK-04 | — | Pending |
-| OSK-05 | — | Pending |
+| OSK-01 | Phase 6 | Pending |
+| OSK-02 | Phase 6 | Pending |
+| OSK-03 | Phase 6 | Pending |
+| OSK-04 | Phase 6 | Pending |
+| OSK-05 | Phase 6 | Pending |
 
 **Coverage:**
 - v1.0 requirements: 13 total (all complete)
 - v1.1 requirements: 5 total
-- Mapped to phases: 0
-- Unmapped: 5 ⚠️
+- Mapped to phases: 5
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-14*
-*Last updated: 2026-02-16 after v1.1 milestone definition*
+*Last updated: 2026-02-16 after v1.1 roadmap creation*
