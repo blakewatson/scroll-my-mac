@@ -23,6 +23,7 @@
 		A10000010000000000000014 /* HotkeyDisplayHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000017 /* HotkeyDisplayHelper.swift */; };
 		A10000010000000000000015 /* HotkeyRecorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000018 /* HotkeyRecorderView.swift */; };
 		A10000010000000000000016 /* WindowExclusionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000019 /* WindowExclusionManager.swift */; };
+		A10000010000000000000017 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000020 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,6 +46,7 @@
 		A20000010000000000000017 /* HotkeyDisplayHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyDisplayHelper.swift; sourceTree = "<group>"; };
 		A20000010000000000000018 /* HotkeyRecorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyRecorderView.swift; sourceTree = "<group>"; };
 		A20000010000000000000019 /* WindowExclusionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowExclusionManager.swift; sourceTree = "<group>"; };
+		A20000010000000000000020 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,6 +129,7 @@
 			isa = PBXGroup;
 			children = (
 				A20000010000000000000011 /* Info.plist */,
+				A20000010000000000000020 /* Assets.xcassets */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -156,6 +159,7 @@
 			buildPhases = (
 				A60000010000000000000001 /* Sources */,
 				A30000010000000000000001 /* Frameworks */,
+				A30000010000000000000002 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -167,6 +171,17 @@
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A30000010000000000000002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000010000000000000017 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXProject section */
 		A80000010000000000000001 /* Project object */ = {
