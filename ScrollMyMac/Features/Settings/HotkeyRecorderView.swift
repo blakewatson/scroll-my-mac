@@ -81,11 +81,10 @@ struct HotkeyRecorderView: View {
         let hasModifier = !userMods.isEmpty
 
         if isFunctionKey || hasModifier {
-            // Store the raw modifier flags (stripping .function and .numericPad for storage)
-            // so that CGEventFlags comparison in HotkeyManager works correctly.
-            // Keep .function for function keys since CGEvent also sets it.
+            // Store user modifiers with .function and .numericPad stripped
+            // so CGEventFlags comparison in HotkeyManager matches correctly.
             keyCode = code
-            modifiers = UInt64(mods.rawValue)
+            modifiers = UInt64(userMods.rawValue)
             stopRecording()
         }
         // else: invalid combo (bare letter key, etc.), silently ignore -- keep recording
