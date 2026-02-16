@@ -87,12 +87,20 @@ class AppState {
         } else {
             self.hotkeyModifiers = 0
         }
+
+        setupServices()
+
+        // Check accessibility permission directly so the hotkey works
+        // even when the window is hidden (e.g. silent login launch).
+        if AXIsProcessTrusted() {
+            isAccessibilityGranted = true
+        }
     }
 
     // MARK: - Service Wiring
 
-    /// Connects all services together. Call once after init.
-    func setupServices() {
+    /// Connects all services together. Called once from init.
+    private func setupServices() {
         hotkeyManager.onToggle = { [weak self] in
             self?.toggleScrollMode()
         }
