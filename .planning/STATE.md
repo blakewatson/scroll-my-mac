@@ -65,5 +65,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Roadmap created for v1.1 milestone
-Resume file: None
+Stopped at: Phase 6 context gathered
+Resume file: .planning/phases/06-osk-aware-click-pass-through/06-CONTEXT.md
