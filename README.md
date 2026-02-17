@@ -19,9 +19,9 @@ Scroll My Mac adds system-wide click-and-drag scrolling to macOS. Toggle scroll 
 
 ## Why It Exists
 
-This app was built for users who cannot use a trackpad or scroll wheel due to disability. The developer relies on an on-screen keyboard and mouse for input, and needed a way to scroll without a scroll wheel or trackpad gesture.
+This app was built for users who cannot use a trackpad or scroll wheel due to disability. I rely on an [on-screen keyboard](https://blakewatson.com/journal/writing-and-coding-with-the-macos-accessibility-keyboard/) and mouse for input, and needed a way to [scroll without a scroll wheel](https://blakewatson.com/journal/neglecting-the-scrollbar-a-costly-trend-in-ui-design/) or trackpad gesture.
 
-It was inspired by the [ScrollAnywhere](https://chromewebstore.google.com/detail/scroll-anywhere/feoaalofnmgfpbcapocpedidnajocmhp) browser extension, which provides click-and-drag scrolling in the browser. Scroll My Mac brings similar (albeit less customizable) capability to the entire operating system.
+It was inspired by the [ScrollAnywhere](https://fastaddons.com/#scroll_anywhere) browser extension, which provides click-and-drag scrolling in the browser. Scroll My Mac brings similar (albeit less customizable) capability to operating system level.
 
 ## Installation
 
