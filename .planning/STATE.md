@@ -2,19 +2,18 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-02-16)
+See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** Users can scroll any scrollable area by clicking and dragging with the mouse pointer, with natural inertia -- no scroll wheel or trackpad required.
-**Current focus:** Phase 9 — Release Documentation (COMPLETE)
+**Current focus:** v1.2.1 patch release — version fix
 
 ## Current Position
 
-Phase: 9 of 9 (Release Documentation)
-Plan: 1 of 1 complete in current phase
-Status: All phases complete
-Last activity: 2026-02-17 - Completed quick task 2: Add safety timeout note to README
+Phase: v1.2.1 patch
+Status: Version bump applied, ready for release build
+Last activity: 2026-02-17 — Fix MARKETING_VERSION (1.0 → 1.2.1)
 
-Progress: [████████████] 100% (v1.2 Distribution Ready)
+Progress: [████████████] 100% (v1.2 Distribution Ready) + v1.2.1 patch
 
 ## Performance Metrics
 

@@ -39,14 +39,12 @@ Users can scroll any scrollable area by clicking and dragging with the mouse poi
 - CLI-only version — GUI selected for ease of use
 - Multi-button support — left click only for v1
 
-## Current Milestone: v1.2 Distribution Ready
+## Current Milestone: v1.2.1 Version Fix
 
-**Goal:** Package the app for public distribution with a proper icon, code signing, notarization, and a GitHub release.
+**Goal:** Fix the version number shown in the About pane (was displaying 1.0 instead of actual version) and cut a patch release.
 
 **Target features:**
-- Custom app icon (from existing source image)
-- Developer ID code signing + Apple notarization
-- GitHub release with zipped .app bundle
+- Corrected MARKETING_VERSION in Xcode project (1.0 → 1.2.1)
 
 ## Context
 
@@ -75,4 +73,4 @@ The accessibility keyboard (on-screen keyboard) is used for typing and will be u
 | Cursor change for mode indicator | Clear visual feedback without menu bar clutter | — Pending |
 
 ---
-*Last updated: 2026-02-16 after v1.2 milestone start*
+*Last updated: 2026-02-17 after v1.2.1 version fix*
