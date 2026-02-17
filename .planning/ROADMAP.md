@@ -170,7 +170,10 @@ Plans:
   3. A zipped .app bundle is attached to a GitHub release with a version tag
   4. The GitHub release includes release notes describing the app's capabilities
   5. A user can download the zip from GitHub, extract it, and open the app without issues
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 09-01-PLAN.md — Write README.md and publish GitHub release v1.2 with signed app bundle
 
 ## Progress
 
