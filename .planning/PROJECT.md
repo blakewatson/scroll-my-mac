@@ -27,26 +27,41 @@ Users can scroll any scrollable area by clicking and dragging with the mouse poi
 - ✓ Detection is dynamic — works regardless of OSK position or size — v1.1
 - ✓ Scroll mode stays toggled on while OSK pass-through is active — v1.1
 
+### Validated
+
+- ✓ App has a custom icon (converted from source image to macOS AppIcon.appiconset) — v1.2
+- ✓ App is signed with Developer ID and notarized for Gatekeeper-clean distribution — v1.2
+- ✓ App is released on GitHub as a downloadable zipped .app bundle — v1.2
+
+### Validated
+
+- ✓ Cached app window frames for thread-safe click pass-through — v1.2.2
+- ✓ Only match app windows when app is frontmost (occluded window fix) — v1.2.2
+- ✓ CGEventTap runs on dedicated background thread — v1.2.2
+
 ### Active
 
-- [ ] App has a custom icon (converted from source image to macOS AppIcon.appiconset)
-- [ ] App is signed with Developer ID and notarized for Gatekeeper-clean distribution
-- [ ] App is released on GitHub as a downloadable zipped .app bundle
+- [ ] Menu bar icon shows scroll mode state (on/off), left-click toggles, right-click context menu for settings
+- [ ] Menu bar icon is optional (can be disabled in settings)
+- [ ] Hold-to-passthrough: hold still in dead zone for configurable delay, then drag passes through for text selection/window resize
+- [ ] Hold-to-passthrough is optional (off by default), delay is configurable (default 1.5s)
+- [ ] Per-app exclusion list: add/remove apps where scroll mode is disabled
+- [ ] Exclusion list managed in settings UI
 
 ### Out of Scope
 
-- Menu bar app — user prefers simple window app
 - CLI-only version — GUI selected for ease of use
 - Multi-button support — left click only for v1
+- Menu bar as primary settings interface — menu bar icon is toggle + shortcut to settings only
 
-## Current Milestone: v1.2.2 Scroll Engine Fix
+## Current Milestone: v1.3.0 Visual Indicator, Scroll Engine Improvements, Per-App Exclusion
 
-**Goal:** Fix click pass-through bug where the app's own settings window (when behind other apps) caused clicks to leak through the scroll engine, triggering text selection and drag-and-drop in apps like Slack and Discord instead of scrolling.
+**Goal:** Add a menu bar status icon, hold-to-passthrough for normal drag interactions without leaving scroll mode, and per-app exclusion so scroll mode is automatically disabled in specific apps.
 
 **Target features:**
-- Cached app window frames in WindowExclusionManager for faster callback (no NSApp.windows in event tap)
-- Fixed occluded window pass-through: only match app windows when app is frontmost (NSApp.isActive)
-- Corrected MARKETING_VERSION in Xcode project (1.0 → 1.2.2)
+- Menu bar icon (optional) showing scroll mode state, click to toggle, right-click for settings
+- Hold-to-passthrough: hold still in dead zone past configurable delay to enable normal drag (text select, resize)
+- Per-app exclusion list managed in settings
 
 ## Context
 
@@ -75,4 +90,4 @@ The accessibility keyboard (on-screen keyboard) is used for typing and will be u
 | Cursor change for mode indicator | Clear visual feedback without menu bar clutter | — Pending |
 
 ---
-*Last updated: 2026-02-17 after v1.2.2 scroll engine fix*
+*Last updated: 2026-02-17 after milestone v1.3.0 started*

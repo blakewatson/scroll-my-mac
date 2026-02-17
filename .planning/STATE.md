@@ -5,15 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** Users can scroll any scrollable area by clicking and dragging with the mouse pointer, with natural inertia -- no scroll wheel or trackpad required.
-**Current focus:** v1.2.2 patch release — scroll engine fix
+**Current focus:** v1.3.0 — Menu bar icon, hold-to-passthrough, per-app exclusion
 
 ## Current Position
 
-Phase: v1.2.2 patch
-Status: Fix applied, ready for release build
-Last activity: 2026-02-17 — Fix occluded window pass-through bug + version bump to 1.2.2
-
-Progress: [████████████] 100% (v1.2 Distribution Ready) + v1.2.2 patch
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-02-17 — Milestone v1.3.0 started
 
 ## Performance Metrics
 
