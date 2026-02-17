@@ -113,16 +113,10 @@ class AppState {
         scrollEngine.shouldPassThroughClick = { [weak self] cgPoint in
             guard let self else { return false }
 
-            // Check 1: App's own windows (e.g. the settings toggle).
-            // CG coordinates are top-left origin; NSWindow frames are bottom-left.
-            guard let screenHeight = NSScreen.main?.frame.height else { return false }
-            let nsPoint = NSPoint(x: cgPoint.x, y: screenHeight - cgPoint.y)
-            let isOwnWindow = NSApp.windows.contains { window in
-                window.isVisible && !window.ignoresMouseEvents && window.frame.contains(nsPoint)
-            }
-            if isOwnWindow { return true }
+            // Check 1: App's own windows (cached CG coordinates — no AppKit calls).
+            if self.windowExclusionManager.isPointInAppWindow(cgPoint) { return true }
 
-            // Check 2: OSK / excluded windows (CG coordinates -- no conversion needed).
+            // Check 2: OSK / excluded windows (cached CG coordinates).
             return self.windowExclusionManager.isPointExcluded(cgPoint)
         }
     }

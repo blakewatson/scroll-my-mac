@@ -1,4 +1,5 @@
 import Foundation
+import AppKit
 import CoreGraphics
 
 /// Detects the Accessibility Keyboard (OSK) windows and provides fast
@@ -13,6 +14,7 @@ class WindowExclusionManager {
     // MARK: - Cached State
 
     private var excludedRects: [CGRect] = []
+    private var appWindowRects: [CGRect] = []
     private var pollTimer: Timer?
     private var oskDetected: Bool = false
 
@@ -36,6 +38,12 @@ class WindowExclusionManager {
         return excludedRects.contains { $0.contains(point) }
     }
 
+    /// Returns `true` if `point` (CG coordinates, top-left origin) falls
+    /// inside any of the app's own cached window rectangles.
+    func isPointInAppWindow(_ point: CGPoint) -> Bool {
+        return appWindowRects.contains { $0.contains(point) }
+    }
+
     /// Begins periodic polling for OSK windows.  Performs an immediate
     /// cache refresh so detection is instant on scroll-mode activation.
     func startMonitoring() {
@@ -48,6 +56,7 @@ class WindowExclusionManager {
         pollTimer?.invalidate()
         pollTimer = nil
         excludedRects = []
+        appWindowRects = []
         oskDetected = false
     }
 
@@ -74,6 +83,24 @@ class WindowExclusionManager {
             return bounds
         }
         updatePollingRate(oskFound: !excludedRects.isEmpty)
+
+        // Cache the app's own visible, mouse-interactive window frames.
+        // Convert NSWindow frames (bottom-left origin) to CG coordinates (top-left origin).
+        if let screenHeight = NSScreen.main?.frame.height {
+            appWindowRects = NSApp.windows.compactMap { window in
+                guard window.isVisible, !window.ignoresMouseEvents else { return nil }
+                let frame = window.frame
+                let cgRect = CGRect(
+                    x: frame.origin.x,
+                    y: screenHeight - frame.origin.y - frame.height,
+                    width: frame.width,
+                    height: frame.height
+                )
+                return cgRect
+            }
+        } else {
+            appWindowRects = []
+        }
     }
 
     private func updatePollingRate(oskFound: Bool) {
