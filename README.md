@@ -51,6 +51,7 @@ The app window provides settings for hotkey customization and launch at login.
 ## Roadmap
 
 - An optional visual indicator to communicate whether scroll mode is activated.
+- Certain interface elements capture the click action before the scroll engine kicks in. Will attempt to fix in a future release.
 
 ## License
 
