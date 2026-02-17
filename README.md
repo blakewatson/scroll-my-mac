@@ -38,6 +38,8 @@ It was inspired by the [ScrollAnywhere](https://fastaddons.com/#scroll_anywhere)
 4. Small clicks pass through as normal clicks (turn this off in settings if you don’t want this behavior)
 5. Press the hotkey again to toggle scroll mode off
 
+> **Tip:** The app includes a safety timeout (enabled by default) that automatically deactivates scroll mode after 10 seconds of no mouse movement. This is helpful when first trying the app -- if your clicks ever stop working as expected, the timeout will restore normal mouse behavior on its own. Once you're comfortable with the app, you can turn the safety timeout off in Settings.
+
 The app window provides settings for hotkey customization and launch at login.
 
 ## Requirements
