@@ -1,0 +1,52 @@
+# Scroll My Mac
+
+A macOS accessibility app that lets you scroll anywhere by clicking and dragging.
+
+## What It Does
+
+Scroll My Mac adds system-wide click-and-drag scrolling to macOS. Toggle scroll mode with a hotkey, then click and drag to scroll any scrollable area on your screen.
+
+- **System-wide scroll mode** -- activated via configurable hotkey (default: F6)
+- **Natural inertia** -- momentum scrolling with smooth deceleration when you release the drag, like iOS or a trackpad
+- **Click safety** -- small movements (~8px) pass through as normal clicks, so you won't accidentally scroll when you meant to click
+- **Accessibility Keyboard aware** -- clicks on the macOS on-screen keyboard always pass through instantly, even while scroll mode is active
+- **Customizable hotkey** -- change the toggle key to any key or modifier combo
+- **Launch at login** -- optional automatic startup
+
+## Why It Exists
+
+This app was built for users who cannot use a trackpad or scroll wheel due to disability. The developer relies on an on-screen keyboard and mouse for input, and needed a way to scroll without a scroll wheel or trackpad gesture.
+
+It was inspired by the [Scroll Anywhere](https://chromewebstore.google.com/detail/scroll-anywhere/feoaalofnmgfpbcapocpedidnajocmhp) browser extension, which provides click-and-drag scrolling in the browser. Scroll My Mac brings that same capability to the entire operating system.
+
+## Installation
+
+1. Download `ScrollMyMac.zip` from the [latest GitHub release](https://github.com/blakewatson/scroll-my-mac/releases/latest)
+2. Extract the zip
+3. Move `ScrollMyMac.app` to `/Applications`
+4. Launch the app and grant Accessibility permission when prompted
+
+The app is signed with a Developer ID certificate and notarized by Apple, so it opens without Gatekeeper warnings.
+
+## Usage
+
+1. Press **F6** (or your configured hotkey) to toggle scroll mode on
+2. Click and drag to scroll in any direction
+3. Release to let inertia carry the scroll naturally
+4. Small clicks pass through as normal clicks
+5. Press the hotkey again to toggle scroll mode off
+
+The app window provides settings for hotkey customization and launch at login.
+
+## Requirements
+
+- macOS 14 (Sonoma) or later
+- Accessibility permission (the app will guide you through granting it on first launch)
+
+## AI-Assisted Development
+
+This app was built with significant assistance from [Claude](https://claude.ai), Anthropic's AI assistant. AI was used for project planning, code generation, and documentation throughout the development process.
+
+## License
+
+License TBD.
