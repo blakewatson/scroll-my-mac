@@ -39,12 +39,14 @@ Users can scroll any scrollable area by clicking and dragging with the mouse poi
 - CLI-only version — GUI selected for ease of use
 - Multi-button support — left click only for v1
 
-## Current Milestone: v1.2.1 Version Fix
+## Current Milestone: v1.2.2 Scroll Engine Fix
 
-**Goal:** Fix the version number shown in the About pane (was displaying 1.0 instead of actual version) and cut a patch release.
+**Goal:** Fix click pass-through bug where the app's own settings window (when behind other apps) caused clicks to leak through the scroll engine, triggering text selection and drag-and-drop in apps like Slack and Discord instead of scrolling.
 
 **Target features:**
-- Corrected MARKETING_VERSION in Xcode project (1.0 → 1.2.1)
+- Cached app window frames in WindowExclusionManager for faster callback (no NSApp.windows in event tap)
+- Fixed occluded window pass-through: only match app windows when app is frontmost (NSApp.isActive)
+- Corrected MARKETING_VERSION in Xcode project (1.0 → 1.2.2)
 
 ## Context
 
@@ -73,4 +75,4 @@ The accessibility keyboard (on-screen keyboard) is used for typing and will be u
 | Cursor change for mode indicator | Clear visual feedback without menu bar clutter | — Pending |
 
 ---
-*Last updated: 2026-02-17 after v1.2.1 version fix*
+*Last updated: 2026-02-17 after v1.2.2 scroll engine fix*

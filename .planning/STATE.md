@@ -5,15 +5,15 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** Users can scroll any scrollable area by clicking and dragging with the mouse pointer, with natural inertia -- no scroll wheel or trackpad required.
-**Current focus:** v1.2.1 patch release — version fix
+**Current focus:** v1.2.2 patch release — scroll engine fix
 
 ## Current Position
 
-Phase: v1.2.1 patch
-Status: Version bump applied, ready for release build
-Last activity: 2026-02-17 — Fix MARKETING_VERSION (1.0 → 1.2.1)
+Phase: v1.2.2 patch
+Status: Fix applied, ready for release build
+Last activity: 2026-02-17 — Fix occluded window pass-through bug + version bump to 1.2.2
 
-Progress: [████████████] 100% (v1.2 Distribution Ready) + v1.2.1 patch
+Progress: [████████████] 100% (v1.2 Distribution Ready) + v1.2.2 patch
 
 ## Performance Metrics
 

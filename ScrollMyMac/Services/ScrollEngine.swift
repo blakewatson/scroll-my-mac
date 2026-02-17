@@ -40,8 +40,6 @@ class ScrollEngine {
 
     fileprivate var eventTap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
-    private var tapThread: Thread?
-    private var tapRunLoop: CFRunLoop?
 
     private(set) var isDragging: Bool = false
     private var passedThroughClick: Bool = false
@@ -103,21 +101,8 @@ class ScrollEngine {
         }
 
         runLoopSource = CFMachPortCreateRunLoopSource(nil, eventTap, 0)
-
-        // Run the event tap on a dedicated background thread so the callback
-        // never competes with main-thread UI work. This prevents macOS from
-        // disabling the tap due to main-thread contention.
-        let thread = Thread { [weak self] in
-            guard let self, let source = self.runLoopSource else { return }
-            Thread.current.name = "com.blakewatson.ScrollMyMac.EventTap"
-            let rl = CFRunLoopGetCurrent()!
-            self.tapRunLoop = rl
-            CFRunLoopAddSource(rl, source, .commonModes)
-            CGEvent.tapEnable(tap: eventTap, enable: true)
-            CFRunLoopRun()
-        }
-        tapThread = thread
-        thread.start()
+        CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, .commonModes)
+        CGEvent.tapEnable(tap: eventTap, enable: true)
         isActive = true
     }
 
@@ -152,13 +137,10 @@ class ScrollEngine {
         }
         if let tap = eventTap {
             CGEvent.tapEnable(tap: tap, enable: false)
+            if let source = runLoopSource {
+                CFRunLoopRemoveSource(CFRunLoopGetCurrent(), source, .commonModes)
+            }
         }
-        // Stop the background thread's run loop, which exits the thread.
-        if let rl = tapRunLoop {
-            CFRunLoopStop(rl)
-        }
-        tapThread = nil
-        tapRunLoop = nil
         eventTap = nil
         runLoopSource = nil
         resetDragState()
@@ -214,7 +196,7 @@ class ScrollEngine {
             lockedAxis = nil
             accumulatedDelta = .zero
             isFirstDragEvent = true
-            DispatchQueue.main.async { [weak self] in self?.onDragStateChanged?(true) }
+            onDragStateChanged?(true)
             return nil
         }
     }
@@ -236,7 +218,7 @@ class ScrollEngine {
                 lockedAxis = nil
                 accumulatedDelta = .zero
                 lastDragPoint = currentPoint
-                DispatchQueue.main.async { [weak self] in self?.onDragStateChanged?(true) }
+                onDragStateChanged?(true)
                 // Fall through to process this drag event as the first scroll event.
             } else {
                 return nil // Still in dead zone, suppress drag.
@@ -321,7 +303,7 @@ class ScrollEngine {
                 )
             }
         }
-        DispatchQueue.main.async { [weak self] in self?.onDragStateChanged?(false) }
+        onDragStateChanged?(false)
         resetDragState()
         return nil // Suppress the mouse up while in scroll mode.
     }

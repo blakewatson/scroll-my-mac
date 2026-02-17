@@ -84,9 +84,10 @@ class WindowExclusionManager {
         }
         updatePollingRate(oskFound: !excludedRects.isEmpty)
 
-        // Cache the app's own visible, mouse-interactive window frames.
-        // Convert NSWindow frames (bottom-left origin) to CG coordinates (top-left origin).
-        if let screenHeight = NSScreen.main?.frame.height {
+        // Cache the app's own visible, mouse-interactive window frames, but only
+        // when the app is frontmost. When another app is in front, our windows are
+        // occluded and clicks should not pass through to them.
+        if NSApp.isActive, let screenHeight = NSScreen.main?.frame.height {
             appWindowRects = NSApp.windows.compactMap { window in
                 guard window.isVisible, !window.ignoresMouseEvents else { return nil }
                 let frame = window.frame
