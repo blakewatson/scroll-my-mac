@@ -68,9 +68,10 @@ None.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 1 | Add MIT license and update README accordingly | 2026-02-17 | a8fb027 | [1-add-mit-license-and-update-readme-accord](./quick/1-add-mit-license-and-update-readme-accord/) |
+| 2 | Add safety timeout note to README | 2026-02-16 | db7a8b9 | [2-add-safety-timeout-note-to-readme](./quick/2-add-safety-timeout-note-to-readme/) |
 
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Completed quick-1-01 — Added MIT LICENSE and updated README license section.
+Stopped at: Completed quick-2-01 — Added safety timeout tip to README Usage section.
 Resume file: —
