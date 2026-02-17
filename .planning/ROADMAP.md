@@ -155,7 +155,10 @@ Plans:
   1. App binary is signed with a Developer ID Application certificate (verifiable via `codesign -v`)
   2. App has a stapled notarization ticket from Apple (verifiable via `stapler validate`)
   3. Double-clicking the app on a clean Mac opens it without any Gatekeeper warning or "unidentified developer" dialog
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 08-01-PLAN.md -- Build-sign-notarize pipeline with Developer ID certificate setup, release script, and Gatekeeper verification
 
 ### Phase 9: Release & Documentation
 **Goal**: Users can discover, understand, and download the app from GitHub
