@@ -46,6 +46,10 @@ The app window provides settings for hotkey customization and launch at login.
 - Apple Silicon Macs only (if there is sufficient interest, I can try a universal build)
 - Accessibility permission (the app will guide you through granting it on first launch)
 
+## Roadmap
+
+- An optional visual indicator to communicate whether scroll mode is activated.
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
