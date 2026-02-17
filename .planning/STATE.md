@@ -5,22 +5,22 @@
 See: .planning/PROJECT.md (updated 2026-02-16)
 
 **Core value:** Users can scroll any scrollable area by clicking and dragging with the mouse pointer, with natural inertia -- no scroll wheel or trackpad required.
-**Current focus:** Phase 8 — Code Signing & Notarization (v1.2 Distribution Ready)
+**Current focus:** Phase 9 — Release Documentation (COMPLETE)
 
 ## Current Position
 
-Phase: 8 of 9 (Code Signing & Notarization)
+Phase: 9 of 9 (Release Documentation)
 Plan: 1 of 1 complete in current phase
-Status: Phase 8 complete
-Last activity: 2026-02-16 — Completed 08-01 Code Signing & Notarization plan
+Status: All phases complete
+Last activity: 2026-02-16 — Completed 09-01 Release Documentation plan
 
-Progress: [████████░░░░] 67% (v1.2 Distribution Ready)
+Progress: [████████████] 100% (v1.2 Distribution Ready)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 13
-- Average duration: 46min
+- Total plans completed: 14
+- Average duration: 43min
 - Total execution time: ~10 hours
 
 **By Phase:**
@@ -35,10 +35,11 @@ Progress: [████████░░░░] 67% (v1.2 Distribution Ready)
 | 06-osk-aware-click-pass-through | 1 | 1h 53min | 1h 53min |
 | 07-app-icon | 1 | 12min | 12min |
 | 08-code-signing-notarization | 1 | 30min | 30min |
+| 09-release-documentation | 1 | 1min | 1min |
 
 **Recent Trend:**
-- Last 5 plans: 5min, 5min, 113min, 12min, 30min
-- Trend: Phase 8 code signing with human checkpoints
+- Last 5 plans: 5min, 113min, 12min, 30min, 1min
+- Trend: Final phase -- project complete
 
 *Updated after each plan completion*
 
@@ -51,6 +52,8 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - Added generate-icons.sh for reproducible icon regeneration
 - Auto-detect Developer ID from keychain in build-release.sh -- no hardcoded identity
 - Release pipeline: archive -> sign -> notarize -> staple -> zip via scripts/build-release.sh
+- User rewrote AI disclaimer as "Vibe code alert" -- more authentic personal tone
+- User will create GitHub release manually rather than via CLI automation
 
 ### Pending Todos
 
@@ -63,5 +66,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Completed 08-01-PLAN.md — Phase 8 complete, ready for Phase 9
+Stopped at: Completed 09-01-PLAN.md — All phases complete. User to create GitHub release v1.2 manually.
 Resume file: —
