@@ -68,9 +68,10 @@ None.
 |---|-------------|------|--------|-----------|
 | 1 | Add MIT license and update README accordingly | 2026-02-17 | a8fb027 | [1-add-mit-license-and-update-readme-accord](./quick/1-add-mit-license-and-update-readme-accord/) |
 | 2 | Add safety timeout note to README | 2026-02-16 | db7a8b9 | [2-add-safety-timeout-note-to-readme](./quick/2-add-safety-timeout-note-to-readme/) |
+| 3 | Move CGEventTap to background thread | 2026-02-17 | a2838da | [3-move-cgeventtap-to-background-thread](./quick/3-move-cgeventtap-to-background-thread/) |
 
 ## Session Continuity
 
-Last session: 2026-02-16
-Stopped at: Completed quick-2-01 — Added safety timeout tip to README Usage section.
+Last session: 2026-02-17
+Stopped at: Completed quick-3-01 — Moved CGEventTap to background thread with cached app window frames.
 Resume file: —
