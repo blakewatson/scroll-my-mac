@@ -48,4 +48,4 @@ The app window provides settings for hotkey customization and launch at login.
 
 ## License
 
-License TBD.
+This project is licensed under the [MIT License](LICENSE).
