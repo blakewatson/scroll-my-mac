@@ -10,17 +10,17 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 10 of 12 (Menu Bar Icon)
-Plan: 0 of ? in current phase
-Status: Ready to plan
-Last activity: 2026-02-17 — Roadmap created for v1.3.0 (phases 10-12)
+Plan: 1 of 1 in current phase (COMPLETE)
+Status: Phase 10 complete
+Last activity: 2026-02-17 — Completed 10-01-PLAN.md (menu bar icon)
 
-Progress: [##########..] 75% (9/12 phases complete)
+Progress: [###########.] 83% (10/12 phases complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 14
-- Average duration: 43min
+- Total plans completed: 15
+- Average duration: 41min
 - Total execution time: ~10 hours
 
 **By Phase:**
@@ -36,9 +36,10 @@ Progress: [##########..] 75% (9/12 phases complete)
 | 07-app-icon | 1 | 12min | 12min |
 | 08-code-signing-notarization | 1 | 30min | 30min |
 | 09-release-documentation | 1 | 1min | 1min |
+| 10-menu-bar-icon | 1 | 2min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 5min, 113min, 12min, 30min, 1min
+- Last 5 plans: 113min, 12min, 30min, 1min, 2min
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -50,6 +51,8 @@ Progress: [##########..] 75% (9/12 phases complete)
 Decisions are logged in PROJECT.md Key Decisions table.
 - Phases 10-12 are independent -- can be executed in any order
 - Menu bar icon is optional (can be disabled), not a replacement for the settings window
+- Programmatic NSBezierPath icon instead of PDF asset for menu bar icon
+- MenuBarManager is plain class (not @Observable) -- pure AppKit, no SwiftUI observation needed
 
 ### Pending Todos
 
@@ -70,5 +73,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Roadmap created for v1.3.0 milestone (phases 10-12)
+Stopped at: Completed 10-01-PLAN.md (menu bar icon)
 Resume file: --
