@@ -44,22 +44,50 @@ class MenuBarManager: NSObject, NSMenuDelegate {
 
     // MARK: - State
 
+    /// Stored exclusion state so updateIcon and updateExclusionState stay in sync.
+    private var isExcludedApp: Bool = false
+    private var excludedAppDisplayName: String?
+
     func updateIcon(isActive: Bool) {
         self.isActive = isActive
-        statusItem?.button?.alphaValue = isActive ? 1.0 : 0.4
+        applyIconState()
     }
 
     // MARK: - Exclusion State
 
-    /// Stored exclusion state so updateIcon can consider it.
-    private var isExcludedApp: Bool = false
-    private var excludedAppDisplayName: String?
-
-    /// Updates visual feedback for per-app exclusion.
-    /// Full implementation (slash icon + tooltip) added in Task 2.
+    /// Updates visual feedback for per-app exclusion (slash icon + tooltip).
     func updateExclusionState(isExcluded: Bool, appName: String?) {
         isExcludedApp = isExcluded
         excludedAppDisplayName = appName
+        applyIconState()
+    }
+
+    /// Applies the correct icon, alpha, and tooltip based on combined state.
+    private func applyIconState() {
+        guard let button = statusItem?.button else { return }
+
+        if isActive && isExcludedApp {
+            // Active but excluded: slashed icon, full opacity, tooltip.
+            let icon = makeSlashedMenuBarIcon()
+            icon.isTemplate = true
+            button.image = icon
+            button.alphaValue = 1.0
+            button.toolTip = "Scroll mode paused \u{2014} \(excludedAppDisplayName ?? "App") is excluded"
+        } else if isActive {
+            // Active and not excluded: normal icon, full opacity, no tooltip.
+            let icon = makeMenuBarIcon()
+            icon.isTemplate = true
+            button.image = icon
+            button.alphaValue = 1.0
+            button.toolTip = nil
+        } else {
+            // Inactive: normal icon, dimmed, no tooltip.
+            let icon = makeMenuBarIcon()
+            icon.isTemplate = true
+            button.image = icon
+            button.alphaValue = 0.4
+            button.toolTip = nil
+        }
     }
 
     // MARK: - Menu
@@ -128,6 +156,45 @@ class MenuBarManager: NSObject, NSMenuDelegate {
             let wheel = NSBezierPath(ovalIn: wheelRect)
             wheel.lineWidth = 0.8
             wheel.stroke()
+
+            return true
+        }
+        image.isTemplate = true
+        return image
+    }
+
+    /// Draws the mouse icon with a diagonal slash (bottom-left to top-right)
+    /// indicating scroll mode is bypassed for the current app.
+    private func makeSlashedMenuBarIcon() -> NSImage {
+        let size = NSSize(width: 18, height: 18)
+        let image = NSImage(size: size, flipped: false) { rect in
+            NSColor.black.setStroke()
+
+            // Mouse body: same as normal icon
+            let bodyRect = NSRect(x: 5, y: 1.5, width: 8, height: 13)
+            let body = NSBezierPath(roundedRect: bodyRect, xRadius: 4, yRadius: 4)
+            body.lineWidth = 1.2
+            body.stroke()
+
+            // Scroll wheel divider
+            let divider = NSBezierPath()
+            divider.move(to: NSPoint(x: 9, y: 14.5))
+            divider.line(to: NSPoint(x: 9, y: 10))
+            divider.lineWidth = 1.0
+            divider.stroke()
+
+            // Small scroll wheel circle
+            let wheelRect = NSRect(x: 7.75, y: 11, width: 2.5, height: 2.5)
+            let wheel = NSBezierPath(ovalIn: wheelRect)
+            wheel.lineWidth = 0.8
+            wheel.stroke()
+
+            // Diagonal slash: bottom-left to top-right
+            let slash = NSBezierPath()
+            slash.move(to: NSPoint(x: 3, y: 2))
+            slash.line(to: NSPoint(x: 15, y: 16))
+            slash.lineWidth = 1.5
+            slash.stroke()
 
             return true
         }

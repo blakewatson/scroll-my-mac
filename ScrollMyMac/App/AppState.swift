@@ -13,6 +13,7 @@ class AppState {
                 deactivateScrollMode()
             }
             menuBarManager.updateIcon(isActive: isScrollModeActive)
+            menuBarManager.updateExclusionState(isExcluded: isCurrentAppExcluded, appName: excludedAppName)
         }
     }
 
