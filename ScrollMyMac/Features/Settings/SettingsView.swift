@@ -1,5 +1,6 @@
 import SwiftUI
 import ServiceManagement
+import UniformTypeIdentifiers
 
 struct SettingsView: View {
     @Environment(AppState.self) var appState
@@ -38,6 +39,7 @@ struct MainSettingsView: View {
     @State private var safetyTimeoutManager = SafetyTimeoutManager()
     @State private var showSafetyNotification = false
     @State private var launchAtLogin: Bool = false
+    @State private var selectedExcludedApp: String?
 
     var body: some View {
         @Bindable var appState = appState
@@ -63,28 +65,31 @@ struct MainSettingsView: View {
                     Toggle("Enable Scroll Mode", isOn: $appState.isScrollModeActive)
                         .disabled(!appState.isAccessibilityGranted)
                     Text(scrollModeHelpText)
-                        .font(.caption)
+                        .font(.callout)
                         .foregroundStyle(.secondary)
 
                     Toggle("Click-through", isOn: $appState.isClickThroughEnabled)
                     Text("When enabled, clicks without dragging pass through as normal clicks. When disabled, all mouse events become scrolls.")
-                        .font(.caption)
+                        .font(.callout)
                         .foregroundStyle(.secondary)
 
                     Toggle("Hold-to-passthrough", isOn: $appState.isHoldToPassthroughEnabled)
                     Text("Hold the mouse still within the click dead zone to pass through the click for normal drag operations (text selection, window resize).")
-                        .font(.caption)
+                        .font(.callout)
                         .foregroundStyle(.secondary)
 
-                    Stepper(
-                        "Hold delay: \(appState.holdToPassthroughDelay, specifier: "%.2g")s",
-                        value: $appState.holdToPassthroughDelay,
-                        in: 0.25...5.0,
-                        step: 0.25
-                    )
+                    HStack {
+                        Text("Hold delay")
+                        Spacer()
+                        Text("\(appState.holdToPassthroughDelay, specifier: "%.2f")s")
+                            .monospacedDigit()
+                            .foregroundStyle(appState.isHoldToPassthroughEnabled ? .primary : .secondary)
+                        Stepper("Hold delay", value: $appState.holdToPassthroughDelay, in: 0.25...5.0, step: 0.25)
+                            .labelsHidden()
+                    }
                     .disabled(!appState.isHoldToPassthroughEnabled)
                     Text("How long to hold still before the click passes through (0.25s \u{2013} 5s).")
-                        .font(.caption)
+                        .font(.callout)
                         .foregroundStyle(.secondary)
                 }
 
@@ -92,7 +97,7 @@ struct MainSettingsView: View {
                 Section("Hotkey") {
                     HotkeyRecorderView(keyCode: $appState.hotkeyKeyCode, modifiers: $appState.hotkeyModifiers)
                     Text("Click the field and press a key to set your hotkey. Function keys work alone; other keys need a modifier (Cmd, Ctrl, Option, Shift).")
-                        .font(.caption)
+                        .font(.callout)
                         .foregroundStyle(.secondary)
                 }
 
@@ -100,7 +105,7 @@ struct MainSettingsView: View {
                 Section("Safety") {
                     Toggle("Safety timeout", isOn: $appState.isSafetyModeEnabled)
                     Text("Automatically deactivates scroll mode after 10 seconds of no mouse movement.")
-                        .font(.caption)
+                        .font(.callout)
                         .foregroundStyle(.secondary)
                 }
 
@@ -108,12 +113,12 @@ struct MainSettingsView: View {
                 Section("General") {
                     Toggle("Show menu bar icon", isOn: $appState.isMenuBarIconEnabled)
                     Text("Display a status icon in the menu bar for quick scroll mode toggling.")
-                        .font(.caption)
+                        .font(.callout)
                         .foregroundStyle(.secondary)
 
                     Toggle("Launch at login", isOn: $launchAtLogin)
                     Text("Start Scroll My Mac automatically when you log in. The app launches in the background.")
-                        .font(.caption)
+                        .font(.callout)
                         .foregroundStyle(.secondary)
                 }
 
@@ -122,6 +127,56 @@ struct MainSettingsView: View {
                     Button("Reset to Defaults", role: .destructive) {
                         appState.resetToDefaults()
                     }
+                }
+
+                // MARK: - Excluded Apps
+                Section("Excluded Apps") {
+                    if appState.excludedAppBundleIDs.isEmpty {
+                        Text("No excluded apps")
+                            .foregroundStyle(.secondary)
+                    } else {
+                        ForEach(appState.excludedAppBundleIDs, id: \.self) { bundleID in
+                            HStack(spacing: 8) {
+                                Image(nsImage: iconForBundleID(bundleID))
+                                    .resizable()
+                                    .frame(width: 20, height: 20)
+                                Text(displayNameForBundleID(bundleID))
+                            }
+                            .tag(bundleID)
+                            .contentShape(Rectangle())
+                            .background(selectedExcludedApp == bundleID ? Color.accentColor.opacity(0.2) : Color.clear)
+                            .cornerRadius(4)
+                            .onTapGesture {
+                                selectedExcludedApp = bundleID
+                            }
+                        }
+                    }
+
+                    HStack(spacing: 8) {
+                        Button {
+                            addExcludedAppViaPanel()
+                        } label: {
+                            Image(systemName: "plus")
+                        }
+                        .buttonStyle(.borderless)
+
+                        Button {
+                            if let selected = selectedExcludedApp {
+                                appState.removeExcludedApp(bundleID: selected)
+                                selectedExcludedApp = nil
+                            }
+                        } label: {
+                            Image(systemName: "minus")
+                        }
+                        .buttonStyle(.borderless)
+                        .disabled(selectedExcludedApp == nil)
+
+                        Spacer()
+                    }
+
+                    Text("Apps where scroll mode is automatically bypassed. Scroll mode stays on but clicks pass through normally.")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
                 }
             }
             .formStyle(.grouped)
@@ -140,7 +195,7 @@ struct MainSettingsView: View {
                 .allowsHitTesting(false)
             }
         }
-        .frame(minWidth: 450, idealWidth: 450, minHeight: 300)
+        .frame(minWidth: 450, idealWidth: 450, minHeight: 400)
         .navigationTitle("Scroll My Mac")
         .onAppear {
             configureSafetyTimeout()
@@ -186,6 +241,44 @@ struct MainSettingsView: View {
             return "Press \(hotkeyName) or use this toggle to activate scroll mode."
         } else {
             return "Use this toggle to activate scroll mode."
+        }
+    }
+
+    // MARK: - Excluded App Helpers
+
+    private func iconForBundleID(_ bundleID: String) -> NSImage {
+        if let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleID) {
+            return NSWorkspace.shared.icon(forFile: url.path)
+        }
+        return NSWorkspace.shared.icon(for: .applicationBundle)
+    }
+
+    private func displayNameForBundleID(_ bundleID: String) -> String {
+        if let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleID),
+           let bundle = Bundle(url: url) {
+            if let displayName = bundle.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String {
+                return displayName
+            }
+            if let name = bundle.object(forInfoDictionaryKey: "CFBundleName") as? String {
+                return name
+            }
+        }
+        return bundleID
+    }
+
+    private func addExcludedAppViaPanel() {
+        let panel = NSOpenPanel()
+        panel.allowedContentTypes = [.application]
+        panel.canChooseFiles = true
+        panel.canChooseDirectories = false
+        panel.allowsMultipleSelection = false
+        panel.directoryURL = URL(fileURLWithPath: "/Applications")
+        panel.message = "Select an app to exclude from scroll mode"
+
+        if panel.runModal() == .OK, let selectedURL = panel.url {
+            if let bundleID = Bundle(url: selectedURL)?.bundleIdentifier {
+                appState.addExcludedApp(bundleID: bundleID)
+            }
         }
     }
 
