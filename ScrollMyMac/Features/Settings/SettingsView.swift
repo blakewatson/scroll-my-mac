@@ -143,12 +143,14 @@ struct MainSettingsView: View {
                                 Text(displayNameForBundleID(bundleID))
                                 Spacer()
                             }
-                            .padding(.vertical, 2)
+                            .padding(.vertical, 4)
+                            .padding(.horizontal, 4)
                             .contentShape(Rectangle())
                             .background(
                                 RoundedRectangle(cornerRadius: 4)
                                     .fill(selectedExcludedApp == bundleID ? Color.accentColor.opacity(0.2) : Color.clear)
                             )
+                            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                             .onTapGesture {
                                 selectedExcludedApp = bundleID
                             }
