@@ -5,22 +5,22 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** Users can scroll any scrollable area by clicking and dragging with the mouse pointer, with natural inertia -- no scroll wheel or trackpad required.
-**Current focus:** Phase 11 — Hold-to-Passthrough
+**Current focus:** Phase 12 — Per-App Exclusion
 
 ## Current Position
 
-Phase: 11 of 12 (Hold-to-Passthrough)
-Plan: 1 of 1 in current phase (COMPLETE)
-Status: Phase 11 complete
-Last activity: 2026-02-17 — Completed 11-01-PLAN.md (hold-to-passthrough)
+Phase: 12 of 12 (Per-App Exclusion)
+Plan: 1 of 2 in current phase (COMPLETE)
+Status: Executing phase 12
+Last activity: 2026-02-17 — Completed 12-01-PLAN.md (per-app exclusion engine)
 
-Progress: [############] 91% (11/12 phases complete)
+Progress: [############] 91% (11/12 phases complete, plan 1/2 in phase 12)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 16
-- Average duration: 39min
+- Total plans completed: 17
+- Average duration: 37min
 - Total execution time: ~10 hours
 
 **By Phase:**
@@ -38,9 +38,10 @@ Progress: [############] 91% (11/12 phases complete)
 | 09-release-documentation | 1 | 1min | 1min |
 | 10-menu-bar-icon | 1 | 2min | 2min |
 | 11-hold-to-passthrough | 1 | 2min | 2min |
+| 12-per-app-exclusion | 1 | 2min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 12min, 30min, 1min, 2min, 2min
+- Last 5 plans: 30min, 1min, 2min, 2min, 2min
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -57,6 +58,9 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - GCD DispatchSourceTimer on main queue for hold-to-passthrough detection (thread-safe with event tap)
 - Passthrough mode replays mouseDown only; drags and mouseUp pass through via flag
 - No inertia fires on passthrough drags
+- Stale bundle IDs kept in exclusion list (no harm, user removes via settings)
+- Hotkey toggle works normally in excluded apps (global state vs per-app bypass)
+- AppExclusionManager always monitors (not tied to scroll mode) for correct menu bar state
 
 ### Pending Todos
 
@@ -77,5 +81,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 11-01-PLAN.md (hold-to-passthrough)
+Stopped at: Completed 12-01-PLAN.md (per-app exclusion engine)
 Resume file: --
