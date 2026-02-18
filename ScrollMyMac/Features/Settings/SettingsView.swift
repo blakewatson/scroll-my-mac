@@ -136,15 +136,15 @@ struct MainSettingsView: View {
                             .foregroundStyle(.secondary)
                     } else {
                         ForEach(appState.excludedAppBundleIDs, id: \.self) { bundleID in
-                            HStack(spacing: 8) {
+                            HStack(spacing: 4) {
                                 Image(nsImage: iconForBundleID(bundleID))
                                     .resizable()
                                     .frame(width: 20, height: 20)
                                 Text(displayNameForBundleID(bundleID))
                                 Spacer()
                             }
-                            .padding(.vertical, 4)
-                            .padding(.horizontal, 4)
+                            .padding(.vertical, 6)
+                            .padding(.horizontal, 6)
                             .contentShape(Rectangle())
                             .background(
                                 RoundedRectangle(cornerRadius: 4)
