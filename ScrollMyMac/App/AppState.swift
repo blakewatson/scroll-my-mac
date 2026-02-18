@@ -89,10 +89,8 @@ class AppState {
 
     // MARK: - Per-App Exclusion
 
-    /// The current exclusion list — delegates to AppExclusionManager.
-    var excludedAppBundleIDs: [String] {
-        appExclusionManager.excludedBundleIDs
-    }
+    /// The current exclusion list — synced from AppExclusionManager.
+    var excludedAppBundleIDs: [String] = []
 
     /// True when the frontmost app is on the exclusion list.
     var isCurrentAppExcluded: Bool = false
@@ -134,6 +132,8 @@ class AppState {
         } else {
             self.hotkeyModifiers = 0
         }
+
+        self.excludedAppBundleIDs = appExclusionManager.excludedBundleIDs
 
         setupServices()
 
@@ -224,6 +224,7 @@ class AppState {
         holdToPassthroughDelay = 1.0
         isMenuBarIconEnabled = true
         appExclusionManager.clearAll()
+        excludedAppBundleIDs = appExclusionManager.excludedBundleIDs
         appExclusionManager.recheckFrontmostApp()
     }
 
@@ -231,11 +232,13 @@ class AppState {
 
     func addExcludedApp(bundleID: String) {
         appExclusionManager.add(bundleID: bundleID)
+        excludedAppBundleIDs = appExclusionManager.excludedBundleIDs
         appExclusionManager.recheckFrontmostApp()
     }
 
     func removeExcludedApp(bundleID: String) {
         appExclusionManager.remove(bundleID: bundleID)
+        excludedAppBundleIDs = appExclusionManager.excludedBundleIDs
         appExclusionManager.recheckFrontmostApp()
     }
 
