@@ -70,6 +70,22 @@ struct MainSettingsView: View {
                     Text("When enabled, clicks without dragging pass through as normal clicks. When disabled, all mouse events become scrolls.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+
+                    Toggle("Hold-to-passthrough", isOn: $appState.isHoldToPassthroughEnabled)
+                    Text("Hold the mouse still within the click dead zone to pass through the click for normal drag operations (text selection, window resize).")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+
+                    Stepper(
+                        "Hold delay: \(appState.holdToPassthroughDelay, specifier: "%.2g")s",
+                        value: $appState.holdToPassthroughDelay,
+                        in: 0.25...5.0,
+                        step: 0.25
+                    )
+                    .disabled(!appState.isHoldToPassthroughEnabled)
+                    Text("How long to hold still before the click passes through (0.25s \u{2013} 5s).")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
 
                 // MARK: - Hotkey
