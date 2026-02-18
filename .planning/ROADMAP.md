@@ -181,7 +181,7 @@ Plans:
 
 - [x] **Phase 10: Menu Bar Icon** - Status item showing scroll state with click-to-toggle and right-click context menu (completed 2026-02-18)
 - [ ] **Phase 11: Hold-to-Passthrough** - Hold still in dead zone to pass through click for text selection and window resize
-- [ ] **Phase 12: Per-App Exclusion** - Settings UI to add/remove apps from exclusion list where scroll mode is disabled
+- [x] **Phase 12: Per-App Exclusion** - Settings UI to add/remove apps from exclusion list where scroll mode is disabled (completed 2026-02-18)
 
 ## Phase Details
 
@@ -248,4 +248,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 9. Release & Documentation | v1.2 | 1/1 | Complete | 2026-02-17 |
 | 10. Menu Bar Icon | v1.3.0 | Complete    | 2026-02-18 | - |
 | 11. Hold-to-Passthrough | v1.3.0 | 0/? | Not started | - |
-| 12. Per-App Exclusion | v1.3.0 | 0/? | Not started | - |
+| 12. Per-App Exclusion | v1.3.0 | Complete    | 2026-02-18 | - |
