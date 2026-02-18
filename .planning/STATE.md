@@ -5,22 +5,22 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** Users can scroll any scrollable area by clicking and dragging with the mouse pointer, with natural inertia -- no scroll wheel or trackpad required.
-**Current focus:** Phase 10 — Menu Bar Icon
+**Current focus:** Phase 11 — Hold-to-Passthrough
 
 ## Current Position
 
-Phase: 10 of 12 (Menu Bar Icon)
+Phase: 11 of 12 (Hold-to-Passthrough)
 Plan: 1 of 1 in current phase (COMPLETE)
-Status: Phase 10 complete
-Last activity: 2026-02-17 — Completed 10-01-PLAN.md (menu bar icon)
+Status: Phase 11 complete
+Last activity: 2026-02-17 — Completed 11-01-PLAN.md (hold-to-passthrough)
 
-Progress: [###########.] 83% (10/12 phases complete)
+Progress: [############] 91% (11/12 phases complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 15
-- Average duration: 41min
+- Total plans completed: 16
+- Average duration: 39min
 - Total execution time: ~10 hours
 
 **By Phase:**
@@ -37,9 +37,10 @@ Progress: [###########.] 83% (10/12 phases complete)
 | 08-code-signing-notarization | 1 | 30min | 30min |
 | 09-release-documentation | 1 | 1min | 1min |
 | 10-menu-bar-icon | 1 | 2min | 2min |
+| 11-hold-to-passthrough | 1 | 2min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 113min, 12min, 30min, 1min, 2min
+- Last 5 plans: 12min, 30min, 1min, 2min, 2min
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -53,6 +54,9 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - Menu bar icon is optional (can be disabled), not a replacement for the settings window
 - Programmatic NSBezierPath icon instead of PDF asset for menu bar icon
 - MenuBarManager is plain class (not @Observable) -- pure AppKit, no SwiftUI observation needed
+- GCD DispatchSourceTimer on main queue for hold-to-passthrough detection (thread-safe with event tap)
+- Passthrough mode replays mouseDown only; drags and mouseUp pass through via flag
+- No inertia fires on passthrough drags
 
 ### Pending Todos
 
@@ -73,5 +77,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 10-01-PLAN.md (menu bar icon)
+Stopped at: Completed 11-01-PLAN.md (hold-to-passthrough)
 Resume file: --
