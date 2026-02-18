@@ -40,31 +40,52 @@
 - [x] **OSK-04**: Scroll mode remains toggled on while OSK clicks pass through
 - [x] **OSK-05**: OSK process name is verified empirically at runtime before hardcoding detection logic
 
-## v1.2 Requirements
-
-Requirements for distribution milestone. Each maps to roadmap phases.
+## v1.2 Requirements (Shipped)
 
 ### Icon
 
-- [ ] **ICON-01**: App has a properly formatted macOS AppIcon.appiconset (all required sizes generated from source image)
-- [ ] **ICON-02**: Icon appears correctly in Dock, Finder, and app switcher
+- [x] **ICON-01**: App has a properly formatted macOS AppIcon.appiconset (all required sizes generated from source image)
+- [x] **ICON-02**: Icon appears correctly in Dock, Finder, and app switcher
 
 ### Signing
 
-- [ ] **SIGN-01**: App is signed with Developer ID Application certificate
-- [ ] **SIGN-02**: App is notarized with Apple (stapled notarization ticket)
-- [ ] **SIGN-03**: App opens without Gatekeeper warnings on a clean machine
+- [x] **SIGN-01**: App is signed with Developer ID Application certificate
+- [x] **SIGN-02**: App is notarized with Apple (stapled notarization ticket)
+- [x] **SIGN-03**: App opens without Gatekeeper warnings on a clean machine
 
 ### Release
 
-- [ ] **REL-01**: Build produces a zipped .app bundle ready for distribution
-- [ ] **REL-02**: Release is published on GitHub with version tag and release notes
+- [x] **REL-01**: Build produces a zipped .app bundle ready for distribution
+- [x] **REL-02**: Release is published on GitHub with version tag and release notes
 
 ### Documentation
 
-- [ ] **DOC-01**: README.md explains what the app is, what it does, and why it exists
-- [ ] **DOC-02**: README includes personal motivation (accessibility need)
-- [ ] **DOC-03**: README includes AI-assisted development disclaimer
+- [x] **DOC-01**: README.md explains what the app is, what it does, and why it exists
+- [x] **DOC-02**: README includes personal motivation (accessibility need)
+- [x] **DOC-03**: README includes AI-assisted development disclaimer
+
+## v1.3.0 Requirements
+
+Requirements for this milestone. Each maps to roadmap phases.
+
+### Menu Bar Icon
+
+- [ ] **MBAR-01**: User can see scroll mode state (on/off) via a menu bar icon
+- [ ] **MBAR-02**: User can toggle scroll mode by clicking the menu bar icon
+- [ ] **MBAR-03**: User can access settings window via right-click context menu on the menu bar icon
+- [ ] **MBAR-04**: User can disable the menu bar icon in settings
+
+### Hold-to-Passthrough
+
+- [ ] **PASS-01**: User can hold still within the dead zone for a configurable delay to pass through the click for normal drag operations (text select, window resize)
+- [ ] **PASS-02**: User can enable/disable hold-to-passthrough in settings (off by default)
+- [ ] **PASS-03**: User can configure the hold delay duration in settings (default 1.5s)
+
+### Per-App Exclusion
+
+- [ ] **EXCL-01**: User can add apps to an exclusion list where scroll mode is automatically disabled
+- [ ] **EXCL-02**: User can remove apps from the exclusion list
+- [ ] **EXCL-03**: Exclusion list is managed in the settings UI
 
 ## Future Requirements
 
@@ -74,12 +95,10 @@ Deferred to future release. Tracked but not in current roadmap.
 
 - **SCRL-05**: Adjustable scroll speed (slider to control sensitivity)
 - **SCRL-06**: Directional preference (natural vs traditional scroll direction)
-- **APP-04**: Per-app exclusion list (disable scroll mode for specific apps)
 
 ### Extended Exclusions
 
-- **EXCL-01**: User can add custom apps/windows to the click pass-through exclusion list
-- **EXCL-02**: Third-party on-screen keyboard support
+- **EXCL-04**: Third-party on-screen keyboard support
 
 ## Out of Scope
 
@@ -87,18 +106,15 @@ Explicitly excluded. Documented to prevent scope creep.
 
 | Feature | Reason |
 |---------|--------|
-| Menu bar app | User prefers simple window app |
 | Hold-modifier activation | Toggle hotkey is simpler and sufficient |
 | Audio feedback on toggle | Not essential; visual indicator covers this |
-| Visual overlay indicator | Cursor change or alternative sufficient |
 | CLI-only version | GUI selected for ease of use |
 | Multi-button support | Left click only for v1 |
-| Configurable exclusion list | Keep v1.1 focused — hardcode OSK detection only |
 | Third-party OSK support | Defer until user need is established |
-| Visual indicator for pass-through zones | Zero config, transparent behavior preferred |
 | .dmg installer | Zip is sufficient for initial release |
 | Homebrew cask | Defer until user demand exists |
 | CI/CD automation | Manual build process is fine for now |
+| Menu bar as primary settings UI | Menu bar icon is toggle + shortcut to settings only |
 
 ## Traceability
 
@@ -124,24 +140,35 @@ Which phases cover which requirements. Updated during roadmap creation.
 | OSK-03 | Phase 6 | Complete |
 | OSK-04 | Phase 6 | Complete |
 | OSK-05 | Phase 6 | Complete |
-| ICON-01 | Phase 7 | Pending |
-| ICON-02 | Phase 7 | Pending |
-| SIGN-01 | Phase 8 | Pending |
-| SIGN-02 | Phase 8 | Pending |
-| SIGN-03 | Phase 8 | Pending |
-| REL-01 | Phase 9 | Pending |
-| REL-02 | Phase 9 | Pending |
-| DOC-01 | Phase 9 | Pending |
-| DOC-02 | Phase 9 | Pending |
-| DOC-03 | Phase 9 | Pending |
+| ICON-01 | Phase 7 | Complete |
+| ICON-02 | Phase 7 | Complete |
+| SIGN-01 | Phase 8 | Complete |
+| SIGN-02 | Phase 8 | Complete |
+| SIGN-03 | Phase 8 | Complete |
+| REL-01 | Phase 9 | Complete |
+| REL-02 | Phase 9 | Complete |
+| DOC-01 | Phase 9 | Complete |
+| DOC-02 | Phase 9 | Complete |
+| DOC-03 | Phase 9 | Complete |
+| MBAR-01 | — | Pending |
+| MBAR-02 | — | Pending |
+| MBAR-03 | — | Pending |
+| MBAR-04 | — | Pending |
+| PASS-01 | — | Pending |
+| PASS-02 | — | Pending |
+| PASS-03 | — | Pending |
+| EXCL-01 | — | Pending |
+| EXCL-02 | — | Pending |
+| EXCL-03 | — | Pending |
 
 **Coverage:**
 - v1.0 requirements: 13 total (all complete)
 - v1.1 requirements: 5 total (all complete)
-- v1.2 requirements: 10 total
-- Mapped to phases: 10/10
-- Unmapped: 0
+- v1.2 requirements: 10 total (all complete)
+- v1.3.0 requirements: 10 total
+- Mapped to phases: 0/10 ⚠️
+- Unmapped: 10
 
 ---
 *Requirements defined: 2026-02-14*
-*Last updated: 2026-02-16 after v1.2 roadmap creation*
+*Last updated: 2026-02-17 after v1.3.0 milestone requirements defined*
