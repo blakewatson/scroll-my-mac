@@ -130,7 +130,7 @@ class AppState {
             self?.toggleScrollMode()
         }
         menuBarManager.onOpenSettings = {
-            NSApp.windows.first?.makeKeyAndOrderFront(nil)
+            AppDelegate.settingsWindow()?.makeKeyAndOrderFront(nil)
             NSApp.activate(ignoringOtherApps: true)
         }
         if isMenuBarIconEnabled {

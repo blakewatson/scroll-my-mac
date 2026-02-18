@@ -1,14 +1,24 @@
 import AppKit
 
 /// Manages an NSStatusItem in the menu bar for quick scroll-mode toggling.
-class MenuBarManager {
+///
+/// Any click opens the menu (standard macOS pattern). The first item toggles
+/// scroll mode. This works universally with all input methods including
+/// accessibility dwell-click.
+class MenuBarManager: NSObject, NSMenuDelegate {
     private var statusItem: NSStatusItem?
+    private var toggleItem: NSMenuItem?
 
-    /// Called when the user left-clicks the status item (toggle scroll mode).
+    /// Called when the user selects "Toggle Scroll Mode" from the menu.
     var onToggle: (() -> Void)?
 
-    /// Called when the user selects "Settings..." from the context menu.
+    /// Called when the user selects "Settings..." from the menu.
     var onOpenSettings: (() -> Void)?
+
+    /// Current scroll mode state, used to update the toggle item title.
+    var isActive: Bool = false {
+        didSet { updateToggleTitle() }
+    }
 
     // MARK: - Show / Hide
 
@@ -18,9 +28,11 @@ class MenuBarManager {
         let icon = makeMenuBarIcon()
         icon.isTemplate = true
         item.button?.image = icon
-        item.button?.target = self
-        item.button?.action = #selector(handleClick)
-        item.button?.sendAction(on: [.leftMouseUp, .rightMouseUp])
+
+        let menu = buildMenu()
+        menu.delegate = self
+        item.menu = menu
+
         statusItem = item
     }
 
@@ -33,40 +45,29 @@ class MenuBarManager {
     // MARK: - State
 
     func updateIcon(isActive: Bool) {
+        self.isActive = isActive
         statusItem?.button?.alphaValue = isActive ? 1.0 : 0.4
     }
 
-    // MARK: - Click Handling
+    // MARK: - Menu
 
-    @objc private func handleClick() {
-        guard let event = NSApp.currentEvent else { return }
-        let isRightClick = event.type == .rightMouseUp
-            || event.modifierFlags.contains(.control)
-        if isRightClick {
-            showContextMenu()
-        } else {
-            onToggle?()
-        }
-    }
-
-    private func showContextMenu() {
-        let menu = buildContextMenu()
-        guard let button = statusItem?.button else { return }
-        menu.popUp(positioning: nil,
-                   at: NSPoint(x: 0, y: button.bounds.height),
-                   in: button)
-    }
-
-    private func buildContextMenu() -> NSMenu {
+    private func buildMenu() -> NSMenu {
         let menu = NSMenu()
 
+        let toggle = NSMenuItem(title: "Turn Scroll Mode On",
+                                action: #selector(toggleAction),
+                                keyEquivalent: "")
+        toggle.target = self
+        menu.addItem(toggle)
+        toggleItem = toggle
+
+        menu.addItem(.separator())
+
         let settingsItem = NSMenuItem(title: "Settings...",
-                                      action: #selector(settingsMenuAction),
+                                      action: #selector(settingsAction),
                                       keyEquivalent: "")
         settingsItem.target = self
         menu.addItem(settingsItem)
-
-        menu.addItem(.separator())
 
         let quitItem = NSMenuItem(title: "Quit Scroll My Mac",
                                   action: #selector(NSApplication.terminate(_:)),
@@ -76,7 +77,15 @@ class MenuBarManager {
         return menu
     }
 
-    @objc private func settingsMenuAction() {
+    private func updateToggleTitle() {
+        toggleItem?.title = isActive ? "Turn Scroll Mode Off" : "Turn Scroll Mode On"
+    }
+
+    @objc private func toggleAction() {
+        onToggle?()
+    }
+
+    @objc private func settingsAction() {
         onOpenSettings?()
     }
 
