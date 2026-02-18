@@ -195,10 +195,10 @@ Plans:
   3. Right-clicking the menu bar icon opens a context menu with a "Settings..." option that opens the settings window
   4. User can disable the menu bar icon in settings, and it disappears from the menu bar
   5. Re-enabling the menu bar icon in settings makes it reappear without restarting the app
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 10-01: TBD
+- [ ] 10-01-PLAN.md — MenuBarManager service with custom icon, AppState wiring, left-click toggle, right-click context menu, and settings toggle
 
 ### Phase 11: Hold-to-Passthrough
 **Goal**: Users can perform normal drag operations (text selection, window resize) without leaving scroll mode
