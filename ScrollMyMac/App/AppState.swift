@@ -60,6 +60,20 @@ class AppState {
         }
     }
 
+    var isHoldToPassthroughEnabled: Bool {
+        didSet {
+            UserDefaults.standard.set(isHoldToPassthroughEnabled, forKey: "holdToPassthroughEnabled")
+            scrollEngine.holdToPassthroughEnabled = isHoldToPassthroughEnabled
+        }
+    }
+
+    var holdToPassthroughDelay: Double {
+        didSet {
+            UserDefaults.standard.set(holdToPassthroughDelay, forKey: "holdToPassthroughDelay")
+            scrollEngine.holdToPassthroughDelay = holdToPassthroughDelay
+        }
+    }
+
     var isMenuBarIconEnabled: Bool {
         didSet {
             UserDefaults.standard.set(isMenuBarIconEnabled, forKey: "menuBarIconEnabled")
@@ -90,6 +104,8 @@ class AppState {
         self.isSafetyModeEnabled = UserDefaults.standard.object(forKey: "safetyModeEnabled") as? Bool ?? true
         self.isClickThroughEnabled = UserDefaults.standard.object(forKey: "clickThroughEnabled") as? Bool ?? true
         self.hasCompletedOnboarding = UserDefaults.standard.bool(forKey: "hasCompletedOnboarding")
+        self.isHoldToPassthroughEnabled = UserDefaults.standard.object(forKey: "holdToPassthroughEnabled") as? Bool ?? false
+        self.holdToPassthroughDelay = UserDefaults.standard.object(forKey: "holdToPassthroughDelay") as? Double ?? 1.5
         self.isMenuBarIconEnabled = UserDefaults.standard.object(forKey: "menuBarIconEnabled") as? Bool ?? true
 
         let defaults = UserDefaults.standard
@@ -124,6 +140,8 @@ class AppState {
         applyHotkeySettings()
 
         scrollEngine.clickThroughEnabled = isClickThroughEnabled
+        scrollEngine.holdToPassthroughEnabled = isHoldToPassthroughEnabled
+        scrollEngine.holdToPassthroughDelay = holdToPassthroughDelay
 
         // Menu bar icon
         menuBarManager.onToggle = { [weak self] in
@@ -172,6 +190,8 @@ class AppState {
         hotkeyModifiers = 0
         isSafetyModeEnabled = true
         isClickThroughEnabled = true
+        isHoldToPassthroughEnabled = false
+        holdToPassthroughDelay = 1.5
         isMenuBarIconEnabled = true
     }
 

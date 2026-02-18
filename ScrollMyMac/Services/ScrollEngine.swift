@@ -29,6 +29,13 @@ class ScrollEngine {
     /// When false, all clicks become scrolls (legacy behavior).
     var clickThroughEnabled: Bool = true
 
+    /// When true, holding still in the dead zone for `holdToPassthroughDelay`
+    /// seconds replays the click and enters passthrough mode for normal drags.
+    var holdToPassthroughEnabled: Bool = false
+
+    /// How long (seconds) to hold still before passthrough activates.
+    var holdToPassthroughDelay: TimeInterval = 1.5
+
     // MARK: - Axis
 
     enum Axis {
@@ -62,6 +69,10 @@ class ScrollEngine {
     private var pendingMouseDownLocation: CGPoint = .zero
     private var totalMovement: CGFloat = 0.0
     private let clickDeadZone: CGFloat = 8.0
+
+    // Hold-to-passthrough state
+    private var holdTimer: DispatchSourceTimer?
+    private var isInPassthroughMode: Bool = false
 
     // MARK: - Lifecycle
 
@@ -120,6 +131,8 @@ class ScrollEngine {
             CGEvent.tapEnable(tap: tap, enable: false)
         }
         // Reset pending state without replaying (user intent is to toggle off, not click).
+        cancelHoldTimer()
+        isInPassthroughMode = false
         pendingMouseDown = false
         totalMovement = 0.0
         resetDragState()
@@ -187,6 +200,22 @@ class ScrollEngine {
             totalMovement = 0.0
             dragOrigin = location
             lastDragPoint = location
+
+            // Start hold-to-passthrough timer if enabled and this is a primary click.
+            if holdToPassthroughEnabled && event.getIntegerValueField(.mouseEventButtonNumber) == 0 {
+                let timer = DispatchSource.makeTimerSource(queue: .main)
+                timer.schedule(deadline: .now() + holdToPassthroughDelay)
+                timer.setEventHandler { [weak self] in
+                    guard let self else { return }
+                    self.cancelHoldTimer()
+                    self.isInPassthroughMode = true
+                    self.pendingMouseDown = false
+                    self.replayClick(at: self.pendingMouseDownLocation, clickState: self.pendingClickState)
+                }
+                timer.resume()
+                holdTimer = timer
+            }
+
             return nil // Suppress original event until we decide.
         } else {
             // Legacy behavior: all clicks become scroll starts.
@@ -206,12 +235,18 @@ class ScrollEngine {
             return Unmanaged.passUnretained(event)
         }
 
+        // In passthrough mode, let drags through unmodified.
+        if isInPassthroughMode {
+            return Unmanaged.passUnretained(event)
+        }
+
         // Handle pending click-through: check if user has moved beyond dead zone.
         if pendingMouseDown {
             let currentPoint = event.location
             totalMovement = hypot(currentPoint.x - pendingMouseDownLocation.x, currentPoint.y - pendingMouseDownLocation.y)
             if totalMovement > clickDeadZone {
-                // Exceeded dead zone — transition to scroll mode.
+                // Exceeded dead zone — cancel hold timer, transition to scroll mode.
+                cancelHoldTimer()
                 pendingMouseDown = false
                 isDragging = true
                 isFirstDragEvent = true
@@ -284,8 +319,16 @@ class ScrollEngine {
             return Unmanaged.passUnretained(event)
         }
 
+        // End passthrough mode on mouseUp — no inertia.
+        if isInPassthroughMode {
+            isInPassthroughMode = false
+            cancelHoldTimer()
+            return Unmanaged.passUnretained(event)
+        }
+
         // Pending click within dead zone — replay as normal click.
         if pendingMouseDown {
+            cancelHoldTimer()
             pendingMouseDown = false
             replayClick(at: pendingMouseDownLocation, clickState: pendingClickState)
             return nil // Suppress original mouseUp; synthetic pair was posted.
@@ -383,6 +426,11 @@ class ScrollEngine {
         up.post(tap: .cghidEventTap)
     }
 
+    private func cancelHoldTimer() {
+        holdTimer?.cancel()
+        holdTimer = nil
+    }
+
     private func resetDragState() {
         isDragging = false
         pendingMouseDown = false
@@ -391,6 +439,8 @@ class ScrollEngine {
         accumulatedDelta = .zero
         isFirstDragEvent = true
         velocityTracker.reset()
+        cancelHoldTimer()
+        isInPassthroughMode = false
     }
 }
 
