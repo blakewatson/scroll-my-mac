@@ -141,11 +141,14 @@ struct MainSettingsView: View {
                                     .resizable()
                                     .frame(width: 20, height: 20)
                                 Text(displayNameForBundleID(bundleID))
+                                Spacer()
                             }
-                            .tag(bundleID)
+                            .padding(.vertical, 2)
                             .contentShape(Rectangle())
-                            .background(selectedExcludedApp == bundleID ? Color.accentColor.opacity(0.2) : Color.clear)
-                            .cornerRadius(4)
+                            .background(
+                                RoundedRectangle(cornerRadius: 4)
+                                    .fill(selectedExcludedApp == bundleID ? Color.accentColor.opacity(0.2) : Color.clear)
+                            )
                             .onTapGesture {
                                 selectedExcludedApp = bundleID
                             }
