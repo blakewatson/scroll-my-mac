@@ -90,6 +90,11 @@ struct MainSettingsView: View {
 
                 // MARK: - General
                 Section("General") {
+                    Toggle("Show menu bar icon", isOn: $appState.isMenuBarIconEnabled)
+                    Text("Display a status icon in the menu bar for quick scroll mode toggling.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+
                     Toggle("Launch at login", isOn: $launchAtLogin)
                     Text("Start Scroll My Mac automatically when you log in. The app launches in the background.")
                         .font(.caption)
