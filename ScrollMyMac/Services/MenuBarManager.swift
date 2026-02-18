@@ -40,7 +40,9 @@ class MenuBarManager {
 
     @objc private func handleClick() {
         guard let event = NSApp.currentEvent else { return }
-        if event.type == .rightMouseUp {
+        let isRightClick = event.type == .rightMouseUp
+            || event.modifierFlags.contains(.control)
+        if isRightClick {
             showContextMenu()
         } else {
             onToggle?()
