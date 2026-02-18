@@ -223,10 +223,11 @@ Plans:
   2. User can remove an app from the exclusion list from the settings UI
   3. When the frontmost app is on the exclusion list, scroll mode clicks pass through as normal clicks (scroll mode stays toggled on but is effectively bypassed)
   4. Switching away from an excluded app to a non-excluded app restores normal scroll mode behavior immediately
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 12-01: TBD
+- [ ] 12-01-PLAN.md — AppExclusionManager service, ScrollEngine bypass, AppState wiring, MenuBarManager slash icon feedback
+- [ ] 12-02-PLAN.md — Exclusion list UI in Settings with add/remove via NSOpenPanel, human verification
 
 ## Progress
 
