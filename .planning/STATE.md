@@ -10,17 +10,17 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 12 of 12 (Per-App Exclusion)
-Plan: 1 of 2 in current phase (COMPLETE)
-Status: Executing phase 12
-Last activity: 2026-02-17 — Completed 12-01-PLAN.md (per-app exclusion engine)
+Plan: 2 of 2 in current phase (COMPLETE)
+Status: ALL PHASES COMPLETE
+Last activity: 2026-02-17 — Completed 12-02-PLAN.md (per-app exclusion settings UI)
 
-Progress: [############] 91% (11/12 phases complete, plan 1/2 in phase 12)
+Progress: [################] 100% (12/12 phases complete)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 17
-- Average duration: 37min
+- Total plans completed: 18
+- Average duration: 35min
 - Total execution time: ~10 hours
 
 **By Phase:**
@@ -38,10 +38,10 @@ Progress: [############] 91% (11/12 phases complete, plan 1/2 in phase 12)
 | 09-release-documentation | 1 | 1min | 1min |
 | 10-menu-bar-icon | 1 | 2min | 2min |
 | 11-hold-to-passthrough | 1 | 2min | 2min |
-| 12-per-app-exclusion | 1 | 2min | 2min |
+| 12-per-app-exclusion | 2 | 17min | 9min |
 
 **Recent Trend:**
-- Last 5 plans: 30min, 1min, 2min, 2min, 2min
+- Last 5 plans: 1min, 2min, 2min, 2min, 15min
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -61,6 +61,8 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - Stale bundle IDs kept in exclusion list (no harm, user removes via settings)
 - Hotkey toggle works normally in excluded apps (global state vs per-app bypass)
 - AppExclusionManager always monitors (not tied to scroll mode) for correct menu bar state
+- excludedAppBundleIDs changed from computed to stored @Published property for SwiftUI reactivity
+- Full-width rows with expanded click areas for better exclusion list usability
 
 ### Pending Todos
 
@@ -81,5 +83,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 12-01-PLAN.md (per-app exclusion engine)
+Stopped at: Completed 12-02-PLAN.md (per-app exclusion settings UI) -- ALL PHASES COMPLETE
 Resume file: --
