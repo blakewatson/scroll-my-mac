@@ -25,6 +25,7 @@
 		A10000010000000000000016 /* WindowExclusionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000019 /* WindowExclusionManager.swift */; };
 		A10000010000000000000017 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000020 /* Assets.xcassets */; };
 		A10000010000000000000018 /* MenuBarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000021 /* MenuBarManager.swift */; };
+		A10000010000000000000019 /* AppExclusionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000022 /* AppExclusionManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,6 +50,7 @@
 		A20000010000000000000019 /* WindowExclusionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowExclusionManager.swift; sourceTree = "<group>"; };
 		A20000010000000000000020 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A20000010000000000000021 /* MenuBarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarManager.swift; sourceTree = "<group>"; };
+		A20000010000000000000022 /* AppExclusionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppExclusionManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +107,7 @@
 				A20000010000000000000016 /* InertiaAnimator.swift */,
 				A20000010000000000000019 /* WindowExclusionManager.swift */,
 				A20000010000000000000021 /* MenuBarManager.swift */,
+				A20000010000000000000022 /* AppExclusionManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -234,6 +237,7 @@
 				A10000010000000000000015 /* HotkeyRecorderView.swift in Sources */,
 				A10000010000000000000016 /* WindowExclusionManager.swift in Sources */,
 				A10000010000000000000018 /* MenuBarManager.swift in Sources */,
+				A10000010000000000000019 /* AppExclusionManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -293,10 +297,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ScrollMyMac/ScrollMyMac.entitlements;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2Q7B93XCX5;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = 2Q7B93XCX5;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ScrollMyMac/Resources/Info.plist;
@@ -320,10 +326,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ScrollMyMac/ScrollMyMac.entitlements;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2Q7B93XCX5;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = 2Q7B93XCX5;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ScrollMyMac/Resources/Info.plist;

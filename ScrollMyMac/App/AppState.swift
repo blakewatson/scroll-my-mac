@@ -86,6 +86,19 @@ class AppState {
         }
     }
 
+    // MARK: - Per-App Exclusion
+
+    /// The current exclusion list — delegates to AppExclusionManager.
+    var excludedAppBundleIDs: [String] {
+        appExclusionManager.excludedBundleIDs
+    }
+
+    /// True when the frontmost app is on the exclusion list.
+    var isCurrentAppExcluded: Bool = false
+
+    /// Display name of the currently excluded frontmost app (for tooltip).
+    var excludedAppName: String?
+
     // MARK: - Services
 
     let scrollEngine = ScrollEngine()
@@ -93,6 +106,7 @@ class AppState {
     let overlayManager = OverlayManager()
     let windowExclusionManager = WindowExclusionManager()
     let menuBarManager = MenuBarManager()
+    let appExclusionManager = AppExclusionManager()
 
     // MARK: - Permission Health Check
 
@@ -105,7 +119,7 @@ class AppState {
         self.isClickThroughEnabled = UserDefaults.standard.object(forKey: "clickThroughEnabled") as? Bool ?? true
         self.hasCompletedOnboarding = UserDefaults.standard.bool(forKey: "hasCompletedOnboarding")
         self.isHoldToPassthroughEnabled = UserDefaults.standard.object(forKey: "holdToPassthroughEnabled") as? Bool ?? false
-        self.holdToPassthroughDelay = UserDefaults.standard.object(forKey: "holdToPassthroughDelay") as? Double ?? 1.5
+        self.holdToPassthroughDelay = UserDefaults.standard.object(forKey: "holdToPassthroughDelay") as? Double ?? 1.0
         self.isMenuBarIconEnabled = UserDefaults.standard.object(forKey: "menuBarIconEnabled") as? Bool ?? true
 
         let defaults = UserDefaults.standard
@@ -156,6 +170,21 @@ class AppState {
             menuBarManager.updateIcon(isActive: isScrollModeActive)
         }
 
+        // Per-app exclusion: bypass all events when frontmost app is excluded.
+        scrollEngine.shouldBypassAllEvents = { [weak self] in
+            self?.appExclusionManager.isFrontmostExcluded ?? false
+        }
+
+        appExclusionManager.onExclusionStateChanged = { [weak self] isExcluded, appName in
+            guard let self else { return }
+            self.isCurrentAppExcluded = isExcluded
+            self.excludedAppName = appName
+            self.menuBarManager.updateExclusionState(isExcluded: isExcluded, appName: appName)
+        }
+
+        // Always monitor app switches (not tied to scroll mode activation).
+        appExclusionManager.startMonitoring()
+
         scrollEngine.shouldPassThroughClick = { [weak self] cgPoint in
             guard let self else { return false }
 
@@ -191,8 +220,22 @@ class AppState {
         isSafetyModeEnabled = true
         isClickThroughEnabled = true
         isHoldToPassthroughEnabled = false
-        holdToPassthroughDelay = 1.5
+        holdToPassthroughDelay = 1.0
         isMenuBarIconEnabled = true
+        appExclusionManager.clearAll()
+        appExclusionManager.recheckFrontmostApp()
+    }
+
+    // MARK: - Per-App Exclusion
+
+    func addExcludedApp(bundleID: String) {
+        appExclusionManager.add(bundleID: bundleID)
+        appExclusionManager.recheckFrontmostApp()
+    }
+
+    func removeExcludedApp(bundleID: String) {
+        appExclusionManager.remove(bundleID: bundleID)
+        appExclusionManager.recheckFrontmostApp()
     }
 
     // MARK: - Scroll Mode Toggle

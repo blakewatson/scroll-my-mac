@@ -25,6 +25,10 @@ class ScrollEngine {
     /// Called when dragging starts (true) or ends (false).
     var onDragStateChanged: ((Bool) -> Void)?
 
+    /// When this returns true, ALL mouse events pass through unmodified.
+    /// Used by per-app exclusion to completely bypass scroll mode.
+    var shouldBypassAllEvents: (() -> Bool)?
+
     /// When true, clicks within the dead zone are replayed as normal clicks.
     /// When false, all clicks become scrolls (legacy behavior).
     var clickThroughEnabled: Bool = true
@@ -34,7 +38,7 @@ class ScrollEngine {
     var holdToPassthroughEnabled: Bool = false
 
     /// How long (seconds) to hold still before passthrough activates.
-    var holdToPassthroughDelay: TimeInterval = 1.5
+    var holdToPassthroughDelay: TimeInterval = 1.0
 
     // MARK: - Axis
 
@@ -210,7 +214,7 @@ class ScrollEngine {
                     self.cancelHoldTimer()
                     self.isInPassthroughMode = true
                     self.pendingMouseDown = false
-                    self.replayClick(at: self.pendingMouseDownLocation, clickState: self.pendingClickState)
+                    self.replayMouseDown(at: self.pendingMouseDownLocation, clickState: self.pendingClickState)
                 }
                 timer.resume()
                 holdTimer = timer
@@ -320,10 +324,13 @@ class ScrollEngine {
         }
 
         // End passthrough mode on mouseUp — no inertia.
+        // Post a synthetic mouseUp at .cghidEventTap to match the synthetic
+        // mouseDown we posted, so the window server properly pairs them.
         if isInPassthroughMode {
             isInPassthroughMode = false
             cancelHoldTimer()
-            return Unmanaged.passUnretained(event)
+            replayMouseUp(at: event.location, clickState: pendingClickState)
+            return nil // Suppress real mouseUp; synthetic one was posted.
         }
 
         // Pending click within dead zone — replay as normal click.
@@ -426,6 +433,43 @@ class ScrollEngine {
         up.post(tap: .cghidEventTap)
     }
 
+    /// Posts only a synthetic mouseDown (no mouseUp) so the window server
+    /// treats it as the start of a drag, enabling window moves and resizes.
+    private func replayMouseDown(at position: CGPoint, clickState: Int64) {
+        let source = CGEventSource(stateID: .hidSystemState)
+
+        guard let down = CGEvent(
+            mouseEventSource: source,
+            mouseType: .leftMouseDown,
+            mouseCursorPosition: position,
+            mouseButton: .left
+        ) else {
+            return
+        }
+
+        down.setIntegerValueField(.mouseEventClickState, value: clickState)
+        down.setIntegerValueField(.eventSourceUserData, value: ScrollEngine.replayMarker)
+        down.post(tap: .cghidEventTap)
+    }
+
+    /// Posts a synthetic mouseUp at .cghidEventTap to pair with replayMouseDown.
+    private func replayMouseUp(at position: CGPoint, clickState: Int64) {
+        let source = CGEventSource(stateID: .hidSystemState)
+
+        guard let up = CGEvent(
+            mouseEventSource: source,
+            mouseType: .leftMouseUp,
+            mouseCursorPosition: position,
+            mouseButton: .left
+        ) else {
+            return
+        }
+
+        up.setIntegerValueField(.mouseEventClickState, value: clickState)
+        up.setIntegerValueField(.eventSourceUserData, value: ScrollEngine.replayMarker)
+        up.post(tap: .cghidEventTap)
+    }
+
     private func cancelHoldTimer() {
         holdTimer?.cancel()
         holdTimer = nil
@@ -471,6 +515,11 @@ private func scrollEventCallback(
     }
 
     let engine = Unmanaged<ScrollEngine>.fromOpaque(userInfo).takeUnretainedValue()
+
+    // Per-app exclusion: bypass all events when the frontmost app is excluded.
+    if engine.shouldBypassAllEvents?() == true {
+        return Unmanaged.passUnretained(event)
+    }
 
     switch type {
     case .leftMouseDown:

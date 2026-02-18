@@ -49,6 +49,19 @@ class MenuBarManager: NSObject, NSMenuDelegate {
         statusItem?.button?.alphaValue = isActive ? 1.0 : 0.4
     }
 
+    // MARK: - Exclusion State
+
+    /// Stored exclusion state so updateIcon can consider it.
+    private var isExcludedApp: Bool = false
+    private var excludedAppDisplayName: String?
+
+    /// Updates visual feedback for per-app exclusion.
+    /// Full implementation (slash icon + tooltip) added in Task 2.
+    func updateExclusionState(isExcluded: Bool, appName: String?) {
+        isExcludedApp = isExcluded
+        excludedAppDisplayName = appName
+    }
+
     // MARK: - Menu
 
     private func buildMenu() -> NSMenu {
