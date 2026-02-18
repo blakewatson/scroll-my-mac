@@ -209,10 +209,10 @@ Plans:
   2. Hold-to-passthrough is off by default and can be enabled in settings
   3. The hold delay duration is configurable in settings with a default of 1.5 seconds
   4. When hold-to-passthrough is disabled, scroll mode behavior is unchanged from v1.2
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 11-01: TBD
+- [ ] 11-01-PLAN.md — Hold-to-passthrough logic in ScrollEngine, AppState wiring, and Settings UI controls
 
 ### Phase 12: Per-App Exclusion
 **Goal**: Users can designate specific apps where scroll mode is automatically disabled
