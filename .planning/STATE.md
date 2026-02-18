@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 Phase: 12 of 12 (Per-App Exclusion)
 Plan: 2 of 2 in current phase (COMPLETE)
 Status: ALL PHASES COMPLETE
-Last activity: 2026-02-17 — Completed 12-02-PLAN.md (per-app exclusion settings UI)
+Last activity: 2026-02-18 - Completed quick task 4: Change hold-to-passthrough wording in settings window
 
 Progress: [################] 100% (12/12 phases complete)
 
@@ -79,7 +79,7 @@ None.
 | 1 | Add MIT license and update README accordingly | 2026-02-17 | a8fb027 | [1-add-mit-license-and-update-readme-accord](./quick/1-add-mit-license-and-update-readme-accord/) |
 | 2 | Add safety timeout note to README | 2026-02-16 | db7a8b9 | [2-add-safety-timeout-note-to-readme](./quick/2-add-safety-timeout-note-to-readme/) |
 | 3 | Move CGEventTap to background thread | 2026-02-17 | a2838da | [3-move-cgeventtap-to-background-thread](./quick/3-move-cgeventtap-to-background-thread/) |
-| 4 | Change hold-to-passthrough wording in settings | 2026-02-17 | 502e81b | [4-change-hold-to-passthrough-wording-in-se](./quick/4-change-hold-to-passthrough-wording-in-se/) |
+| 4 | Change hold-to-passthrough wording in settings window | 2026-02-18 | 3ef52e2 | [4-change-hold-to-passthrough-wording-in-se](./quick/4-change-hold-to-passthrough-wording-in-se/) |
 
 ## Session Continuity
 
