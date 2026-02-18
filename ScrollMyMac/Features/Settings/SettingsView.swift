@@ -155,11 +155,13 @@ struct MainSettingsView: View {
                         }
                     }
 
-                    HStack(spacing: 8) {
+                    HStack(spacing: 4) {
                         Button {
                             addExcludedAppViaPanel()
                         } label: {
                             Image(systemName: "plus")
+                                .frame(width: 24, height: 24)
+                                .contentShape(Rectangle())
                         }
                         .buttonStyle(.borderless)
 
@@ -170,6 +172,8 @@ struct MainSettingsView: View {
                             }
                         } label: {
                             Image(systemName: "minus")
+                                .frame(width: 24, height: 24)
+                                .contentShape(Rectangle())
                         }
                         .buttonStyle(.borderless)
                         .disabled(selectedExcludedApp == nil)
