@@ -150,25 +150,25 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DOC-01 | Phase 9 | Complete |
 | DOC-02 | Phase 9 | Complete |
 | DOC-03 | Phase 9 | Complete |
-| MBAR-01 | — | Pending |
-| MBAR-02 | — | Pending |
-| MBAR-03 | — | Pending |
-| MBAR-04 | — | Pending |
-| PASS-01 | — | Pending |
-| PASS-02 | — | Pending |
-| PASS-03 | — | Pending |
-| EXCL-01 | — | Pending |
-| EXCL-02 | — | Pending |
-| EXCL-03 | — | Pending |
+| MBAR-01 | Phase 10 | Pending |
+| MBAR-02 | Phase 10 | Pending |
+| MBAR-03 | Phase 10 | Pending |
+| MBAR-04 | Phase 10 | Pending |
+| PASS-01 | Phase 11 | Pending |
+| PASS-02 | Phase 11 | Pending |
+| PASS-03 | Phase 11 | Pending |
+| EXCL-01 | Phase 12 | Pending |
+| EXCL-02 | Phase 12 | Pending |
+| EXCL-03 | Phase 12 | Pending |
 
 **Coverage:**
 - v1.0 requirements: 13 total (all complete)
 - v1.1 requirements: 5 total (all complete)
 - v1.2 requirements: 10 total (all complete)
 - v1.3.0 requirements: 10 total
-- Mapped to phases: 0/10 ⚠️
-- Unmapped: 10
+- Mapped to phases: 10/10
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-14*
-*Last updated: 2026-02-17 after v1.3.0 milestone requirements defined*
+*Last updated: 2026-02-17 after v1.3.0 roadmap created*

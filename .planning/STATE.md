@@ -5,14 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** Users can scroll any scrollable area by clicking and dragging with the mouse pointer, with natural inertia -- no scroll wheel or trackpad required.
-**Current focus:** v1.3.0 — Menu bar icon, hold-to-passthrough, per-app exclusion
+**Current focus:** Phase 10 — Menu Bar Icon
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-02-17 — Milestone v1.3.0 started
+Phase: 10 of 12 (Menu Bar Icon)
+Plan: 0 of ? in current phase
+Status: Ready to plan
+Last activity: 2026-02-17 — Roadmap created for v1.3.0 (phases 10-12)
+
+Progress: [##########..] 75% (9/12 phases complete)
 
 ## Performance Metrics
 
@@ -37,7 +39,7 @@ Last activity: 2026-02-17 — Milestone v1.3.0 started
 
 **Recent Trend:**
 - Last 5 plans: 5min, 113min, 12min, 30min, 1min
-- Trend: Final phase -- project complete
+- Trend: Stable
 
 *Updated after each plan completion*
 
@@ -46,12 +48,8 @@ Last activity: 2026-02-17 — Milestone v1.3.0 started
 ### Decisions
 
 Decisions are logged in PROJECT.md Key Decisions table.
-- Used sips (macOS built-in) for icon resizing -- zero external dependencies
-- Added generate-icons.sh for reproducible icon regeneration
-- Auto-detect Developer ID from keychain in build-release.sh -- no hardcoded identity
-- Release pipeline: archive -> sign -> notarize -> staple -> zip via scripts/build-release.sh
-- User rewrote AI disclaimer as "Vibe code alert" -- more authentic personal tone
-- User will create GitHub release manually rather than via CLI automation
+- Phases 10-12 are independent -- can be executed in any order
+- Menu bar icon is optional (can be disabled), not a replacement for the settings window
 
 ### Pending Todos
 
@@ -72,5 +70,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed quick-3-01 — Moved CGEventTap to background thread with cached app window frames.
-Resume file: —
+Stopped at: Roadmap created for v1.3.0 milestone (phases 10-12)
+Resume file: --

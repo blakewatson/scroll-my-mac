@@ -2,13 +2,14 @@
 
 ## Overview
 
-This roadmap delivers a macOS accessibility app that converts click-and-drag into scrolling system-wide. The journey starts with permissions and app scaffolding, builds core scroll functionality, hardens click safety, adds inertia polish, and finishes with user-facing settings. v1.1 extends the app with Accessibility Keyboard awareness so typing on the on-screen keyboard is uninterrupted by scroll mode. v1.2 packages the app for public distribution with a custom icon, code signing, notarization, and a GitHub release with documentation.
+This roadmap delivers a macOS accessibility app that converts click-and-drag into scrolling system-wide. The journey starts with permissions and app scaffolding, builds core scroll functionality, hardens click safety, adds inertia polish, and finishes with user-facing settings. v1.1 extends the app with Accessibility Keyboard awareness so typing on the on-screen keyboard is uninterrupted by scroll mode. v1.2 packages the app for public distribution with a custom icon, code signing, notarization, and a GitHub release with documentation. v1.3.0 adds a menu bar status icon for quick toggle access, hold-to-passthrough for normal drag operations without leaving scroll mode, and per-app exclusion to disable scrolling in specific applications.
 
 ## Milestones
 
-- **v1.0 MVP** - Phases 1-5 (shipped 2026-02-16)
-- **v1.1 OSK Compat** - Phase 6 (shipped 2026-02-16)
-- **v1.2 Distribution Ready** - Phases 7-9 (in progress)
+- ✅ **v1.0 MVP** - Phases 1-5 (shipped 2026-02-16)
+- ✅ **v1.1 OSK Compat** - Phase 6 (shipped 2026-02-16)
+- ✅ **v1.2 Distribution Ready** - Phases 7-9 (shipped 2026-02-17)
+- 🚧 **v1.3.0 Visual Indicator, Scroll Engine Improvements, Per-App Exclusion** - Phases 10-12 (in progress)
 
 ## Phases
 
@@ -123,15 +124,12 @@ Plans:
 
 </details>
 
-### v1.2 Distribution Ready (Phases 7-9)
+<details>
+<summary>v1.2 Distribution Ready (Phases 7-9) - SHIPPED 2026-02-17</summary>
 
-**Milestone Goal:** Package the app for public distribution with a proper icon, code signing, notarization, and a GitHub release with documentation.
-
-- [ ] **Phase 7: App Icon** - Generate macOS icon set from source image and integrate into build
-- [ ] **Phase 8: Code Signing & Notarization** - Sign with Developer ID and notarize for Gatekeeper-clean distribution
-- [ ] **Phase 9: Release & Documentation** - Write README and publish GitHub release with zipped .app bundle
-
-## Phase Details
+- [x] **Phase 7: App Icon** - Generate macOS icon set from source image and integrate into build
+- [x] **Phase 8: Code Signing & Notarization** - Sign with Developer ID and notarize for Gatekeeper-clean distribution
+- [x] **Phase 9: Release & Documentation** - Write README and publish GitHub release with zipped .app bundle
 
 ### Phase 7: App Icon
 **Goal**: App displays its own custom icon everywhere macOS shows it
@@ -145,7 +143,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 07-01-PLAN.md — Generate AppIcon.appiconset from source image, wire into Xcode project, verify icon display
+- [x] 07-01-PLAN.md — Generate AppIcon.appiconset from source image, wire into Xcode project, verify icon display
 
 ### Phase 8: Code Signing & Notarization
 **Goal**: App installs and opens on any Mac without Gatekeeper warnings
@@ -158,7 +156,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 08-01-PLAN.md -- Build-sign-notarize pipeline with Developer ID certificate setup, release script, and Gatekeeper verification
+- [x] 08-01-PLAN.md -- Build-sign-notarize pipeline with Developer ID certificate setup, release script, and Gatekeeper verification
 
 ### Phase 9: Release & Documentation
 **Goal**: Users can discover, understand, and download the app from GitHub
@@ -173,12 +171,68 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 09-01-PLAN.md — Write README.md and publish GitHub release v1.2 with signed app bundle
+- [x] 09-01-PLAN.md — Write README.md and publish GitHub release v1.2 with signed app bundle
+
+</details>
+
+### v1.3.0 Visual Indicator, Scroll Engine Improvements, Per-App Exclusion (Phases 10-12)
+
+**Milestone Goal:** Add a menu bar status icon for quick toggle access, hold-to-passthrough for normal drag interactions without leaving scroll mode, and per-app exclusion so scroll mode is automatically disabled in specific apps.
+
+- [ ] **Phase 10: Menu Bar Icon** - Status item showing scroll state with click-to-toggle and right-click context menu
+- [ ] **Phase 11: Hold-to-Passthrough** - Hold still in dead zone to pass through click for text selection and window resize
+- [ ] **Phase 12: Per-App Exclusion** - Settings UI to add/remove apps from exclusion list where scroll mode is disabled
+
+## Phase Details
+
+### Phase 10: Menu Bar Icon
+**Goal**: Users can see scroll mode state and toggle it directly from the menu bar
+**Depends on**: Phase 9 (v1.2 complete)
+**Requirements**: MBAR-01, MBAR-02, MBAR-03, MBAR-04
+**Success Criteria** (what must be TRUE):
+  1. A menu bar icon is visible that changes appearance to reflect whether scroll mode is on or off
+  2. Left-clicking the menu bar icon toggles scroll mode on/off (same as the hotkey)
+  3. Right-clicking the menu bar icon opens a context menu with a "Settings..." option that opens the settings window
+  4. User can disable the menu bar icon in settings, and it disappears from the menu bar
+  5. Re-enabling the menu bar icon in settings makes it reappear without restarting the app
+**Plans**: TBD
+
+Plans:
+- [ ] 10-01: TBD
+
+### Phase 11: Hold-to-Passthrough
+**Goal**: Users can perform normal drag operations (text selection, window resize) without leaving scroll mode
+**Depends on**: Phase 9 (v1.2 complete)
+**Requirements**: PASS-01, PASS-02, PASS-03
+**Success Criteria** (what must be TRUE):
+  1. With hold-to-passthrough enabled, holding the mouse still within the dead zone for the configured delay causes the click to pass through for a normal drag (text select, window resize, etc.)
+  2. Hold-to-passthrough is off by default and can be enabled in settings
+  3. The hold delay duration is configurable in settings with a default of 1.5 seconds
+  4. When hold-to-passthrough is disabled, scroll mode behavior is unchanged from v1.2
+**Plans**: TBD
+
+Plans:
+- [ ] 11-01: TBD
+
+### Phase 12: Per-App Exclusion
+**Goal**: Users can designate specific apps where scroll mode is automatically disabled
+**Depends on**: Phase 9 (v1.2 complete)
+**Requirements**: EXCL-01, EXCL-02, EXCL-03
+**Success Criteria** (what must be TRUE):
+  1. User can add an app to the exclusion list from the settings UI
+  2. User can remove an app from the exclusion list from the settings UI
+  3. When the frontmost app is on the exclusion list, scroll mode clicks pass through as normal clicks (scroll mode stays toggled on but is effectively bypassed)
+  4. Switching away from an excluded app to a non-excluded app restores normal scroll mode behavior immediately
+**Plans**: TBD
+
+Plans:
+- [ ] 12-01: TBD
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 11 -> 12
+(Phases 10, 11, 12 are independent of each other -- any order works)
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -188,6 +242,9 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 | 4. Inertia | v1.0 | 2/2 | Complete | 2026-02-15 |
 | 5. Settings & Polish | v1.0 | 2/2 | Complete | 2026-02-16 |
 | 6. OSK-Aware Click Pass-Through | v1.1 | 1/1 | Complete | 2026-02-16 |
-| 7. App Icon | v1.2 | 0/? | Not started | - |
-| 8. Code Signing & Notarization | v1.2 | 0/? | Not started | - |
-| 9. Release & Documentation | v1.2 | 0/? | Not started | - |
+| 7. App Icon | v1.2 | 1/1 | Complete | 2026-02-17 |
+| 8. Code Signing & Notarization | v1.2 | 1/1 | Complete | 2026-02-17 |
+| 9. Release & Documentation | v1.2 | 1/1 | Complete | 2026-02-17 |
+| 10. Menu Bar Icon | v1.3.0 | 0/? | Not started | - |
+| 11. Hold-to-Passthrough | v1.3.0 | 0/? | Not started | - |
+| 12. Per-App Exclusion | v1.3.0 | 0/? | Not started | - |
