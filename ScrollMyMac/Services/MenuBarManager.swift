@@ -34,6 +34,7 @@ class MenuBarManager: NSObject, NSMenuDelegate {
         item.menu = menu
 
         statusItem = item
+        applyIconState()
     }
 
     func hide() {
