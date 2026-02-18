@@ -73,8 +73,8 @@ struct MainSettingsView: View {
                         .font(.callout)
                         .foregroundStyle(.secondary)
 
-                    Toggle("Hold-to-passthrough", isOn: $appState.isHoldToPassthroughEnabled)
-                    Text("Hold the mouse still within the click dead zone to pass through the click for normal drag operations (text selection, window resize).")
+                    Toggle("Click-and-hold passthrough", isOn: $appState.isHoldToPassthroughEnabled)
+                    Text("When enabled, click and hold the mouse still. After a short delay, dragging the mouse behaves normally instead of scrolling.")
                         .font(.callout)
                         .foregroundStyle(.secondary)
 
