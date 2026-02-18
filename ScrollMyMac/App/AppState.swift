@@ -12,6 +12,7 @@ class AppState {
             } else {
                 deactivateScrollMode()
             }
+            menuBarManager.updateIcon(isActive: isScrollModeActive)
         }
     }
 
@@ -59,12 +60,25 @@ class AppState {
         }
     }
 
+    var isMenuBarIconEnabled: Bool {
+        didSet {
+            UserDefaults.standard.set(isMenuBarIconEnabled, forKey: "menuBarIconEnabled")
+            if isMenuBarIconEnabled {
+                menuBarManager.show()
+                menuBarManager.updateIcon(isActive: isScrollModeActive)
+            } else {
+                menuBarManager.hide()
+            }
+        }
+    }
+
     // MARK: - Services
 
     let scrollEngine = ScrollEngine()
     let hotkeyManager = HotkeyManager()
     let overlayManager = OverlayManager()
     let windowExclusionManager = WindowExclusionManager()
+    let menuBarManager = MenuBarManager()
 
     // MARK: - Permission Health Check
 
@@ -76,6 +90,7 @@ class AppState {
         self.isSafetyModeEnabled = UserDefaults.standard.object(forKey: "safetyModeEnabled") as? Bool ?? true
         self.isClickThroughEnabled = UserDefaults.standard.object(forKey: "clickThroughEnabled") as? Bool ?? true
         self.hasCompletedOnboarding = UserDefaults.standard.bool(forKey: "hasCompletedOnboarding")
+        self.isMenuBarIconEnabled = UserDefaults.standard.object(forKey: "menuBarIconEnabled") as? Bool ?? true
 
         let defaults = UserDefaults.standard
         if defaults.object(forKey: "hotkeyKeyCode") != nil {
@@ -109,6 +124,19 @@ class AppState {
         applyHotkeySettings()
 
         scrollEngine.clickThroughEnabled = isClickThroughEnabled
+
+        // Menu bar icon
+        menuBarManager.onToggle = { [weak self] in
+            self?.toggleScrollMode()
+        }
+        menuBarManager.onOpenSettings = {
+            NSApp.windows.first?.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
+        }
+        if isMenuBarIconEnabled {
+            menuBarManager.show()
+            menuBarManager.updateIcon(isActive: isScrollModeActive)
+        }
 
         scrollEngine.shouldPassThroughClick = { [weak self] cgPoint in
             guard let self else { return false }
@@ -144,6 +172,7 @@ class AppState {
         hotkeyModifiers = 0
         isSafetyModeEnabled = true
         isClickThroughEnabled = true
+        isMenuBarIconEnabled = true
     }
 
     // MARK: - Scroll Mode Toggle
