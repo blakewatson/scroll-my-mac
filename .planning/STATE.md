@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 Phase: 12 of 12 (Per-App Exclusion)
 Plan: 2 of 2 in current phase (COMPLETE)
 Status: ALL PHASES COMPLETE
-Last activity: 2026-02-18 - Completed quick task 5: Fix settings window not showing on launch
+Last activity: 2026-02-18 - Completed quick task 5: Fix settings window and menu bar icon bugs
 
 Progress: [################] 100% (12/12 phases complete)
 
@@ -80,7 +80,7 @@ None.
 | 2 | Add safety timeout note to README | 2026-02-16 | db7a8b9 | [2-add-safety-timeout-note-to-readme](./quick/2-add-safety-timeout-note-to-readme/) |
 | 3 | Move CGEventTap to background thread | 2026-02-17 | a2838da | [3-move-cgeventtap-to-background-thread](./quick/3-move-cgeventtap-to-background-thread/) |
 | 4 | Change hold-to-passthrough wording in settings window | 2026-02-18 | 3ef52e2 | [4-change-hold-to-passthrough-wording-in-se](./quick/4-change-hold-to-passthrough-wording-in-se/) |
-| 5 | Fix settings window not showing on launch | 2026-02-18 | 857e246 | [5-fix-settings-window-not-showing-on-launc](./quick/5-fix-settings-window-not-showing-on-launc/) |
+| 5 | Fix settings window not showing on launch and appearing twice on dock click, and fix menu bar icon toggle not restoring icon | 2026-02-18 | 27da4b8 | [5-fix-settings-window-not-showing-on-launc](./quick/5-fix-settings-window-not-showing-on-launc/) |
 
 ## Session Continuity
 
