@@ -16,13 +16,24 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        if let window = AppDelegate.settingsWindow() {
-            window.delegate = self
-        }
+        let isLoginItem = getppid() == 1 && SMAppService.mainApp.status == .enabled
 
-        // If launched by launchd as a login item, hide window (silent background launch)
-        if getppid() == 1 && SMAppService.mainApp.status == .enabled {
-            AppDelegate.settingsWindow()?.orderOut(nil)
+        // Defer window setup to let SwiftUI finish creating the window.
+        // On first launch, settingsWindow() may return nil if SwiftUI hasn't
+        // created the Window scene yet.
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            if let window = AppDelegate.settingsWindow() {
+                window.delegate = self
+                if isLoginItem {
+                    // Login item: hide window for silent background launch
+                    window.orderOut(nil)
+                } else {
+                    // Normal launch: ensure settings window is visible and focused
+                    window.makeKeyAndOrderFront(nil)
+                    NSApp.activate(ignoringOtherApps: true)
+                }
+            }
         }
     }
 

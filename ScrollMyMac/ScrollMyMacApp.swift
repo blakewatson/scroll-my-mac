@@ -6,7 +6,7 @@ struct ScrollMyMacApp: App {
     @State private var appState = AppState()
 
     var body: some Scene {
-        WindowGroup {
+        Window("Scroll My Mac", id: "settings") {
             SettingsView()
                 .environment(appState)
         }
