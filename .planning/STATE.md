@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 Phase: 12 of 12 (Per-App Exclusion)
 Plan: 2 of 2 in current phase (COMPLETE)
 Status: ALL PHASES COMPLETE
-Last activity: 2026-02-18 - Completed quick task 5: Fix settings window and menu bar icon bugs
+Last activity: 2026-02-19 - Completed quick task 6: Fix Dock auto-reveal not working when switching from excluded app
 
 Progress: [################] 100% (12/12 phases complete)
 
@@ -63,6 +63,7 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - AppExclusionManager always monitors (not tied to scroll mode) for correct menu bar state
 - excludedAppBundleIDs changed from computed to stored @Published property for SwiftUI reactivity
 - Full-width rows with expanded click areas for better exclusion list usability
+- Pass through mouseUp when engine has no tracked state to prevent window server orphan (quick-6)
 
 ### Pending Todos
 
@@ -81,9 +82,10 @@ None.
 | 3 | Move CGEventTap to background thread | 2026-02-17 | a2838da | [3-move-cgeventtap-to-background-thread](./quick/3-move-cgeventtap-to-background-thread/) |
 | 4 | Change hold-to-passthrough wording in settings window | 2026-02-18 | 3ef52e2 | [4-change-hold-to-passthrough-wording-in-se](./quick/4-change-hold-to-passthrough-wording-in-se/) |
 | 5 | Fix settings window not showing on launch and appearing twice on dock click, and fix menu bar icon toggle not restoring icon | 2026-02-18 | 27da4b8 | [5-fix-settings-window-not-showing-on-launc](./quick/5-fix-settings-window-not-showing-on-launc/) |
+| 6 | Fix Dock auto-reveal not working when switching from excluded app to non-excluded app | 2026-02-19 | 35137e0 | [6-fix-dock-auto-reveal-not-working-when-sw](./quick/6-fix-dock-auto-reveal-not-working-when-sw/) |
 
 ## Session Continuity
 
-Last session: 2026-02-18
-Stopped at: Completed quick task 5 -- Fix settings window not showing on launch
+Last session: 2026-02-19
+Stopped at: Completed quick task 6 -- Fix Dock auto-reveal not working when switching apps
 Resume file: --
