@@ -323,6 +323,14 @@ class ScrollEngine {
             return Unmanaged.passUnretained(event)
         }
 
+        // No tracked interaction state — engine never saw the corresponding mouseDown
+        // (e.g., race between excluded-app bypass and NSWorkspace notification).
+        // Pass through to avoid orphaning the mouseUp in the window server.
+        if !pendingMouseDown && !isDragging && !isInPassthroughMode {
+            passedThroughClick = false
+            return Unmanaged.passUnretained(event)
+        }
+
         // End passthrough mode on mouseUp — no inertia.
         // Post a synthetic mouseUp at .cghidEventTap to match the synthetic
         // mouseDown we posted, so the window server properly pairs them.
