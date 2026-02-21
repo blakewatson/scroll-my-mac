@@ -87,13 +87,18 @@ class WindowExclusionManager {
         // Cache the app's own visible, mouse-interactive window frames, but only
         // when the app is frontmost. When another app is in front, our windows are
         // occluded and clicks should not pass through to them.
-        if NSApp.isActive, let screenHeight = NSScreen.main?.frame.height {
+        //
+        // Use NSScreen.screens.first (primary screen) — not NSScreen.main (key-window
+        // screen) — as the Y-flip baseline.  CG coordinates always anchor Y=0 at the
+        // top-left of the primary screen, so primaryHeight is the correct constant
+        // regardless of which display any given window is currently on.
+        if NSApp.isActive, let primaryHeight = NSScreen.screens.first?.frame.height {
             appWindowRects = NSApp.windows.compactMap { window in
                 guard window.isVisible, !window.ignoresMouseEvents else { return nil }
                 let frame = window.frame
                 let cgRect = CGRect(
                     x: frame.origin.x,
-                    y: screenHeight - frame.origin.y - frame.height,
+                    y: primaryHeight - frame.origin.y - frame.height,
                     width: frame.width,
                     height: frame.height
                 )
