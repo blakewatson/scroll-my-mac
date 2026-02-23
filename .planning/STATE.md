@@ -5,14 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-22)
 
 **Core value:** Users can scroll any scrollable area by clicking and dragging with the mouse pointer, with natural inertia -- no scroll wheel or trackpad required.
-**Current focus:** Milestone v1.4 — Configurable Inertial Scrolling
+**Current focus:** Phase 13 — Inertia Controls (v1.4)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-02-22 — Milestone v1.4 started
+Phase: 13 of 15 (Inertia Controls)
+Plan: --
+Status: Ready to plan
+Last activity: 2026-02-22 — Roadmap created for v1.4
+
+Progress: [████████████████████░░░░] 80% (12/15 phases)
 
 ## Performance Metrics
 
@@ -49,19 +51,9 @@ Last activity: 2026-02-22 — Milestone v1.4 started
 ### Decisions
 
 Decisions are logged in PROJECT.md Key Decisions table.
-- Phases 10-12 are independent -- can be executed in any order
-- Menu bar icon is optional (can be disabled), not a replacement for the settings window
-- Programmatic NSBezierPath icon instead of PDF asset for menu bar icon
-- MenuBarManager is plain class (not @Observable) -- pure AppKit, no SwiftUI observation needed
-- GCD DispatchSourceTimer on main queue for hold-to-passthrough detection (thread-safe with event tap)
-- Passthrough mode replays mouseDown only; drags and mouseUp pass through via flag
-- No inertia fires on passthrough drags
-- Stale bundle IDs kept in exclusion list (no harm, user removes via settings)
-- Hotkey toggle works normally in excluded apps (global state vs per-app bypass)
-- AppExclusionManager always monitors (not tied to scroll mode) for correct menu bar state
-- excludedAppBundleIDs changed from computed to stored @Published property for SwiftUI reactivity
-- Full-width rows with expanded click areas for better exclusion list usability
-- Pass through mouseUp when engine has no tracked state to prevent window server orphan (quick-6)
+- Phases 13-15 are independent -- can be executed in any order
+- Inertia controls build on existing InertiaAnimator from Phase 4
+- Click-through hotkey reuses existing KeyRecorderView from Phase 5
 
 ### Pending Todos
 
@@ -86,6 +78,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-23
-Stopped at: Completed quick task 8 -- Fix scroll engine on WKWebView-based apps (MarkEdit)
+Last session: 2026-02-22
+Stopped at: Roadmap created for v1.4 milestone (Phases 13-15)
 Resume file: --

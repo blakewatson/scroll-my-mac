@@ -178,14 +178,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | EXCL-01 | Phase 12 | Complete |
 | EXCL-02 | Phase 12 | Complete |
 | EXCL-03 | Phase 12 | Complete |
-| INRT-01 | TBD | Pending |
-| INRT-02 | TBD | Pending |
-| INRT-03 | TBD | Pending |
-| SDIR-01 | TBD | Pending |
-| SDIR-02 | TBD | Pending |
-| CTHK-01 | TBD | Pending |
-| CTHK-02 | TBD | Pending |
-| CTHK-03 | TBD | Pending |
+| INRT-01 | Phase 13 | Pending |
+| INRT-02 | Phase 13 | Pending |
+| INRT-03 | Phase 13 | Pending |
+| SDIR-01 | Phase 14 | Pending |
+| SDIR-02 | Phase 14 | Pending |
+| CTHK-01 | Phase 15 | Pending |
+| CTHK-02 | Phase 15 | Pending |
+| CTHK-03 | Phase 15 | Pending |
 
 **Coverage:**
 - v1.0 requirements: 13 total (all complete)
@@ -193,9 +193,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 - v1.2 requirements: 10 total (all complete)
 - v1.3.0 requirements: 10 total (all complete)
 - v1.4 requirements: 8 total
-- Mapped to phases: 0/8 (pending roadmap)
-- Unmapped: 8 ⚠️
+- Mapped to phases: 8/8
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-14*
-*Last updated: 2026-02-22 after v1.4 requirements defined*
+*Last updated: 2026-02-22 after v1.4 roadmap created*

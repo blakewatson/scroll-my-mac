@@ -2,14 +2,15 @@
 
 ## Overview
 
-This roadmap delivers a macOS accessibility app that converts click-and-drag into scrolling system-wide. The journey starts with permissions and app scaffolding, builds core scroll functionality, hardens click safety, adds inertia polish, and finishes with user-facing settings. v1.1 extends the app with Accessibility Keyboard awareness so typing on the on-screen keyboard is uninterrupted by scroll mode. v1.2 packages the app for public distribution with a custom icon, code signing, notarization, and a GitHub release with documentation. v1.3.0 adds a menu bar status icon for quick toggle access, hold-to-passthrough for normal drag operations without leaving scroll mode, and per-app exclusion to disable scrolling in specific applications.
+This roadmap delivers a macOS accessibility app that converts click-and-drag into scrolling system-wide. The journey starts with permissions and app scaffolding, builds core scroll functionality, hardens click safety, adds inertia polish, and finishes with user-facing settings. v1.1 extends the app with Accessibility Keyboard awareness so typing on the on-screen keyboard is uninterrupted by scroll mode. v1.2 packages the app for public distribution with a custom icon, code signing, notarization, and a GitHub release with documentation. v1.3.0 adds a menu bar status icon for quick toggle access, hold-to-passthrough for normal drag operations without leaving scroll mode, and per-app exclusion to disable scrolling in specific applications. v1.4 gives users control over scroll feel with inertia on/off and intensity settings, scroll direction inversion, and a dedicated hotkey for toggling click-through mode.
 
 ## Milestones
 
 - ✅ **v1.0 MVP** - Phases 1-5 (shipped 2026-02-16)
 - ✅ **v1.1 OSK Compat** - Phase 6 (shipped 2026-02-16)
 - ✅ **v1.2 Distribution Ready** - Phases 7-9 (shipped 2026-02-17)
-- 🚧 **v1.3.0 Visual Indicator, Scroll Engine Improvements, Per-App Exclusion** - Phases 10-12 (in progress)
+- ✅ **v1.3.0 Visual Indicator, Scroll Engine Improvements, Per-App Exclusion** - Phases 10-12 (shipped 2026-02-18)
+- 🚧 **v1.4 Configurable Inertial Scrolling** - Phases 13-15 (in progress)
 
 ## Phases
 
@@ -175,15 +176,12 @@ Plans:
 
 </details>
 
-### v1.3.0 Visual Indicator, Scroll Engine Improvements, Per-App Exclusion (Phases 10-12)
+<details>
+<summary>v1.3.0 Visual Indicator, Scroll Engine Improvements, Per-App Exclusion (Phases 10-12) - SHIPPED 2026-02-18</summary>
 
-**Milestone Goal:** Add a menu bar status icon for quick toggle access, hold-to-passthrough for normal drag interactions without leaving scroll mode, and per-app exclusion so scroll mode is automatically disabled in specific apps.
-
-- [x] **Phase 10: Menu Bar Icon** - Status item showing scroll state with click-to-toggle and right-click context menu (completed 2026-02-18)
-- [ ] **Phase 11: Hold-to-Passthrough** - Hold still in dead zone to pass through click for text selection and window resize
-- [x] **Phase 12: Per-App Exclusion** - Settings UI to add/remove apps from exclusion list where scroll mode is disabled (completed 2026-02-18)
-
-## Phase Details
+- [x] **Phase 10: Menu Bar Icon** - Status item showing scroll state with click-to-toggle and right-click context menu
+- [x] **Phase 11: Hold-to-Passthrough** - Hold still in dead zone to pass through click for text selection and window resize
+- [x] **Phase 12: Per-App Exclusion** - Settings UI to add/remove apps from exclusion list where scroll mode is disabled
 
 ### Phase 10: Menu Bar Icon
 **Goal**: Users can see scroll mode state and toggle it directly from the menu bar
@@ -198,7 +196,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 10-01-PLAN.md — MenuBarManager service with custom icon, AppState wiring, left-click toggle, right-click context menu, and settings toggle
+- [x] 10-01-PLAN.md — MenuBarManager service with custom icon, AppState wiring, left-click toggle, right-click context menu, and settings toggle
 
 ### Phase 11: Hold-to-Passthrough
 **Goal**: Users can perform normal drag operations (text selection, window resize) without leaving scroll mode
@@ -212,7 +210,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 11-01-PLAN.md — Hold-to-passthrough logic in ScrollEngine, AppState wiring, and Settings UI controls
+- [x] 11-01-PLAN.md — Hold-to-passthrough logic in ScrollEngine, AppState wiring, and Settings UI controls
 
 ### Phase 12: Per-App Exclusion
 **Goal**: Users can designate specific apps where scroll mode is automatically disabled
@@ -226,14 +224,59 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 12-01-PLAN.md — AppExclusionManager service, ScrollEngine bypass, AppState wiring, MenuBarManager slash icon feedback
-- [ ] 12-02-PLAN.md — Exclusion list UI in Settings with add/remove via NSOpenPanel, human verification
+- [x] 12-01-PLAN.md — AppExclusionManager service, ScrollEngine bypass, AppState wiring, MenuBarManager slash icon feedback
+- [x] 12-02-PLAN.md — Exclusion list UI in Settings with add/remove via NSOpenPanel, human verification
+
+</details>
+
+### v1.4 Configurable Inertial Scrolling (Phases 13-15)
+
+**Milestone Goal:** Give users control over scroll feel -- inertia on/off, intensity, direction inversion -- and add a hotkey for toggling click-through mode.
+
+- [ ] **Phase 13: Inertia Controls** - On/off toggle and intensity slider for momentum scrolling
+- [ ] **Phase 14: Scroll Direction** - Toggle between natural and inverted scroll direction
+- [ ] **Phase 15: Click-Through Hotkey** - Configurable hotkey to toggle click-through mode
+
+## Phase Details
+
+### Phase 13: Inertia Controls
+**Goal**: Users can tune or completely disable momentum scrolling to match their preference
+**Depends on**: Phase 12 (v1.3.0 complete)
+**Requirements**: INRT-01, INRT-02, INRT-03
+**Success Criteria** (what must be TRUE):
+  1. User can toggle inertia off in settings, and releasing a drag stops scrolling immediately with no coasting
+  2. User can toggle inertia back on, and releasing a drag produces momentum scrolling as before
+  3. User can adjust an intensity slider that controls how far and fast coasting travels (weaker = shorter/slower, stronger = longer/faster)
+  4. Inertia toggle defaults to on and intensity defaults to a middle value on fresh install
+**Plans**: TBD
+
+### Phase 14: Scroll Direction
+**Goal**: Users can flip scroll direction to match their mental model (natural vs classic)
+**Depends on**: Phase 12 (v1.3.0 complete)
+**Requirements**: SDIR-01, SDIR-02
+**Success Criteria** (what must be TRUE):
+  1. User can toggle scroll direction between natural and inverted in settings
+  2. In natural mode (default), dragging down moves content up (like pushing a page up with your finger)
+  3. In inverted mode, dragging down moves content down (classic scroll bar direction)
+  4. Direction setting applies to both live dragging and inertia coasting
+**Plans**: TBD
+
+### Phase 15: Click-Through Hotkey
+**Goal**: Users can toggle click-through mode via a keyboard shortcut without opening settings
+**Depends on**: Phase 12 (v1.3.0 complete)
+**Requirements**: CTHK-01, CTHK-02, CTHK-03
+**Success Criteria** (what must be TRUE):
+  1. User can assign a hotkey for click-through mode toggle in settings
+  2. The key recorder UI for click-through hotkey works identically to the scroll mode hotkey recorder
+  3. Pressing the click-through hotkey toggles click-through mode on/off (same as flipping the setting)
+  4. The toggle persists -- quitting and relaunching the app preserves the click-through state set via hotkey
+**Plans**: TBD
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 11 -> 12
-(Phases 10, 11, 12 are independent of each other -- any order works)
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 11 -> 12 -> 13 -> 14 -> 15
+(Phases 13, 14, 15 are independent of each other -- any order works)
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -246,6 +289,9 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 7. App Icon | v1.2 | 1/1 | Complete | 2026-02-17 |
 | 8. Code Signing & Notarization | v1.2 | 1/1 | Complete | 2026-02-17 |
 | 9. Release & Documentation | v1.2 | 1/1 | Complete | 2026-02-17 |
-| 10. Menu Bar Icon | v1.3.0 | Complete    | 2026-02-18 | - |
-| 11. Hold-to-Passthrough | v1.3.0 | 0/? | Not started | - |
-| 12. Per-App Exclusion | v1.3.0 | Complete    | 2026-02-18 | - |
+| 10. Menu Bar Icon | v1.3.0 | 1/1 | Complete | 2026-02-18 |
+| 11. Hold-to-Passthrough | v1.3.0 | 1/1 | Complete | 2026-02-18 |
+| 12. Per-App Exclusion | v1.3.0 | 2/2 | Complete | 2026-02-18 |
+| 13. Inertia Controls | v1.4 | 0/? | Not started | - |
+| 14. Scroll Direction | v1.4 | 0/? | Not started | - |
+| 15. Click-Through Hotkey | v1.4 | 0/? | Not started | - |
