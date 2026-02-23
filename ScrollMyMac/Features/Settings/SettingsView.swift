@@ -105,8 +105,7 @@ struct MainSettingsView: View {
                         .font(.callout)
                         .foregroundStyle(.secondary)
 
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Intensity")
+                    LabeledContent("Intensity") {
                         HStack {
                             Text("Less")
                                 .font(.caption)
@@ -114,19 +113,16 @@ struct MainSettingsView: View {
                             Slider(value: $appState.inertiaIntensity, in: 0...1)
                                 .onChange(of: appState.inertiaIntensity) { _, newValue in
                                     // Snap to center: if within 0.05 of 0.5, snap to exactly 0.5
-                                    if abs(newValue - 0.5) < 0.05 && newValue != 0.5 {
+                                    if abs(newValue - 0.5) < 0.025 && newValue != 0.5 {
                                         appState.inertiaIntensity = 0.5
                                     }
                                 }
-                                .overlay(
+                                .background(
                                     // Center tick mark
-                                    GeometryReader { geometry in
-                                        Rectangle()
-                                            .fill(Color.secondary.opacity(0.4))
-                                            .frame(width: 1, height: 8)
-                                            .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
-                                    }
-                                    .allowsHitTesting(false)
+                                    Rectangle()
+                                        .fill(Color.secondary.opacity(0.4))
+                                        .frame(width: 1, height: 8)
+                                        .allowsHitTesting(false)
                                 )
                             Text("More")
                                 .font(.caption)
