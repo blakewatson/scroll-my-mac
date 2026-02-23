@@ -39,14 +39,21 @@ Users can scroll any scrollable area by clicking and dragging with the mouse poi
 - ✓ Only match app windows when app is frontmost (occluded window fix) — v1.2.2
 - ✓ CGEventTap runs on dedicated background thread — v1.2.2
 
+### Validated
+
+- ✓ Menu bar icon shows scroll mode state (on/off), left-click toggles, right-click context menu for settings — v1.3.0
+- ✓ Menu bar icon is optional (can be disabled in settings) — v1.3.0
+- ✓ Hold-to-passthrough: hold still in dead zone for configurable delay, then drag passes through for text selection/window resize — v1.3.0
+- ✓ Hold-to-passthrough is optional (off by default), delay is configurable (default 1.5s) — v1.3.0
+- ✓ Per-app exclusion list: add/remove apps where scroll mode is disabled — v1.3.0
+- ✓ Exclusion list managed in settings UI — v1.3.0
+
 ### Active
 
-- [ ] Menu bar icon shows scroll mode state (on/off), left-click toggles, right-click context menu for settings
-- [ ] Menu bar icon is optional (can be disabled in settings)
-- [ ] Hold-to-passthrough: hold still in dead zone for configurable delay, then drag passes through for text selection/window resize
-- [ ] Hold-to-passthrough is optional (off by default), delay is configurable (default 1.5s)
-- [ ] Per-app exclusion list: add/remove apps where scroll mode is disabled
-- [ ] Exclusion list managed in settings UI
+- [ ] Inertia on/off toggle (enabled by default) to completely disable coasting
+- [ ] Inertia intensity slider controlling coasting speed and duration on a single weaker↔stronger axis
+- [ ] Direction inversion toggle (natural default, inverted flips scroll direction)
+- [ ] Configurable hotkey to toggle click-through mode on/off
 
 ### Out of Scope
 
@@ -54,14 +61,15 @@ Users can scroll any scrollable area by clicking and dragging with the mouse poi
 - Multi-button support — left click only for v1
 - Menu bar as primary settings interface — menu bar icon is toggle + shortcut to settings only
 
-## Current Milestone: v1.3.0 Visual Indicator, Scroll Engine Improvements, Per-App Exclusion
+## Current Milestone: v1.4 Configurable Inertial Scrolling
 
-**Goal:** Add a menu bar status icon, hold-to-passthrough for normal drag interactions without leaving scroll mode, and per-app exclusion so scroll mode is automatically disabled in specific apps.
+**Goal:** Give users control over scroll feel — inertia on/off, intensity, direction inversion — and add a hotkey for toggling click-through mode.
 
 **Target features:**
-- Menu bar icon (optional) showing scroll mode state, click to toggle, right-click for settings
-- Hold-to-passthrough: hold still in dead zone past configurable delay to enable normal drag (text select, resize)
-- Per-app exclusion list managed in settings
+- Inertia on/off toggle to completely disable coasting
+- Inertia intensity slider (weaker ↔ stronger) for coasting speed and duration
+- Direction inversion toggle (natural vs classic scroll direction)
+- Click-through hotkey to toggle click-through mode without opening settings
 
 ## Context
 
@@ -90,4 +98,4 @@ The accessibility keyboard (on-screen keyboard) is used for typing and will be u
 | Cursor change for mode indicator | Clear visual feedback without menu bar clutter | — Pending |
 
 ---
-*Last updated: 2026-02-17 after milestone v1.3.0 started*
+*Last updated: 2026-02-22 after milestone v1.4 started*

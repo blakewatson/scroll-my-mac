@@ -2,19 +2,17 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-02-17)
+See: .planning/PROJECT.md (updated 2026-02-22)
 
 **Core value:** Users can scroll any scrollable area by clicking and dragging with the mouse pointer, with natural inertia -- no scroll wheel or trackpad required.
-**Current focus:** Phase 12 — Per-App Exclusion
+**Current focus:** Milestone v1.4 — Configurable Inertial Scrolling
 
 ## Current Position
 
-Phase: 12 of 12 (Per-App Exclusion)
-Plan: 2 of 2 in current phase (COMPLETE)
-Status: ALL PHASES COMPLETE
-Last activity: 2026-02-23 - Completed quick task 8: Fix scroll engine on WKWebView-based apps (MarkEdit)
-
-Progress: [################] 100% (12/12 phases complete)
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-02-22 — Milestone v1.4 started
 
 ## Performance Metrics
 
