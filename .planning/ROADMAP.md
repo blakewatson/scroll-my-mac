@@ -277,7 +277,10 @@ Plans:
   2. The key recorder UI for click-through hotkey works identically to the scroll mode hotkey recorder
   3. Pressing the click-through hotkey toggles click-through mode on/off (same as flipping the setting)
   4. The toggle persists -- quitting and relaunching the app preserves the click-through state set via hotkey
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 15-01-PLAN.md — Add click-through hotkey with HotkeyManager, AppState persistence, and Settings UI recorder
 
 ## Progress
 
