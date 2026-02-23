@@ -13,9 +13,24 @@ class InertiaAnimator {
 
     // MARK: - Configuration
 
-    /// Time constant for exponential decay. Larger = longer coast.
-    /// 0.400s produces a long, iOS-like coast for fast flicks.
-    private let tau: CFTimeInterval = 0.400
+    /// Tau range for intensity mapping.
+    /// intensity 0.0 -> tauMin (short, gentle coast)
+    /// intensity 0.5 -> tauMid (current hardcoded feel)
+    /// intensity 1.0 -> tauMax (long iOS-like flick)
+    private let tauMin: CFTimeInterval = 0.120
+    private let tauMid: CFTimeInterval = 0.400
+    private let tauMax: CFTimeInterval = 0.900
+
+    /// Velocity scale range for intensity mapping.
+    /// intensity 0.0 -> velocityScaleMin (gentle)
+    /// intensity 0.5 -> 1.0 (unchanged from today)
+    /// intensity 1.0 -> velocityScaleMax (fast)
+    private let velocityScaleMin: CGFloat = 0.4
+    private let velocityScaleMid: CGFloat = 1.0
+    private let velocityScaleMax: CGFloat = 2.0
+
+    /// Computed tau for the current coasting animation (set per startCoasting call).
+    private var tau: CFTimeInterval = 0.400
 
     // MARK: - Callback
 
@@ -42,20 +57,46 @@ class InertiaAnimator {
 
     // MARK: - API
 
-    /// Begins momentum coasting with the given velocity and optional axis lock.
+    /// Begins momentum coasting with the given velocity, optional axis lock,
+    /// and intensity that scales both coasting duration and speed.
     ///
     /// - Parameters:
     ///   - velocity: Release velocity in points/second (from VelocityTracker).
     ///   - axis: Locked axis from drag phase. Pass nil for free-scroll (both axes).
-    func startCoasting(velocity: CGPoint, axis: ScrollEngine.Axis?) {
+    ///   - intensity: 0.0...1.0. At 0.5, behavior matches the original hardcoded feel.
+    func startCoasting(velocity: CGPoint, axis: ScrollEngine.Axis?, intensity: CGFloat) {
         stopCoasting()
 
         lockedAxis = axis
 
+        // Clamp intensity to valid range.
+        let t = min(max(intensity, 0.0), 1.0)
+
+        // Two-segment linear interpolation for tau:
+        // [0.0, 0.5] -> [tauMin, tauMid], [0.5, 1.0] -> [tauMid, tauMax]
+        if t <= 0.5 {
+            let fraction = t / 0.5
+            tau = tauMin + (tauMid - tauMin) * fraction
+        } else {
+            let fraction = (t - 0.5) / 0.5
+            tau = tauMid + (tauMax - tauMid) * fraction
+        }
+
+        // Two-segment linear interpolation for velocity scale:
+        // [0.0, 0.5] -> [velocityScaleMin, velocityScaleMid], [0.5, 1.0] -> [velocityScaleMid, velocityScaleMax]
+        let velocityScale: CGFloat
+        if t <= 0.5 {
+            let fraction = t / 0.5
+            velocityScale = velocityScaleMin + (velocityScaleMid - velocityScaleMin) * fraction
+        } else {
+            let fraction = (t - 0.5) / 0.5
+            velocityScale = velocityScaleMid + (velocityScaleMax - velocityScaleMid) * fraction
+        }
+
         // Compute amplitude (total distance to coast) per axis.
-        // amplitude = velocity * tau
-        amplitudeX = velocity.x * tau
-        amplitudeY = velocity.y * tau
+        // amplitude = velocity * velocityScale * tau
+        amplitudeX = velocity.x * velocityScale * tau
+        amplitudeY = velocity.y * velocityScale * tau
 
         // Apply axis lock: zero out the non-locked axis.
         if let axis {
