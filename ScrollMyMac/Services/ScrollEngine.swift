@@ -46,6 +46,10 @@ class ScrollEngine {
     /// Controls inertia coasting speed and duration (0.0 = gentle, 0.5 = default, 1.0 = iOS-like flick).
     var inertiaIntensity: Double = 0.5
 
+    /// When true, scroll direction is inverted (drag down = content moves down, classic scroll bar style).
+    /// Default is false (natural: drag down = content moves up, like a touchscreen).
+    var isScrollDirectionInverted: Bool = false
+
     // MARK: - Axis
 
     enum Axis {
@@ -295,8 +299,10 @@ class ScrollEngine {
 
         // Natural scroll direction: drag down = content moves down (like touching a phone).
         // Drag down = positive deltaY in CG coords. Positive wheel1 = content moves down.
-        let scrollY = Int32(deltaY)
-        let scrollX = Int32(deltaX)
+        // When inverted, negate both axes so drag down = content moves up (classic scroll bar).
+        let directionMultiplier: CGFloat = isScrollDirectionInverted ? -1.0 : 1.0
+        let scrollY = Int32(deltaY * directionMultiplier)
+        let scrollX = Int32(deltaX * directionMultiplier)
 
         // Determine scroll phase
         let phase: Int64
@@ -366,8 +372,10 @@ class ScrollEngine {
 
             // Start inertia coasting if enabled and velocity is above threshold.
             if isInertiaEnabled, let velocity = velocityTracker.computeVelocity() {
+                let dirMultiplier: CGFloat = isScrollDirectionInverted ? -1.0 : 1.0
+                let adjustedVelocity = CGPoint(x: velocity.x * dirMultiplier, y: velocity.y * dirMultiplier)
                 inertiaAnimator.startCoasting(
-                    velocity: velocity,
+                    velocity: adjustedVelocity,
                     axis: lockedAxis,
                     intensity: CGFloat(inertiaIntensity)
                 )

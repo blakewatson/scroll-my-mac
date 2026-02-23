@@ -101,6 +101,13 @@ class AppState {
         }
     }
 
+    var isScrollDirectionInverted: Bool {
+        didSet {
+            UserDefaults.standard.set(isScrollDirectionInverted, forKey: "scrollDirectionInverted")
+            scrollEngine.isScrollDirectionInverted = isScrollDirectionInverted
+        }
+    }
+
     // MARK: - Per-App Exclusion
 
     /// The current exclusion list — synced from AppExclusionManager.
@@ -136,6 +143,7 @@ class AppState {
         self.isMenuBarIconEnabled = UserDefaults.standard.object(forKey: "menuBarIconEnabled") as? Bool ?? true
         self.isInertiaEnabled = UserDefaults.standard.object(forKey: "inertiaEnabled") as? Bool ?? true
         self.inertiaIntensity = UserDefaults.standard.object(forKey: "inertiaIntensity") as? Double ?? 0.5
+        self.isScrollDirectionInverted = UserDefaults.standard.object(forKey: "scrollDirectionInverted") as? Bool ?? false
 
         let defaults = UserDefaults.standard
         if defaults.object(forKey: "hotkeyKeyCode") != nil {
@@ -175,6 +183,7 @@ class AppState {
         scrollEngine.holdToPassthroughDelay = holdToPassthroughDelay
         scrollEngine.isInertiaEnabled = isInertiaEnabled
         scrollEngine.inertiaIntensity = inertiaIntensity
+        scrollEngine.isScrollDirectionInverted = isScrollDirectionInverted
 
         // Menu bar icon
         menuBarManager.onToggle = { [weak self] in
@@ -243,6 +252,7 @@ class AppState {
         isMenuBarIconEnabled = true
         isInertiaEnabled = true
         inertiaIntensity = 0.5
+        isScrollDirectionInverted = false
         appExclusionManager.clearAll()
         excludedAppBundleIDs = appExclusionManager.excludedBundleIDs
         appExclusionManager.recheckFrontmostApp()
