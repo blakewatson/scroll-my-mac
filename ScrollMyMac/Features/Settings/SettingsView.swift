@@ -112,7 +112,7 @@ struct MainSettingsView: View {
                                 .foregroundStyle(.secondary)
                             Slider(value: $appState.inertiaIntensity, in: 0...1)
                                 .onChange(of: appState.inertiaIntensity) { _, newValue in
-                                    // Snap to center: if within 0.05 of 0.5, snap to exactly 0.5
+                                    // Snap to center: if within 0.025 of 0.5, snap to exactly 0.5
                                     if abs(newValue - 0.5) < 0.025 && newValue != 0.5 {
                                         appState.inertiaIntensity = 0.5
                                     }
