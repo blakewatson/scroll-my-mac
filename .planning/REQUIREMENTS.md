@@ -92,7 +92,7 @@ Requirements for this milestone. Each maps to roadmap phases.
 ### Inertia Control
 
 - [x] **INRT-01**: User can toggle inertia on/off in settings (enabled by default)
-- [ ] **INRT-02**: User can adjust inertia intensity via a slider (weaker ↔ stronger) controlling coasting speed and duration
+- [x] **INRT-02**: User can adjust inertia intensity via a slider (weaker ↔ stronger) controlling coasting speed and duration
 - [x] **INRT-03**: When inertia is disabled, releasing a drag stops scrolling immediately with no coasting
 
 ### Scroll Direction
@@ -179,7 +179,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | EXCL-02 | Phase 12 | Complete |
 | EXCL-03 | Phase 12 | Complete |
 | INRT-01 | Phase 13 | Complete |
-| INRT-02 | Phase 13 | Pending |
+| INRT-02 | Phase 13 | Complete |
 | INRT-03 | Phase 13 | Complete |
 | SDIR-01 | Phase 14 | Pending |
 | SDIR-02 | Phase 14 | Pending |

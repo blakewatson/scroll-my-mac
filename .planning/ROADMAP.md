@@ -233,7 +233,7 @@ Plans:
 
 **Milestone Goal:** Give users control over scroll feel -- inertia on/off, intensity, direction inversion -- and add a hotkey for toggling click-through mode.
 
-- [ ] **Phase 13: Inertia Controls** - On/off toggle and intensity slider for momentum scrolling
+- [x] **Phase 13: Inertia Controls** - On/off toggle and intensity slider for momentum scrolling
 - [ ] **Phase 14: Scroll Direction** - Toggle between natural and inverted scroll direction
 - [ ] **Phase 15: Click-Through Hotkey** - Configurable hotkey to toggle click-through mode
 
@@ -251,8 +251,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 13-01-PLAN.md — Parameterize InertiaAnimator with intensity, add AppState persistence, wire ScrollEngine inertia skip
-- [ ] 13-02-PLAN.md — Reorganize SettingsView, add momentum toggle and intensity slider with center detent
+- [x] 13-01-PLAN.md — Parameterize InertiaAnimator with intensity, add AppState persistence, wire ScrollEngine inertia skip
+- [x] 13-02-PLAN.md — Reorganize SettingsView, add momentum toggle and intensity slider with center detent
 
 ### Phase 14: Scroll Direction
 **Goal**: Users can flip scroll direction to match their mental model (natural vs classic)
@@ -296,6 +296,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 10. Menu Bar Icon | v1.3.0 | 1/1 | Complete | 2026-02-18 |
 | 11. Hold-to-Passthrough | v1.3.0 | 1/1 | Complete | 2026-02-18 |
 | 12. Per-App Exclusion | v1.3.0 | 2/2 | Complete | 2026-02-18 |
-| 13. Inertia Controls | 1/2 | In Progress|  | - |
+| 13. Inertia Controls | v1.4 | 2/2 | Complete | 2026-02-22 |
 | 14. Scroll Direction | v1.4 | 0/? | Not started | - |
 | 15. Click-Through Hotkey | v1.4 | 0/? | Not started | - |

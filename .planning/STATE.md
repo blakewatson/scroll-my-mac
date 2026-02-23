@@ -10,16 +10,16 @@ See: .planning/PROJECT.md (updated 2026-02-22)
 ## Current Position
 
 Phase: 13 of 15 (Inertia Controls)
-Plan: 1 of 2
-Status: Plan 01 complete
-Last activity: 2026-02-23 — Completed 13-01 inertia backend
+Plan: 2 of 2
+Status: Phase 13 complete
+Last activity: 2026-02-22 — Completed 13-02 inertia controls UI
 
-Progress: [████████████████████░░░░] 80% (12/15 phases)
+Progress: [█████████████████████░░░] 87% (13/15 phases)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 19
+- Total plans completed: 20
 - Average duration: 33min
 - Total execution time: ~10 hours
 
@@ -39,10 +39,10 @@ Progress: [████████████████████░░░
 | 10-menu-bar-icon | 1 | 2min | 2min |
 | 11-hold-to-passthrough | 1 | 2min | 2min |
 | 12-per-app-exclusion | 2 | 17min | 9min |
-| 13-inertia-controls | 1 | 2min | 2min |
+| 13-inertia-controls | 2 | 17min | 9min |
 
 **Recent Trend:**
-- Last 5 plans: 2min, 2min, 2min, 15min, 2min
+- Last 5 plans: 2min, 2min, 15min, 2min, 15min
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -57,6 +57,8 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - Click-through hotkey reuses existing KeyRecorderView from Phase 5
 - Two-segment linear interpolation for intensity-to-tau mapping (0.120...0.400...0.900)
 - Velocity scale range 0.4x...1.0x...2.0x matches tau segments
+- Settings reorganized into 6 sections: Scroll Mode, Scroll Behavior, Safety, General, Excluded Apps, Reset
+- LabeledContent for slider Form alignment, background-based tick mark, 0.025 snap threshold
 
 ### Pending Todos
 
@@ -81,6 +83,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-23
-Stopped at: Completed 13-01-PLAN.md
+Last session: 2026-02-22
+Stopped at: Completed 13-02-PLAN.md (Phase 13 complete)
 Resume file: --
