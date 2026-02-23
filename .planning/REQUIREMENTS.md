@@ -97,8 +97,8 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Scroll Direction
 
-- [ ] **SDIR-01**: User can toggle scroll direction between natural (default) and inverted in settings
-- [ ] **SDIR-02**: When inverted, drag direction is flipped (drag down → content moves down instead of up)
+- [x] **SDIR-01**: User can toggle scroll direction between natural (default) and inverted in settings
+- [x] **SDIR-02**: When inverted, drag direction is flipped (drag down → content moves down instead of up)
 
 ### Click-Through Hotkey
 
@@ -181,8 +181,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INRT-01 | Phase 13 | Complete |
 | INRT-02 | Phase 13 | Complete |
 | INRT-03 | Phase 13 | Complete |
-| SDIR-01 | Phase 14 | Pending |
-| SDIR-02 | Phase 14 | Pending |
+| SDIR-01 | Phase 14 | Complete |
+| SDIR-02 | Phase 14 | Complete |
 | CTHK-01 | Phase 15 | Pending |
 | CTHK-02 | Phase 15 | Pending |
 | CTHK-03 | Phase 15 | Pending |

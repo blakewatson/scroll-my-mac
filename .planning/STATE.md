@@ -5,22 +5,22 @@
 See: .planning/PROJECT.md (updated 2026-02-22)
 
 **Core value:** Users can scroll any scrollable area by clicking and dragging with the mouse pointer, with natural inertia -- no scroll wheel or trackpad required.
-**Current focus:** Phase 13 — Inertia Controls (v1.4)
+**Current focus:** Phase 14 — Scroll Direction (v1.1)
 
 ## Current Position
 
-Phase: 13 of 15 (Inertia Controls)
-Plan: 2 of 2
-Status: Phase 13 complete
-Last activity: 2026-02-22 — Completed 13-02 inertia controls UI
+Phase: 14 of 15 (Scroll Direction)
+Plan: 1 of 1
+Status: Phase 14 complete
+Last activity: 2026-02-23 — Completed 14-01 scroll direction
 
-Progress: [█████████████████████░░░] 87% (13/15 phases)
+Progress: [██████████████████████░░] 93% (14/15 phases)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 20
-- Average duration: 33min
+- Total plans completed: 21
+- Average duration: 31min
 - Total execution time: ~10 hours
 
 **By Phase:**
@@ -40,9 +40,10 @@ Progress: [█████████████████████░░
 | 11-hold-to-passthrough | 1 | 2min | 2min |
 | 12-per-app-exclusion | 2 | 17min | 9min |
 | 13-inertia-controls | 2 | 17min | 9min |
+| 14-scroll-direction | 1 | 2min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 2min, 2min, 15min, 2min, 15min
+- Last 5 plans: 2min, 15min, 2min, 15min, 2min
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -59,6 +60,8 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - Velocity scale range 0.4x...1.0x...2.0x matches tau segments
 - Settings reorganized into 6 sections: Scroll Mode, Scroll Behavior, Safety, General, Excluded Apps, Reset
 - LabeledContent for slider Form alignment, background-based tick mark, 0.025 snap threshold
+- Direction inversion applied at ScrollEngine level, not in InertiaAnimator -- keeps animator generic
+- Default scroll direction is natural (false) -- matches touchscreen mental model
 
 ### Pending Todos
 
@@ -83,6 +86,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-22
-Stopped at: Completed 13-02-PLAN.md (Phase 13 complete)
+Last session: 2026-02-23
+Stopped at: Completed 14-01-PLAN.md (Phase 14 complete)
 Resume file: --
