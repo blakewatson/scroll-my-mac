@@ -23,8 +23,12 @@ class AppState {
                 if hotkeyKeyCode >= 0 {
                     hotkeyManager.start()
                 }
+                if clickThroughHotkeyKeyCode >= 0 {
+                    clickThroughHotkeyManager.start()
+                }
             } else {
                 hotkeyManager.stop()
+                clickThroughHotkeyManager.stop()
                 if isScrollModeActive {
                     isScrollModeActive = false
                 }
@@ -108,6 +112,20 @@ class AppState {
         }
     }
 
+    var clickThroughHotkeyKeyCode: Int {
+        didSet {
+            UserDefaults.standard.set(clickThroughHotkeyKeyCode, forKey: "clickThroughHotkeyKeyCode")
+            applyClickThroughHotkeySettings()
+        }
+    }
+
+    var clickThroughHotkeyModifiers: UInt64 {
+        didSet {
+            UserDefaults.standard.set(Int(bitPattern: UInt(clickThroughHotkeyModifiers)), forKey: "clickThroughHotkeyModifiers")
+            applyClickThroughHotkeySettings()
+        }
+    }
+
     // MARK: - Per-App Exclusion
 
     /// The current exclusion list — synced from AppExclusionManager.
@@ -127,6 +145,7 @@ class AppState {
     let windowExclusionManager = WindowExclusionManager()
     let menuBarManager = MenuBarManager()
     let appExclusionManager = AppExclusionManager()
+    let clickThroughHotkeyManager = HotkeyManager()
 
     // MARK: - Permission Health Check
 
@@ -157,6 +176,17 @@ class AppState {
             self.hotkeyModifiers = 0
         }
 
+        if defaults.object(forKey: "clickThroughHotkeyKeyCode") != nil {
+            self.clickThroughHotkeyKeyCode = defaults.integer(forKey: "clickThroughHotkeyKeyCode")
+        } else {
+            self.clickThroughHotkeyKeyCode = -1
+        }
+        if defaults.object(forKey: "clickThroughHotkeyModifiers") != nil {
+            self.clickThroughHotkeyModifiers = UInt64(UInt(bitPattern: defaults.integer(forKey: "clickThroughHotkeyModifiers")))
+        } else {
+            self.clickThroughHotkeyModifiers = 0
+        }
+
         self.excludedAppBundleIDs = appExclusionManager.excludedBundleIDs
 
         setupServices()
@@ -176,7 +206,13 @@ class AppState {
             self?.toggleScrollMode()
         }
 
+        clickThroughHotkeyManager.onToggle = { [weak self] in
+            guard let self else { return }
+            self.isClickThroughEnabled.toggle()
+        }
+
         applyHotkeySettings()
+        applyClickThroughHotkeySettings()
 
         scrollEngine.clickThroughEnabled = isClickThroughEnabled
         scrollEngine.holdToPassthroughEnabled = isHoldToPassthroughEnabled
@@ -239,12 +275,27 @@ class AppState {
         }
     }
 
+    /// Syncs the stored click-through hotkey configuration to its HotkeyManager.
+    /// If keyCode is -1 (no hotkey), stops the listener entirely.
+    private func applyClickThroughHotkeySettings() {
+        if clickThroughHotkeyKeyCode >= 0 {
+            clickThroughHotkeyManager.keyCode = Int64(clickThroughHotkeyKeyCode)
+            clickThroughHotkeyManager.requiredModifiers = CGEventFlags(rawValue: clickThroughHotkeyModifiers)
+            clickThroughHotkeyManager.suppressUntil = Date().addingTimeInterval(0.5)
+            clickThroughHotkeyManager.start()
+        } else {
+            clickThroughHotkeyManager.stop()
+        }
+    }
+
     // MARK: - Reset to Defaults
 
     /// Restores all app preferences to defaults. Launch at login intentionally NOT reset (system-level setting).
     func resetToDefaults() {
         hotkeyKeyCode = Int(kVK_F6)
         hotkeyModifiers = 0
+        clickThroughHotkeyKeyCode = -1
+        clickThroughHotkeyModifiers = 0
         isSafetyModeEnabled = true
         isClickThroughEnabled = true
         isHoldToPassthroughEnabled = false
