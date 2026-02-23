@@ -76,6 +76,11 @@ struct MainSettingsView: View {
 
                 // MARK: - Scroll Behavior
                 Section("Scroll Behavior") {
+                    Toggle("Invert scroll direction", isOn: $appState.isScrollDirectionInverted)
+                    Text("When enabled, dragging moves content in the opposite direction (classic scroll bar style). Default is natural scrolling (drag up to scroll down, like a touchscreen).")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+
                     Toggle("Click-through", isOn: $appState.isClickThroughEnabled)
                     Text("When enabled, clicks without dragging pass through as normal clicks. When disabled, all mouse events become scrolls.")
                         .font(.callout)
