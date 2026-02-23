@@ -304,4 +304,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 12. Per-App Exclusion | v1.3.0 | 2/2 | Complete | 2026-02-18 |
 | 13. Inertia Controls | v1.4 | Complete    | 2026-02-23 | 2026-02-22 |
 | 14. Scroll Direction | 1/1 | Complete    | 2026-02-23 | - |
-| 15. Click-Through Hotkey | 1/1 | Complete   | 2026-02-23 | - |
+| 15. Click-Through Hotkey | 1/1 | Complete    | 2026-02-23 | - |
