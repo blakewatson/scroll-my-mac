@@ -102,9 +102,9 @@ Requirements for this milestone. Each maps to roadmap phases.
 
 ### Click-Through Hotkey
 
-- [ ] **CTHK-01**: User can configure a hotkey to toggle click-through mode on/off
-- [ ] **CTHK-02**: Click-through hotkey uses the same key recorder UI as the scroll mode hotkey
-- [ ] **CTHK-03**: Toggling click-through via hotkey updates the setting persistently (same as changing it in settings)
+- [x] **CTHK-01**: User can configure a hotkey to toggle click-through mode on/off
+- [x] **CTHK-02**: Click-through hotkey uses the same key recorder UI as the scroll mode hotkey
+- [x] **CTHK-03**: Toggling click-through via hotkey updates the setting persistently (same as changing it in settings)
 
 ## Future Requirements
 
@@ -183,9 +183,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INRT-03 | Phase 13 | Complete |
 | SDIR-01 | Phase 14 | Complete |
 | SDIR-02 | Phase 14 | Complete |
-| CTHK-01 | Phase 15 | Pending |
-| CTHK-02 | Phase 15 | Pending |
-| CTHK-03 | Phase 15 | Pending |
+| CTHK-01 | Phase 15 | Complete |
+| CTHK-02 | Phase 15 | Complete |
+| CTHK-03 | Phase 15 | Complete |
 
 **Coverage:**
 - v1.0 requirements: 13 total (all complete)

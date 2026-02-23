@@ -5,22 +5,22 @@
 See: .planning/PROJECT.md (updated 2026-02-22)
 
 **Core value:** Users can scroll any scrollable area by clicking and dragging with the mouse pointer, with natural inertia -- no scroll wheel or trackpad required.
-**Current focus:** Phase 14 — Scroll Direction (v1.1)
+**Current focus:** Phase 15 — Click-Through Hotkey (v1.1)
 
 ## Current Position
 
-Phase: 14 of 15 (Scroll Direction)
+Phase: 15 of 15 (Click-Through Hotkey)
 Plan: 1 of 1
-Status: Phase 14 complete
-Last activity: 2026-02-23 — Completed 14-01 scroll direction
+Status: Phase 15 complete
+Last activity: 2026-02-23 — Completed 15-01 click-through hotkey
 
-Progress: [██████████████████████░░] 93% (14/15 phases)
+Progress: [████████████████████████] 100% (15/15 phases)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 21
-- Average duration: 31min
+- Total plans completed: 22
+- Average duration: 30min
 - Total execution time: ~10 hours
 
 **By Phase:**
@@ -41,9 +41,10 @@ Progress: [██████████████████████░
 | 12-per-app-exclusion | 2 | 17min | 9min |
 | 13-inertia-controls | 2 | 17min | 9min |
 | 14-scroll-direction | 1 | 2min | 2min |
+| 15-click-through-hotkey | 1 | 2min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 2min, 15min, 2min, 15min, 2min
+- Last 5 plans: 15min, 2min, 15min, 2min, 2min
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -62,6 +63,7 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - LabeledContent for slider Form alignment, background-based tick mark, 0.025 snap threshold
 - Direction inversion applied at ScrollEngine level, not in InertiaAnimator -- keeps animator generic
 - Default scroll direction is natural (false) -- matches touchscreen mental model
+- Click-through hotkey uses second HotkeyManager instance, defaults to None (keyCode -1)
 
 ### Pending Todos
 
@@ -87,5 +89,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-23
-Stopped at: Completed 14-01-PLAN.md (Phase 14 complete)
+Stopped at: Completed 15-01-PLAN.md (Phase 15 complete -- all phases done)
 Resume file: --
