@@ -86,6 +86,11 @@ struct MainSettingsView: View {
                         .font(.callout)
                         .foregroundStyle(.secondary)
 
+                    HotkeyRecorderView(keyCode: $appState.clickThroughHotkeyKeyCode, modifiers: $appState.clickThroughHotkeyModifiers)
+                    Text("Assign a hotkey to toggle click-through mode without opening settings. Function keys work alone; other keys need a modifier.")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+
                     Toggle("Click-and-hold passthrough", isOn: $appState.isHoldToPassthroughEnabled)
                     Text("When enabled, click and hold the mouse still. After a short delay, dragging the mouse behaves normally instead of scrolling.")
                         .font(.callout)
