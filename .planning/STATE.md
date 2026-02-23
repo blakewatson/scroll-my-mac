@@ -10,17 +10,17 @@ See: .planning/PROJECT.md (updated 2026-02-22)
 ## Current Position
 
 Phase: 13 of 15 (Inertia Controls)
-Plan: --
-Status: Ready to plan
-Last activity: 2026-02-22 — Roadmap created for v1.4
+Plan: 1 of 2
+Status: Plan 01 complete
+Last activity: 2026-02-23 — Completed 13-01 inertia backend
 
 Progress: [████████████████████░░░░] 80% (12/15 phases)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 18
-- Average duration: 35min
+- Total plans completed: 19
+- Average duration: 33min
 - Total execution time: ~10 hours
 
 **By Phase:**
@@ -39,9 +39,10 @@ Progress: [████████████████████░░░
 | 10-menu-bar-icon | 1 | 2min | 2min |
 | 11-hold-to-passthrough | 1 | 2min | 2min |
 | 12-per-app-exclusion | 2 | 17min | 9min |
+| 13-inertia-controls | 1 | 2min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 1min, 2min, 2min, 2min, 15min
+- Last 5 plans: 2min, 2min, 2min, 15min, 2min
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -54,6 +55,8 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - Phases 13-15 are independent -- can be executed in any order
 - Inertia controls build on existing InertiaAnimator from Phase 4
 - Click-through hotkey reuses existing KeyRecorderView from Phase 5
+- Two-segment linear interpolation for intensity-to-tau mapping (0.120...0.400...0.900)
+- Velocity scale range 0.4x...1.0x...2.0x matches tau segments
 
 ### Pending Todos
 
@@ -78,6 +81,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-22
-Stopped at: Roadmap created for v1.4 milestone (Phases 13-15)
+Last session: 2026-02-23
+Stopped at: Completed 13-01-PLAN.md
 Resume file: --
