@@ -263,7 +263,10 @@ Plans:
   2. In natural mode (default), dragging down moves content up (like pushing a page up with your finger)
   3. In inverted mode, dragging down moves content down (classic scroll bar direction)
   4. Direction setting applies to both live dragging and inertia coasting
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 14-01-PLAN.md — Add scroll direction inversion toggle to AppState, ScrollEngine, and Settings UI
 
 ### Phase 15: Click-Through Hotkey
 **Goal**: Users can toggle click-through mode via a keyboard shortcut without opening settings
