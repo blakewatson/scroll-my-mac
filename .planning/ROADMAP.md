@@ -248,7 +248,11 @@ Plans:
   2. User can toggle inertia back on, and releasing a drag produces momentum scrolling as before
   3. User can adjust an intensity slider that controls how far and fast coasting travels (weaker = shorter/slower, stronger = longer/faster)
   4. Inertia toggle defaults to on and intensity defaults to a middle value on fresh install
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 13-01-PLAN.md — Parameterize InertiaAnimator with intensity, add AppState persistence, wire ScrollEngine inertia skip
+- [ ] 13-02-PLAN.md — Reorganize SettingsView, add momentum toggle and intensity slider with center detent
 
 ### Phase 14: Scroll Direction
 **Goal**: Users can flip scroll direction to match their mental model (natural vs classic)
