@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 Phase: 12 of 12 (Per-App Exclusion)
 Plan: 2 of 2 in current phase (COMPLETE)
 Status: ALL PHASES COMPLETE
-Last activity: 2026-02-21 - Completed quick task 7: Fix settings window click-through on secondary displays
+Last activity: 2026-02-23 - Completed quick task 8: Fix scroll engine on WKWebView-based apps (MarkEdit)
 
 Progress: [################] 100% (12/12 phases complete)
 
@@ -84,9 +84,10 @@ None.
 | 5 | Fix settings window not showing on launch and appearing twice on dock click, and fix menu bar icon toggle not restoring icon | 2026-02-18 | 27da4b8 | [5-fix-settings-window-not-showing-on-launc](./quick/5-fix-settings-window-not-showing-on-launc/) |
 | 6 | Fix Dock auto-reveal not working when switching from excluded app to non-excluded app | 2026-02-19 | 35137e0 | [6-fix-dock-auto-reveal-not-working-when-sw](./quick/6-fix-dock-auto-reveal-not-working-when-sw/) |
 | 7 | Fix settings window click-through on secondary displays | 2026-02-21 | 7c8ec9a | [7-the-scroll-my-mac-settings-window-should](./quick/7-the-scroll-my-mac-settings-window-should/) |
+| 8 | Fix scroll engine on WKWebView-based apps (MarkEdit) | 2026-02-23 | 970a4a5 | [8-investigate-why-scroll-engine-doesn-t-wo](./quick/8-investigate-why-scroll-engine-doesn-t-wo/) |
 
 ## Session Continuity
 
-Last session: 2026-02-21
-Stopped at: Completed quick task 7 -- Fix settings window click-through on secondary displays
+Last session: 2026-02-23
+Stopped at: Completed quick task 8 -- Fix scroll engine on WKWebView-based apps (MarkEdit)
 Resume file: --
