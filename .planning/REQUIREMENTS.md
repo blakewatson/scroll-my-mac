@@ -64,28 +64,47 @@
 - [x] **DOC-02**: README includes personal motivation (accessibility need)
 - [x] **DOC-03**: README includes AI-assisted development disclaimer
 
-## v1.3.0 Requirements
-
-Requirements for this milestone. Each maps to roadmap phases.
+## v1.3.0 Requirements (Shipped)
 
 ### Menu Bar Icon
 
-- [ ] **MBAR-01**: User can see scroll mode state (on/off) via a menu bar icon
-- [ ] **MBAR-02**: User can toggle scroll mode by clicking the menu bar icon
-- [ ] **MBAR-03**: User can access settings window via right-click context menu on the menu bar icon
-- [ ] **MBAR-04**: User can disable the menu bar icon in settings
+- [x] **MBAR-01**: User can see scroll mode state (on/off) via a menu bar icon
+- [x] **MBAR-02**: User can toggle scroll mode by clicking the menu bar icon
+- [x] **MBAR-03**: User can access settings window via right-click context menu on the menu bar icon
+- [x] **MBAR-04**: User can disable the menu bar icon in settings
 
 ### Hold-to-Passthrough
 
-- [ ] **PASS-01**: User can hold still within the dead zone for a configurable delay to pass through the click for normal drag operations (text select, window resize)
-- [ ] **PASS-02**: User can enable/disable hold-to-passthrough in settings (off by default)
-- [ ] **PASS-03**: User can configure the hold delay duration in settings (default 1.5s)
+- [x] **PASS-01**: User can hold still within the dead zone for a configurable delay to pass through the click for normal drag operations (text select, window resize)
+- [x] **PASS-02**: User can enable/disable hold-to-passthrough in settings (off by default)
+- [x] **PASS-03**: User can configure the hold delay duration in settings (default 1.5s)
 
 ### Per-App Exclusion
 
-- [ ] **EXCL-01**: User can add apps to an exclusion list where scroll mode is automatically disabled
-- [ ] **EXCL-02**: User can remove apps from the exclusion list
-- [ ] **EXCL-03**: Exclusion list is managed in the settings UI
+- [x] **EXCL-01**: User can add apps to an exclusion list where scroll mode is automatically disabled
+- [x] **EXCL-02**: User can remove apps from the exclusion list
+- [x] **EXCL-03**: Exclusion list is managed in the settings UI
+
+## v1.4 Requirements
+
+Requirements for this milestone. Each maps to roadmap phases.
+
+### Inertia Control
+
+- [ ] **INRT-01**: User can toggle inertia on/off in settings (enabled by default)
+- [ ] **INRT-02**: User can adjust inertia intensity via a slider (weaker ↔ stronger) controlling coasting speed and duration
+- [ ] **INRT-03**: When inertia is disabled, releasing a drag stops scrolling immediately with no coasting
+
+### Scroll Direction
+
+- [ ] **SDIR-01**: User can toggle scroll direction between natural (default) and inverted in settings
+- [ ] **SDIR-02**: When inverted, drag direction is flipped (drag down → content moves down instead of up)
+
+### Click-Through Hotkey
+
+- [ ] **CTHK-01**: User can configure a hotkey to toggle click-through mode on/off
+- [ ] **CTHK-02**: Click-through hotkey uses the same key recorder UI as the scroll mode hotkey
+- [ ] **CTHK-03**: Toggling click-through via hotkey updates the setting persistently (same as changing it in settings)
 
 ## Future Requirements
 
@@ -94,7 +113,6 @@ Deferred to future release. Tracked but not in current roadmap.
 ### Customization
 
 - **SCRL-05**: Adjustable scroll speed (slider to control sensitivity)
-- **SCRL-06**: Directional preference (natural vs traditional scroll direction)
 
 ### Extended Exclusions
 
@@ -150,25 +168,34 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DOC-01 | Phase 9 | Complete |
 | DOC-02 | Phase 9 | Complete |
 | DOC-03 | Phase 9 | Complete |
-| MBAR-01 | Phase 10 | Pending |
-| MBAR-02 | Phase 10 | Pending |
-| MBAR-03 | Phase 10 | Pending |
-| MBAR-04 | Phase 10 | Pending |
-| PASS-01 | Phase 11 | Pending |
-| PASS-02 | Phase 11 | Pending |
-| PASS-03 | Phase 11 | Pending |
-| EXCL-01 | Phase 12 | Pending |
-| EXCL-02 | Phase 12 | Pending |
-| EXCL-03 | Phase 12 | Pending |
+| MBAR-01 | Phase 10 | Complete |
+| MBAR-02 | Phase 10 | Complete |
+| MBAR-03 | Phase 10 | Complete |
+| MBAR-04 | Phase 10 | Complete |
+| PASS-01 | Phase 11 | Complete |
+| PASS-02 | Phase 11 | Complete |
+| PASS-03 | Phase 11 | Complete |
+| EXCL-01 | Phase 12 | Complete |
+| EXCL-02 | Phase 12 | Complete |
+| EXCL-03 | Phase 12 | Complete |
+| INRT-01 | TBD | Pending |
+| INRT-02 | TBD | Pending |
+| INRT-03 | TBD | Pending |
+| SDIR-01 | TBD | Pending |
+| SDIR-02 | TBD | Pending |
+| CTHK-01 | TBD | Pending |
+| CTHK-02 | TBD | Pending |
+| CTHK-03 | TBD | Pending |
 
 **Coverage:**
 - v1.0 requirements: 13 total (all complete)
 - v1.1 requirements: 5 total (all complete)
 - v1.2 requirements: 10 total (all complete)
-- v1.3.0 requirements: 10 total
-- Mapped to phases: 10/10
-- Unmapped: 0
+- v1.3.0 requirements: 10 total (all complete)
+- v1.4 requirements: 8 total
+- Mapped to phases: 0/8 (pending roadmap)
+- Unmapped: 8 ⚠️
 
 ---
 *Requirements defined: 2026-02-14*
-*Last updated: 2026-02-17 after v1.3.0 roadmap created*
+*Last updated: 2026-02-22 after v1.4 requirements defined*
