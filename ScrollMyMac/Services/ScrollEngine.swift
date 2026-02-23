@@ -252,6 +252,13 @@ class ScrollEngine {
                 // Exceeded dead zone — cancel hold timer, transition to scroll mode.
                 cancelHoldTimer()
                 pendingMouseDown = false
+
+                // Activate the target window so WKWebView-based apps receive scroll events.
+                // Without this, apps using WKWebView (e.g. MarkEdit) ignore scroll events
+                // posted to unfocused windows because WKWebView requires responder-chain
+                // focus to route native scroll events to its web content.
+                activateWindowUnderCursor(at: pendingMouseDownLocation)
+
                 isDragging = true
                 isFirstDragEvent = true
                 lockedAxis = nil
@@ -476,6 +483,34 @@ class ScrollEngine {
         up.setIntegerValueField(.mouseEventClickState, value: clickState)
         up.setIntegerValueField(.eventSourceUserData, value: ScrollEngine.replayMarker)
         up.post(tap: .cghidEventTap)
+    }
+
+    /// Activates the app that owns the window under the given CG screen point.
+    /// This ensures WKWebView-based apps (MarkEdit, etc.) become the key window
+    /// so their web content processes scroll events delivered via CGEvent.
+    private func activateWindowUnderCursor(at point: CGPoint) {
+        guard let windowList = CGWindowListCopyWindowInfo(
+            [.optionOnScreenOnly, .excludeDesktopElements],
+            kCGNullWindowID
+        ) as? [[String: Any]] else { return }
+
+        let ownPID = ProcessInfo.processInfo.processIdentifier
+
+        for info in windowList {
+            guard let boundsDict = info[kCGWindowBounds as String] as? NSDictionary,
+                  let bounds = CGRect(dictionaryRepresentation: boundsDict),
+                  bounds.contains(point),
+                  let pid = info[kCGWindowOwnerPID as String] as? pid_t else { continue }
+
+            // Don't activate our own app.
+            if pid == ownPID { return }
+
+            // Activate the owning app so its window becomes key.
+            if let app = NSRunningApplication(processIdentifier: pid) {
+                app.activate()
+            }
+            return
+        }
     }
 
     private func cancelHoldTimer() {
