@@ -68,6 +68,14 @@ struct MainSettingsView: View {
                         .font(.callout)
                         .foregroundStyle(.secondary)
 
+                    HotkeyRecorderView(keyCode: $appState.hotkeyKeyCode, modifiers: $appState.hotkeyModifiers)
+                    Text("Click the field and press a key to set your hotkey. Function keys work alone; other keys need a modifier (Cmd, Ctrl, Option, Shift).")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                }
+
+                // MARK: - Scroll Behavior
+                Section("Scroll Behavior") {
                     Toggle("Click-through", isOn: $appState.isClickThroughEnabled)
                     Text("When enabled, clicks without dragging pass through as normal clicks. When disabled, all mouse events become scrolls.")
                         .font(.callout)
@@ -91,14 +99,41 @@ struct MainSettingsView: View {
                     Text("How long to hold still before the click passes through (0.25s \u{2013} 5s).")
                         .font(.callout)
                         .foregroundStyle(.secondary)
-                }
 
-                // MARK: - Hotkey
-                Section("Hotkey") {
-                    HotkeyRecorderView(keyCode: $appState.hotkeyKeyCode, modifiers: $appState.hotkeyModifiers)
-                    Text("Click the field and press a key to set your hotkey. Function keys work alone; other keys need a modifier (Cmd, Ctrl, Option, Shift).")
+                    Toggle("Momentum scrolling", isOn: $appState.isInertiaEnabled)
+                    Text("When enabled, releasing a drag produces continued scrolling with gradual deceleration.")
                         .font(.callout)
                         .foregroundStyle(.secondary)
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Intensity")
+                        HStack {
+                            Text("Less")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            Slider(value: $appState.inertiaIntensity, in: 0...1)
+                                .onChange(of: appState.inertiaIntensity) { _, newValue in
+                                    // Snap to center: if within 0.05 of 0.5, snap to exactly 0.5
+                                    if abs(newValue - 0.5) < 0.05 && newValue != 0.5 {
+                                        appState.inertiaIntensity = 0.5
+                                    }
+                                }
+                                .overlay(
+                                    // Center tick mark
+                                    GeometryReader { geometry in
+                                        Rectangle()
+                                            .fill(Color.secondary.opacity(0.4))
+                                            .frame(width: 1, height: 8)
+                                            .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
+                                    }
+                                    .allowsHitTesting(false)
+                                )
+                            Text("More")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .disabled(!appState.isInertiaEnabled)
                 }
 
                 // MARK: - Safety
@@ -120,13 +155,6 @@ struct MainSettingsView: View {
                     Text("Start Scroll My Mac automatically when you log in. The app launches in the background.")
                         .font(.callout)
                         .foregroundStyle(.secondary)
-                }
-
-                // MARK: - Reset
-                Section {
-                    Button("Reset to Defaults", role: .destructive) {
-                        appState.resetToDefaults()
-                    }
                 }
 
                 // MARK: - Excluded Apps
@@ -186,6 +214,13 @@ struct MainSettingsView: View {
                     Text("Apps where scroll mode is automatically bypassed. Scroll mode stays on but clicks pass through normally.")
                         .font(.callout)
                         .foregroundStyle(.secondary)
+                }
+
+                // MARK: - Reset
+                Section {
+                    Button("Reset to Defaults", role: .destructive) {
+                        appState.resetToDefaults()
+                    }
                 }
             }
             .formStyle(.grouped)
