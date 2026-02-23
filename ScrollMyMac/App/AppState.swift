@@ -87,6 +87,20 @@ class AppState {
         }
     }
 
+    var isInertiaEnabled: Bool {
+        didSet {
+            UserDefaults.standard.set(isInertiaEnabled, forKey: "inertiaEnabled")
+            scrollEngine.isInertiaEnabled = isInertiaEnabled
+        }
+    }
+
+    var inertiaIntensity: Double {
+        didSet {
+            UserDefaults.standard.set(inertiaIntensity, forKey: "inertiaIntensity")
+            scrollEngine.inertiaIntensity = inertiaIntensity
+        }
+    }
+
     // MARK: - Per-App Exclusion
 
     /// The current exclusion list — synced from AppExclusionManager.
@@ -120,6 +134,8 @@ class AppState {
         self.isHoldToPassthroughEnabled = UserDefaults.standard.object(forKey: "holdToPassthroughEnabled") as? Bool ?? false
         self.holdToPassthroughDelay = UserDefaults.standard.object(forKey: "holdToPassthroughDelay") as? Double ?? 1.0
         self.isMenuBarIconEnabled = UserDefaults.standard.object(forKey: "menuBarIconEnabled") as? Bool ?? true
+        self.isInertiaEnabled = UserDefaults.standard.object(forKey: "inertiaEnabled") as? Bool ?? true
+        self.inertiaIntensity = UserDefaults.standard.object(forKey: "inertiaIntensity") as? Double ?? 0.5
 
         let defaults = UserDefaults.standard
         if defaults.object(forKey: "hotkeyKeyCode") != nil {
@@ -157,6 +173,8 @@ class AppState {
         scrollEngine.clickThroughEnabled = isClickThroughEnabled
         scrollEngine.holdToPassthroughEnabled = isHoldToPassthroughEnabled
         scrollEngine.holdToPassthroughDelay = holdToPassthroughDelay
+        scrollEngine.isInertiaEnabled = isInertiaEnabled
+        scrollEngine.inertiaIntensity = inertiaIntensity
 
         // Menu bar icon
         menuBarManager.onToggle = { [weak self] in
@@ -223,6 +241,8 @@ class AppState {
         isHoldToPassthroughEnabled = false
         holdToPassthroughDelay = 1.0
         isMenuBarIconEnabled = true
+        isInertiaEnabled = true
+        inertiaIntensity = 0.5
         appExclusionManager.clearAll()
         excludedAppBundleIDs = appExclusionManager.excludedBundleIDs
         appExclusionManager.recheckFrontmostApp()

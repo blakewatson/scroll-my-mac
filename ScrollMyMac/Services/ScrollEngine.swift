@@ -40,6 +40,12 @@ class ScrollEngine {
     /// How long (seconds) to hold still before passthrough activates.
     var holdToPassthroughDelay: TimeInterval = 1.0
 
+    /// When false, releasing a drag produces no coasting — scrolling stops immediately.
+    var isInertiaEnabled: Bool = true
+
+    /// Controls inertia coasting speed and duration (0.0 = gentle, 0.5 = default, 1.0 = iOS-like flick).
+    var inertiaIntensity: Double = 0.5
+
     // MARK: - Axis
 
     enum Axis {
@@ -358,11 +364,12 @@ class ScrollEngine {
             // Post scroll ended event with zero deltas.
             postScrollEvent(wheel1: 0, wheel2: 0, phase: 4) // kCGScrollPhaseEnded
 
-            // Start inertia coasting if velocity is above threshold.
-            if let velocity = velocityTracker.computeVelocity() {
+            // Start inertia coasting if enabled and velocity is above threshold.
+            if isInertiaEnabled, let velocity = velocityTracker.computeVelocity() {
                 inertiaAnimator.startCoasting(
                     velocity: velocity,
-                    axis: lockedAxis
+                    axis: lockedAxis,
+                    intensity: CGFloat(inertiaIntensity)
                 )
             }
         }
