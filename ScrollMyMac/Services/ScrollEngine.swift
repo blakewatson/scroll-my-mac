@@ -92,22 +92,9 @@ class ScrollEngine {
 
     /// Creates the CGEventTap (if not already created) and enables it.
     func start() {
-        // Wire up coasting scroll callback (idempotent).
-        // Coasting events are posted as scrollPhaseChanged (phase 2) so that
-        // NSScrollView treats them as continued drag input and follows our
-        // intensity-scaled deltas exactly.
-        inertiaAnimator.onCoastingScroll = { [weak self] wheel1, wheel2 in
-            self?.postScrollEvent(wheel1: wheel1, wheel2: wheel2, phase: 2) // kCGScrollPhaseChanged
-        }
-        // When coasting finishes, post scrollPhaseEnded + momentum cancel.
-        // scrollPhaseEnded was deferred in handleMouseUp to prevent NSScrollView
-        // from starting its own internal momentum.  The momentum cancel
-        // (begin+end with zero deltas) ensures no native momentum starts after
-        // the scroll gesture ends.
-        inertiaAnimator.onCoastingFinished = { [weak self] in
-            self?.postScrollEvent(wheel1: 0, wheel2: 0, phase: 4)          // kCGScrollPhaseEnded
-            self?.postMomentumScrollEvent(wheel1: 0, wheel2: 0, momentumPhase: 1) // begin
-            self?.postMomentumScrollEvent(wheel1: 0, wheel2: 0, momentumPhase: 3) // end
+        // Wire up momentum scroll callback (idempotent).
+        inertiaAnimator.onMomentumScroll = { [weak self] wheel1, wheel2, momentumPhase in
+            self?.postMomentumScrollEvent(wheel1: wheel1, wheel2: wheel2, momentumPhase: momentumPhase)
         }
 
         guard eventTap == nil else {
@@ -382,14 +369,24 @@ class ScrollEngine {
         if isDragging {
             // Start inertia coasting if enabled and velocity is above threshold.
             if isInertiaEnabled, let velocity = velocityTracker.computeVelocity() {
-                // IMPORTANT: Do NOT post scrollPhaseEnded before starting coasting.
-                // NSScrollView interprets scrollPhaseEnded as the trigger to start
-                // its OWN internal momentum animation.  By skipping it, we keep
-                // the scroll gesture alive and post coasting deltas as
-                // scrollPhaseChanged (phase 2) -- NSScrollView follows these exactly.
-                // scrollPhaseEnded + momentum cancel is posted by onCoastingFinished.
                 let dirMultiplier: CGFloat = isScrollDirectionInverted ? -1.0 : 1.0
                 let adjustedVelocity = CGPoint(x: velocity.x * dirMultiplier, y: velocity.y * dirMultiplier)
+
+                // Inject velocity-scaled scroll events BEFORE scrollPhaseEnded
+                // to influence NSScrollView's perceived exit velocity.
+                // NSScrollView computes its internal momentum from the velocity
+                // of recent scrollPhaseChanged events.  By injecting events with
+                // intensity-scaled deltas, we control how much native momentum
+                // NSScrollView generates.
+                let intensityScale = inertiaAnimator.velocityScaleForIntensity(CGFloat(inertiaIntensity))
+                injectVelocityRamp(velocity: adjustedVelocity, scale: intensityScale, axis: lockedAxis)
+
+                // Post scroll ended event with zero deltas.
+                postScrollEvent(wheel1: 0, wheel2: 0, phase: 4) // kCGScrollPhaseEnded
+
+                // Start InertiaAnimator for web-view apps (which use momentum
+                // events directly).  For native NSScrollView apps, the native
+                // momentum is already intensity-adjusted via the velocity ramp.
                 inertiaAnimator.startCoasting(
                     velocity: adjustedVelocity,
                     axis: lockedAxis,
@@ -409,6 +406,42 @@ class ScrollEngine {
     }
 
     // MARK: - Private Helpers
+
+    /// Injects a short burst of velocity-adjusted scrollPhaseChanged events
+    /// to set NSScrollView's perceived exit velocity before scrollPhaseEnded.
+    ///
+    /// NSScrollView uses the velocity of recent scroll events to compute its
+    /// own momentum animation.  By posting a few events with intensity-scaled
+    /// deltas (simulating ~16ms frame intervals), we control how much native
+    /// momentum NSScrollView generates.
+    ///
+    /// At intensity 0.5 (default), scale == 1.0, so the injected velocity
+    /// matches the actual drag velocity — no change from pre-fix behavior.
+    private func injectVelocityRamp(velocity: CGPoint, scale: CGFloat, axis: Axis?) {
+        // Simulate 3 frames at ~8ms each (~24ms total) with scaled velocity.
+        // The delta per frame = velocity * scale * frameDuration.
+        let frameDuration: CGFloat = 0.008 // 8ms per synthetic frame
+        let frameCount = 3
+
+        for _ in 0..<frameCount {
+            let deltaY = velocity.y * scale * frameDuration
+            let deltaX = velocity.x * scale * frameDuration
+
+            let scrollY = Int32(deltaY)
+            let scrollX = Int32(deltaX)
+
+            if let axis {
+                switch axis {
+                case .vertical:
+                    postScrollEvent(wheel1: scrollY, wheel2: 0, phase: 2)
+                case .horizontal:
+                    postScrollEvent(wheel1: 0, wheel2: scrollX, phase: 2)
+                }
+            } else {
+                postScrollEvent(wheel1: scrollY, wheel2: scrollX, phase: 2)
+            }
+        }
+    }
 
     private func detectAxis(deltaX: CGFloat, deltaY: CGFloat) -> Axis? {
         accumulatedDelta.x += abs(deltaX)

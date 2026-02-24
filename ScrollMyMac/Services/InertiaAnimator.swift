@@ -1,19 +1,12 @@
 import AppKit
 import QuartzCore
 
-/// Drives inertia scrolling after a drag release using display-synchronized
+/// Drives momentum scrolling after a drag release using display-synchronized
 /// exponential decay animation.
 ///
-/// Owns a `CADisplayLink` that fires each frame to post scroll events with
-/// decaying deltas. The decay follows `amplitude * (1 - exp(-t / tau))`,
+/// Owns a `CADisplayLink` that fires each frame to post momentum scroll events
+/// with decaying deltas. The decay follows `amplitude * (1 - exp(-t / tau))`,
 /// which is frame-rate independent and robust against dropped frames.
-///
-/// Coasting events are posted as `scrollPhaseChanged` (phase 2) to keep the
-/// scroll gesture alive.  NSScrollView follows these deltas exactly, giving
-/// us full control over coasting distance and speed via the intensity setting.
-/// When coasting finishes, ScrollEngine posts `scrollPhaseEnded` (phase 4)
-/// plus a momentum cancel to prevent NSScrollView from starting its own
-/// internal momentum animation.
 ///
 /// Not `@Observable` — this is internal to ScrollEngine.
 class InertiaAnimator {
@@ -39,19 +32,12 @@ class InertiaAnimator {
     /// Computed tau for the current coasting animation (set per startCoasting call).
     private var tau: CFTimeInterval = 0.400
 
-    // MARK: - Callbacks
+    // MARK: - Callback
 
-    /// Called each display-link frame with (deltaY, deltaX).
-    /// ScrollEngine maps this to `postScrollEvent(phase: 2)` — scrollPhaseChanged —
-    /// so NSScrollView treats coasting deltas as continued drag input and follows
-    /// them exactly.
-    var onCoastingScroll: ((Int32, Int32) -> Void)?
-
-    /// Called after coasting ends.
-    /// ScrollEngine uses this to post scrollPhaseEnded + momentum cancel,
-    /// completing the scroll gesture cleanly and preventing NSScrollView
-    /// from starting its own internal momentum.
-    var onCoastingFinished: (() -> Void)?
+    /// Called each frame with (deltaY, deltaX, momentumPhase).
+    /// ScrollEngine provides this to post momentum scroll events.
+    /// Phase values: 1 = begin, 2 = continue, 3 = end.
+    var onMomentumScroll: ((Int32, Int32, Int64) -> Void)?
 
     // MARK: - State
 
@@ -65,10 +51,30 @@ class InertiaAnimator {
     private var lastPositionX: CGFloat = 0
     private var lastPositionY: CGFloat = 0
     private var lockedAxis: ScrollEngine.Axis?
+    private var isFirstFrame: Bool = true
     private var scrollRemainderX: CGFloat = 0
     private var scrollRemainderY: CGFloat = 0
 
     // MARK: - API
+
+    /// Computes the velocity scale factor for a given intensity.
+    ///
+    /// Two-segment linear interpolation:
+    /// [0.0, 0.5] -> [velocityScaleMin, 1.0], [0.5, 1.0] -> [1.0, velocityScaleMax]
+    ///
+    /// This is used by ScrollEngine to inject velocity-adjusted scroll events
+    /// before scrollPhaseEnded so that NSScrollView's native momentum reflects
+    /// the intensity setting.
+    func velocityScaleForIntensity(_ intensity: CGFloat) -> CGFloat {
+        let t = min(max(intensity, 0.0), 1.0)
+        if t <= 0.5 {
+            let fraction = t / 0.5
+            return velocityScaleMin + (velocityScaleMid - velocityScaleMin) * fraction
+        } else {
+            let fraction = (t - 0.5) / 0.5
+            return velocityScaleMid + (velocityScaleMax - velocityScaleMid) * fraction
+        }
+    }
 
     /// Begins momentum coasting with the given velocity, optional axis lock,
     /// and intensity that scales both coasting duration and speed.
@@ -95,16 +101,7 @@ class InertiaAnimator {
             tau = tauMid + (tauMax - tauMid) * fraction
         }
 
-        // Two-segment linear interpolation for velocity scale:
-        // [0.0, 0.5] -> [velocityScaleMin, velocityScaleMid], [0.5, 1.0] -> [velocityScaleMid, velocityScaleMax]
-        let velocityScale: CGFloat
-        if t <= 0.5 {
-            let fraction = t / 0.5
-            velocityScale = velocityScaleMin + (velocityScaleMid - velocityScaleMin) * fraction
-        } else {
-            let fraction = (t - 0.5) / 0.5
-            velocityScale = velocityScaleMid + (velocityScaleMax - velocityScaleMid) * fraction
-        }
+        let velocityScale = velocityScaleForIntensity(t)
 
         // Compute amplitude (total distance to coast) per axis.
         // amplitude = velocity * velocityScale * tau
@@ -128,6 +125,7 @@ class InertiaAnimator {
         lastPositionY = 0
         scrollRemainderX = 0
         scrollRemainderY = 0
+        isFirstFrame = true
         startTime = CACurrentMediaTime()
         isCoasting = true
 
@@ -144,17 +142,16 @@ class InertiaAnimator {
         displayLink?.add(to: .main, forMode: .common)
     }
 
-    /// Stops momentum coasting immediately, invalidates the display link,
-    /// and notifies ScrollEngine to finalize the scroll gesture.
+    /// Stops momentum coasting immediately.
+    /// Posts a momentum-end event (phase 3) and invalidates the display link.
     func stopCoasting() {
         guard isCoasting else { return }
 
+        // Post final momentum event with zero deltas and phase 3 (end).
+        onMomentumScroll?(0, 0, 3)
+
         invalidateDisplayLink()
         isCoasting = false
-
-        // Notify ScrollEngine that coasting finished so it can post
-        // scrollPhaseEnded + momentum cancel to finalize the gesture.
-        onCoastingFinished?()
     }
 
     deinit {
@@ -186,6 +183,15 @@ class InertiaAnimator {
             return
         }
 
+        // Determine momentum phase.
+        let momentumPhase: Int64
+        if isFirstFrame {
+            momentumPhase = 1 // kCGMomentumScrollPhaseBegin
+            isFirstFrame = false
+        } else {
+            momentumPhase = 2 // kCGMomentumScrollPhaseContinue
+        }
+
         // Accumulate fractional remainders so sub-pixel deltas aren't lost.
         scrollRemainderY += deltaY
         scrollRemainderX += deltaX
@@ -194,9 +200,7 @@ class InertiaAnimator {
         scrollRemainderY -= CGFloat(scrollDeltaY)
         scrollRemainderX -= CGFloat(scrollDeltaX)
 
-        // Post as scrollPhaseChanged — NSScrollView treats these as
-        // continued drag input and follows our deltas exactly.
-        onCoastingScroll?(scrollDeltaY, scrollDeltaX)
+        onMomentumScroll?(scrollDeltaY, scrollDeltaX, momentumPhase)
     }
 
     // MARK: - Private
