@@ -92,15 +92,22 @@ class ScrollEngine {
 
     /// Creates the CGEventTap (if not already created) and enables it.
     func start() {
-        // Wire up momentum scroll callback (idempotent).
-        inertiaAnimator.onMomentumScroll = { [weak self] wheel1, wheel2, momentumPhase in
-            self?.postMomentumScrollEvent(wheel1: wheel1, wheel2: wheel2, momentumPhase: momentumPhase)
+        // Wire up coasting scroll callback (idempotent).
+        // Coasting events are posted as scrollPhaseChanged (phase 2) so that
+        // NSScrollView treats them as continued drag input and follows our
+        // intensity-scaled deltas exactly.
+        inertiaAnimator.onCoastingScroll = { [weak self] wheel1, wheel2 in
+            self?.postScrollEvent(wheel1: wheel1, wheel2: wheel2, phase: 2) // kCGScrollPhaseChanged
         }
-        // Post the deferred scrollPhaseEnded when coasting finishes.
-        // We skip scrollPhaseEnded in handleMouseUp to prevent NSScrollView
-        // from starting its own native momentum; it is sent here instead.
+        // When coasting finishes, post scrollPhaseEnded + momentum cancel.
+        // scrollPhaseEnded was deferred in handleMouseUp to prevent NSScrollView
+        // from starting its own internal momentum.  The momentum cancel
+        // (begin+end with zero deltas) ensures no native momentum starts after
+        // the scroll gesture ends.
         inertiaAnimator.onCoastingFinished = { [weak self] in
-            self?.postScrollEvent(wheel1: 0, wheel2: 0, phase: 4) // kCGScrollPhaseEnded
+            self?.postScrollEvent(wheel1: 0, wheel2: 0, phase: 4)          // kCGScrollPhaseEnded
+            self?.postMomentumScrollEvent(wheel1: 0, wheel2: 0, momentumPhase: 1) // begin
+            self?.postMomentumScrollEvent(wheel1: 0, wheel2: 0, momentumPhase: 3) // end
         }
 
         guard eventTap == nil else {
@@ -375,12 +382,12 @@ class ScrollEngine {
         if isDragging {
             // Start inertia coasting if enabled and velocity is above threshold.
             if isInertiaEnabled, let velocity = velocityTracker.computeVelocity() {
-                // IMPORTANT: Do NOT post scrollPhaseEnded before starting momentum.
+                // IMPORTANT: Do NOT post scrollPhaseEnded before starting coasting.
                 // NSScrollView interprets scrollPhaseEnded as the trigger to start
-                // its OWN internal momentum animation.  By skipping it, we prevent
-                // native momentum and let InertiaAnimator control coasting entirely
-                // via momentum-phase events (begin / continue / end).
-                // scrollPhaseEnded is posted later by stopCoasting → onScrollEnded.
+                // its OWN internal momentum animation.  By skipping it, we keep
+                // the scroll gesture alive and post coasting deltas as
+                // scrollPhaseChanged (phase 2) -- NSScrollView follows these exactly.
+                // scrollPhaseEnded + momentum cancel is posted by onCoastingFinished.
                 let dirMultiplier: CGFloat = isScrollDirectionInverted ? -1.0 : 1.0
                 let adjustedVelocity = CGPoint(x: velocity.x * dirMultiplier, y: velocity.y * dirMultiplier)
                 inertiaAnimator.startCoasting(

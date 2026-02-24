@@ -1,12 +1,19 @@
 import AppKit
 import QuartzCore
 
-/// Drives momentum scrolling after a drag release using display-synchronized
+/// Drives inertia scrolling after a drag release using display-synchronized
 /// exponential decay animation.
 ///
-/// Owns a `CADisplayLink` that fires each frame to post momentum scroll events
-/// with decaying deltas. The decay follows `amplitude * (1 - exp(-t / tau))`,
+/// Owns a `CADisplayLink` that fires each frame to post scroll events with
+/// decaying deltas. The decay follows `amplitude * (1 - exp(-t / tau))`,
 /// which is frame-rate independent and robust against dropped frames.
+///
+/// Coasting events are posted as `scrollPhaseChanged` (phase 2) to keep the
+/// scroll gesture alive.  NSScrollView follows these deltas exactly, giving
+/// us full control over coasting distance and speed via the intensity setting.
+/// When coasting finishes, ScrollEngine posts `scrollPhaseEnded` (phase 4)
+/// plus a momentum cancel to prevent NSScrollView from starting its own
+/// internal momentum animation.
 ///
 /// Not `@Observable` — this is internal to ScrollEngine.
 class InertiaAnimator {
@@ -34,14 +41,16 @@ class InertiaAnimator {
 
     // MARK: - Callbacks
 
-    /// Called each frame with (deltaY, deltaX, momentumPhase).
-    /// ScrollEngine provides this to post momentum scroll events.
-    /// Phase values: 1 = begin, 2 = continue, 3 = end.
-    var onMomentumScroll: ((Int32, Int32, Int64) -> Void)?
+    /// Called each display-link frame with (deltaY, deltaX).
+    /// ScrollEngine maps this to `postScrollEvent(phase: 2)` — scrollPhaseChanged —
+    /// so NSScrollView treats coasting deltas as continued drag input and follows
+    /// them exactly.
+    var onCoastingScroll: ((Int32, Int32) -> Void)?
 
-    /// Called after coasting ends (after the final momentum-end event).
-    /// ScrollEngine uses this to post scrollPhaseEnded, which was deferred
-    /// to prevent NSScrollView from starting its own internal momentum.
+    /// Called after coasting ends.
+    /// ScrollEngine uses this to post scrollPhaseEnded + momentum cancel,
+    /// completing the scroll gesture cleanly and preventing NSScrollView
+    /// from starting its own internal momentum.
     var onCoastingFinished: (() -> Void)?
 
     // MARK: - State
@@ -56,7 +65,6 @@ class InertiaAnimator {
     private var lastPositionX: CGFloat = 0
     private var lastPositionY: CGFloat = 0
     private var lockedAxis: ScrollEngine.Axis?
-    private var isFirstFrame: Bool = true
     private var scrollRemainderX: CGFloat = 0
     private var scrollRemainderY: CGFloat = 0
 
@@ -120,7 +128,6 @@ class InertiaAnimator {
         lastPositionY = 0
         scrollRemainderX = 0
         scrollRemainderY = 0
-        isFirstFrame = true
         startTime = CACurrentMediaTime()
         isCoasting = true
 
@@ -137,20 +144,16 @@ class InertiaAnimator {
         displayLink?.add(to: .main, forMode: .common)
     }
 
-    /// Stops momentum coasting immediately.
-    /// Posts a momentum-end event (phase 3), invalidates the display link,
-    /// and notifies ScrollEngine to post the deferred scrollPhaseEnded.
+    /// Stops momentum coasting immediately, invalidates the display link,
+    /// and notifies ScrollEngine to finalize the scroll gesture.
     func stopCoasting() {
         guard isCoasting else { return }
-
-        // Post final momentum event with zero deltas and phase 3 (end).
-        onMomentumScroll?(0, 0, 3)
 
         invalidateDisplayLink()
         isCoasting = false
 
         // Notify ScrollEngine that coasting finished so it can post
-        // the deferred scrollPhaseEnded event.
+        // scrollPhaseEnded + momentum cancel to finalize the gesture.
         onCoastingFinished?()
     }
 
@@ -183,15 +186,6 @@ class InertiaAnimator {
             return
         }
 
-        // Determine momentum phase.
-        let momentumPhase: Int64
-        if isFirstFrame {
-            momentumPhase = 1 // kCGMomentumScrollPhaseBegin
-            isFirstFrame = false
-        } else {
-            momentumPhase = 2 // kCGMomentumScrollPhaseContinue
-        }
-
         // Accumulate fractional remainders so sub-pixel deltas aren't lost.
         scrollRemainderY += deltaY
         scrollRemainderX += deltaX
@@ -200,7 +194,9 @@ class InertiaAnimator {
         scrollRemainderY -= CGFloat(scrollDeltaY)
         scrollRemainderX -= CGFloat(scrollDeltaX)
 
-        onMomentumScroll?(scrollDeltaY, scrollDeltaX, momentumPhase)
+        // Post as scrollPhaseChanged — NSScrollView treats these as
+        // continued drag input and follows our deltas exactly.
+        onCoastingScroll?(scrollDeltaY, scrollDeltaX)
     }
 
     // MARK: - Private
