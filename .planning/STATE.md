@@ -2,19 +2,19 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-02-22)
+See: .planning/PROJECT.md (updated 2026-02-24)
 
 **Core value:** Users can scroll any scrollable area by clicking and dragging with the mouse pointer, with natural inertia -- no scroll wheel or trackpad required.
-**Current focus:** All v1.4 phases complete
+**Current focus:** Planning next milestone
 
 ## Current Position
 
-Phase: 15 of 15 (all complete)
+Phase: v1.4 complete — all 15 phases shipped
 Plan: All plans complete
-Status: v1.4 milestone complete (Phases 13, 14, 15 all done)
-Last activity: 2026-02-23 — Completed 13-03 native momentum gap closure
+Status: v1.4 milestone archived — ready for next milestone
+Last activity: 2026-02-24 — Archived v1.4 milestone
 
-Progress: [████████████████████████] 100% (15/15 phases)
+Progress: v1.0-v1.4 shipped (15 phases, 23 plans)
 
 ## Performance Metrics
 
@@ -55,20 +55,7 @@ Progress: [███████████████████████
 ### Decisions
 
 Decisions are logged in PROJECT.md Key Decisions table.
-- Phases 13-15 are independent -- can be executed in any order
-- Inertia controls build on existing InertiaAnimator from Phase 4
-- Click-through hotkey reuses existing KeyRecorderView from Phase 5
-- Two-segment linear interpolation for intensity-to-tau mapping (0.120...0.400...0.900)
-- Velocity scale range 0.4x...1.0x...2.0x matches tau segments
-- Settings reorganized into 6 sections: Scroll Mode, Scroll Behavior, Safety, General, Excluded Apps, Reset
-- LabeledContent for slider Form alignment, background-based tick mark, 0.025 snap threshold
-- Direction inversion applied at ScrollEngine level, not in InertiaAnimator -- keeps animator generic
-- Default scroll direction is natural (false) -- matches touchscreen mental model
-- Click-through hotkey uses second HotkeyManager instance, defaults to None (keyCode -1)
-- [Phase 13]: Velocity ramp injection: post intensity-scaled scrollPhaseChanged events before scrollPhaseEnded to control NSScrollView native momentum
-- [Phase 13]: Separate native (0.25x-4.0x) and web-app (0.4x-2.0x) intensity scale ranges to compensate for NSScrollView dampening
-- [Phase 13]: Quadratic tail acceleration decay formula exp(-t/tau - tailAccel*t^2) for sharper web-app deceleration cutoff
-- [Phase 13]: Drag-distance progressive scaling (80pt threshold) prevents short-drag velocity amplification in velocity ramp
+v1.4 decisions archived — see .planning/milestones/v1.4-ROADMAP.md for full history.
 
 ### Pending Todos
 
@@ -93,6 +80,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-23
-Stopped at: Completed 13-03-PLAN.md (Phase 13 gap closure complete -- all v1.4 phases done)
+Last session: 2026-02-24
+Stopped at: v1.4 milestone archived
 Resume file: --
