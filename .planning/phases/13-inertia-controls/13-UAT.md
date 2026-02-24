@@ -1,9 +1,9 @@
 ---
-status: complete
+status: diagnosed
 phase: 13-inertia-controls
 source: [13-01-SUMMARY.md, 13-02-SUMMARY.md]
 started: 2026-02-23T06:00:00Z
-updated: 2026-02-23T06:05:00Z
+updated: 2026-02-23T06:10:00Z
 ---
 
 ## Current Test
@@ -59,13 +59,29 @@ skipped: 0
   reason: "User reported: Toggling off momentum scrolling works for certain views, especially apps that have web views. But it seems that native apps like the Finder or IA Writer don't respect the momentum scrolling disabled setting. they seem to be providing their own internal momentum."
   severity: major
   test: 1
-  artifacts: []
-  missing: []
+  root_cause: "NSScrollView has built-in momentum scrolling triggered by the scroll phase state machine (began->changed->ended). When ScrollEngine posts scrollPhaseEnded on mouse-up, NSScrollView interprets this as user finished scrolling and initiates its own internal momentum. Disabling our InertiaAnimator does not suppress NSScrollView's native momentum. Need to post a zero-length momentum sequence (momentumPhase begin+end with zero deltas) after scrollPhaseEnded when inertia is disabled."
+  artifacts:
+    - path: "ScrollMyMac/Services/ScrollEngine.swift"
+      issue: "handleMouseUp() posts scrollPhaseEnded but no momentum-cancel to suppress NSScrollView's internal momentum"
+    - path: "ScrollMyMac/Services/InertiaAnimator.swift"
+      issue: "~16ms gap between scrollPhaseEnded and first momentum-begin allows NSScrollView to start its own momentum"
+  missing:
+    - "Post zero-length momentum sequence (begin+end, zero deltas) when inertia disabled"
+    - "Fire first momentum-begin synchronously (no CADisplayLink gap) when inertia enabled"
+  debug_session: ".planning/debug/native-momentum-bypass.md"
 
 - truth: "Intensity slider affects coasting feel across all apps"
   status: failed
   reason: "User reported: The intensity slider does affect the coasting feel in apps that respect it, which seems to be apps that have web views. That said, native apps seem to ignore this setting entirely."
   severity: major
   test: 4
-  artifacts: []
-  missing: []
+  root_cause: "Same root cause as Test 1. NSScrollView generates its own momentum independently of InertiaAnimator. Our intensity-scaled momentum events compete with NSScrollView's internal momentum. Fix: ensure our momentum events arrive before NSScrollView starts its own, so NSScrollView defers to incoming momentum rather than generating its own."
+  artifacts:
+    - path: "ScrollMyMac/Services/ScrollEngine.swift"
+      issue: "handleMouseUp() posts scrollPhaseEnded but no momentum-cancel to suppress NSScrollView's internal momentum"
+    - path: "ScrollMyMac/Services/InertiaAnimator.swift"
+      issue: "CADisplayLink delay allows NSScrollView to start its own momentum before our first momentum event"
+  missing:
+    - "Fire first momentum-begin synchronously after scrollPhaseEnded (eliminate 16ms gap)"
+    - "NSScrollView should defer to incoming momentum events once it sees momentumPhase begin"
+  debug_session: ".planning/debug/native-momentum-bypass.md"
