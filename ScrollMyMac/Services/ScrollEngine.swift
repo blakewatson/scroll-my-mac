@@ -96,8 +96,11 @@ class ScrollEngine {
         inertiaAnimator.onMomentumScroll = { [weak self] wheel1, wheel2, momentumPhase in
             self?.postMomentumScrollEvent(wheel1: wheel1, wheel2: wheel2, momentumPhase: momentumPhase)
         }
-        inertiaAnimator.onCoastingScroll = { [weak self] wheel1, wheel2 in
-            self?.postCoastingScrollEvent(wheel1: wheel1, wheel2: wheel2)
+        // Post the deferred scrollPhaseEnded when coasting finishes.
+        // We skip scrollPhaseEnded in handleMouseUp to prevent NSScrollView
+        // from starting its own native momentum; it is sent here instead.
+        inertiaAnimator.onCoastingFinished = { [weak self] in
+            self?.postScrollEvent(wheel1: 0, wheel2: 0, phase: 4) // kCGScrollPhaseEnded
         }
 
         guard eventTap == nil else {
@@ -370,11 +373,14 @@ class ScrollEngine {
         }
 
         if isDragging {
-            // Post scroll ended event with zero deltas.
-            postScrollEvent(wheel1: 0, wheel2: 0, phase: 4) // kCGScrollPhaseEnded
-
             // Start inertia coasting if enabled and velocity is above threshold.
             if isInertiaEnabled, let velocity = velocityTracker.computeVelocity() {
+                // IMPORTANT: Do NOT post scrollPhaseEnded before starting momentum.
+                // NSScrollView interprets scrollPhaseEnded as the trigger to start
+                // its OWN internal momentum animation.  By skipping it, we prevent
+                // native momentum and let InertiaAnimator control coasting entirely
+                // via momentum-phase events (begin / continue / end).
+                // scrollPhaseEnded is posted later by stopCoasting → onScrollEnded.
                 let dirMultiplier: CGFloat = isScrollDirectionInverted ? -1.0 : 1.0
                 let adjustedVelocity = CGPoint(x: velocity.x * dirMultiplier, y: velocity.y * dirMultiplier)
                 inertiaAnimator.startCoasting(
@@ -383,9 +389,9 @@ class ScrollEngine {
                     intensity: CGFloat(inertiaIntensity)
                 )
             } else {
-                // Claim the momentum phase immediately so NSScrollView does not
-                // start its own internal momentum animation.
-                // momentumPhase 1 = begin, 3 = end, both with zero deltas.
+                // No inertia — post scrollPhaseEnded + momentum cancel so
+                // NSScrollView does not start its own internal momentum.
+                postScrollEvent(wheel1: 0, wheel2: 0, phase: 4) // kCGScrollPhaseEnded
                 postMomentumScrollEvent(wheel1: 0, wheel2: 0, momentumPhase: 1) // begin
                 postMomentumScrollEvent(wheel1: 0, wheel2: 0, momentumPhase: 3) // end
             }
@@ -438,29 +444,6 @@ class ScrollEngine {
         // During momentum: scrollPhase = 0 (none), only momentumPhase carries state.
         scrollEvent.setIntegerValueField(.scrollWheelEventScrollPhase, value: 0)
         scrollEvent.setIntegerValueField(.scrollWheelEventMomentumPhase, value: momentumPhase)
-        scrollEvent.post(tap: .cgSessionEventTap)
-    }
-
-    /// Posts a phase-less scroll event used by InertiaAnimator for coasting.
-    /// NSScrollView (native apps) ignores momentum-phase deltas and uses its
-    /// own internal velocity calculation.  Phase-less events bypass that and
-    /// move content directly in both native and web-view apps.
-    private func postCoastingScrollEvent(wheel1: Int32, wheel2: Int32) {
-        let scrollEvent = CGEvent(
-            scrollWheelEvent2Source: nil,
-            units: .pixel,
-            wheelCount: 3,
-            wheel1: wheel1,
-            wheel2: wheel2,
-            wheel3: 0
-        )
-
-        guard let scrollEvent else { return }
-
-        // No phase information — treated as legacy discrete scroll events
-        // that all scroll views obey directly.
-        scrollEvent.setIntegerValueField(.scrollWheelEventScrollPhase, value: 0)
-        scrollEvent.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 0)
         scrollEvent.post(tap: .cgSessionEventTap)
     }
 
