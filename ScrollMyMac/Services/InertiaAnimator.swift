@@ -2,11 +2,12 @@ import AppKit
 import QuartzCore
 
 /// Drives momentum scrolling after a drag release using display-synchronized
-/// exponential decay animation.
+/// exponential decay animation with quadratic tail acceleration.
 ///
 /// Owns a `CADisplayLink` that fires each frame to post momentum scroll events
-/// with decaying deltas. The decay follows `amplitude * (1 - exp(-t / tau))`,
-/// which is frame-rate independent and robust against dropped frames.
+/// with decaying deltas. The decay follows
+/// `amplitude * (1 - exp(-t/tau - tailAccel*t^2))`, which is frame-rate
+/// independent and has a sharp tail cutoff instead of lingering at low velocity.
 ///
 /// Not `@Observable` — this is internal to ScrollEngine.
 class InertiaAnimator {
@@ -37,11 +38,16 @@ class InertiaAnimator {
     /// intensity 1.0 -> nativeScaleMax (much longer coast)
     private let nativeScaleMin: CGFloat = 0.25
     private let nativeScaleMid: CGFloat = 1.0
-    private let nativeScaleMax: CGFloat = 5.0
+    private let nativeScaleMax: CGFloat = 4.0
+
+    /// Quadratic tail-acceleration coefficient.  Added to the exponential
+    /// decay exponent as `-tailAccel * t^2`, causing deceleration to
+    /// intensify sharply at the tail end while preserving smooth early feel.
+    /// Higher values = sharper cutoff.  0.0 = pure exponential (long tail).
+    private let tailAccel: CFTimeInterval = 1.5
 
     /// Stop threshold: remaining amplitude below this is considered negligible.
-    /// Higher values cut the deceleration tail shorter (web apps felt too long).
-    private let stopThreshold: CGFloat = 5.0
+    private let stopThreshold: CGFloat = 0.5
 
     /// Computed tau for the current coasting animation (set per startCoasting call).
     private var tau: CFTimeInterval = 0.400
@@ -186,9 +192,12 @@ class InertiaAnimator {
     @objc private func displayLinkFired(_ link: CADisplayLink) {
         let elapsed = CACurrentMediaTime() - startTime
 
-        // Compute current position from closed-form exponential decay.
-        // position(t) = amplitude * (1 - exp(-t / tau))
-        let decay = exp(-elapsed / tau)
+        // Compute current position from exponential decay with quadratic
+        // tail acceleration: decay = exp(-t/tau - tailAccel * t^2).
+        // The linear term (-t/tau) controls the main deceleration feel.
+        // The quadratic term (-tailAccel * t^2) intensifies at large t,
+        // causing the tail to drop off sharply instead of lingering.
+        let decay = exp(-elapsed / tau - tailAccel * elapsed * elapsed)
         let positionX = amplitudeX * (1.0 - decay)
         let positionY = amplitudeY * (1.0 - decay)
 
