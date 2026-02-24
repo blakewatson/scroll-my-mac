@@ -378,7 +378,7 @@ class ScrollEngine {
                 // of recent scrollPhaseChanged events.  By injecting events with
                 // intensity-scaled deltas, we control how much native momentum
                 // NSScrollView generates.
-                let intensityScale = inertiaAnimator.velocityScaleForIntensity(CGFloat(inertiaIntensity))
+                let intensityScale = inertiaAnimator.nativeVelocityScaleForIntensity(CGFloat(inertiaIntensity))
                 injectVelocityRamp(velocity: adjustedVelocity, scale: intensityScale, axis: lockedAxis)
 
                 // Post scroll ended event with zero deltas.

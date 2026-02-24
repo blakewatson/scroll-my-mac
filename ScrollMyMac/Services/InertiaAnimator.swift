@@ -21,13 +21,27 @@ class InertiaAnimator {
     private let tauMid: CFTimeInterval = 0.400
     private let tauMax: CFTimeInterval = 0.900
 
-    /// Velocity scale range for intensity mapping.
+    /// Velocity scale range for InertiaAnimator momentum events (web apps).
     /// intensity 0.0 -> velocityScaleMin (gentle)
     /// intensity 0.5 -> 1.0 (unchanged from today)
     /// intensity 1.0 -> velocityScaleMax (fast)
     private let velocityScaleMin: CGFloat = 0.4
     private let velocityScaleMid: CGFloat = 1.0
     private let velocityScaleMax: CGFloat = 2.0
+
+    /// Velocity scale range for native app velocity ramp injection.
+    /// Wider range than web apps because NSScrollView applies its own
+    /// momentum curve on top, dampening the perceived difference.
+    /// intensity 0.0 -> nativeScaleMin (shorter coast)
+    /// intensity 0.5 -> 1.0 (unchanged from pre-fix behavior)
+    /// intensity 1.0 -> nativeScaleMax (much longer coast)
+    private let nativeScaleMin: CGFloat = 0.25
+    private let nativeScaleMid: CGFloat = 1.0
+    private let nativeScaleMax: CGFloat = 3.5
+
+    /// Stop threshold: remaining amplitude below this is considered negligible.
+    /// Higher values cut the deceleration tail shorter (web apps felt too long).
+    private let stopThreshold: CGFloat = 2.0
 
     /// Computed tau for the current coasting animation (set per startCoasting call).
     private var tau: CFTimeInterval = 0.400
@@ -57,22 +71,23 @@ class InertiaAnimator {
 
     // MARK: - API
 
-    /// Computes the velocity scale factor for a given intensity.
+    /// Computes the native-app velocity scale factor for a given intensity.
     ///
-    /// Two-segment linear interpolation:
-    /// [0.0, 0.5] -> [velocityScaleMin, 1.0], [0.5, 1.0] -> [1.0, velocityScaleMax]
+    /// Two-segment linear interpolation using the wider native range:
+    /// [0.0, 0.5] -> [nativeScaleMin, 1.0], [0.5, 1.0] -> [1.0, nativeScaleMax]
     ///
-    /// This is used by ScrollEngine to inject velocity-adjusted scroll events
-    /// before scrollPhaseEnded so that NSScrollView's native momentum reflects
-    /// the intensity setting.
-    func velocityScaleForIntensity(_ intensity: CGFloat) -> CGFloat {
+    /// Used by ScrollEngine to inject velocity-adjusted scroll events before
+    /// scrollPhaseEnded so that NSScrollView's native momentum reflects the
+    /// intensity setting.  The wider range compensates for NSScrollView's own
+    /// momentum curve dampening the perceived difference.
+    func nativeVelocityScaleForIntensity(_ intensity: CGFloat) -> CGFloat {
         let t = min(max(intensity, 0.0), 1.0)
         if t <= 0.5 {
             let fraction = t / 0.5
-            return velocityScaleMin + (velocityScaleMid - velocityScaleMin) * fraction
+            return nativeScaleMin + (nativeScaleMid - nativeScaleMin) * fraction
         } else {
             let fraction = (t - 0.5) / 0.5
-            return velocityScaleMid + (velocityScaleMax - velocityScaleMid) * fraction
+            return nativeScaleMid + (nativeScaleMax - nativeScaleMid) * fraction
         }
     }
 
@@ -101,7 +116,15 @@ class InertiaAnimator {
             tau = tauMid + (tauMax - tauMid) * fraction
         }
 
-        let velocityScale = velocityScaleForIntensity(t)
+        // Web-app velocity scale (InertiaAnimator's own momentum events).
+        let velocityScale: CGFloat
+        if t <= 0.5 {
+            let fraction = t / 0.5
+            velocityScale = velocityScaleMin + (velocityScaleMid - velocityScaleMin) * fraction
+        } else {
+            let fraction = (t - 0.5) / 0.5
+            velocityScale = velocityScaleMid + (velocityScaleMax - velocityScaleMid) * fraction
+        }
 
         // Compute amplitude (total distance to coast) per axis.
         // amplitude = velocity * velocityScale * tau
@@ -176,9 +199,10 @@ class InertiaAnimator {
         lastPositionY = positionY
 
         // Check stop condition: remaining amplitude is negligible.
+        // Higher threshold cuts the deceleration tail shorter.
         let remainingX = abs(amplitudeX * decay)
         let remainingY = abs(amplitudeY * decay)
-        if remainingX < 0.5 && remainingY < 0.5 {
+        if remainingX < stopThreshold && remainingY < stopThreshold {
             stopCoasting()
             return
         }
