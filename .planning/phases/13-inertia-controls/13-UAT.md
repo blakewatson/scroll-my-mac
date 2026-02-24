@@ -1,9 +1,9 @@
 ---
-status: diagnosed
+status: resolved
 phase: 13-inertia-controls
 source: [13-01-SUMMARY.md, 13-02-SUMMARY.md]
 started: 2026-02-23T06:00:00Z
-updated: 2026-02-23T06:10:00Z
+updated: 2026-02-24T00:00:00Z
 ---
 
 ## Current Test
@@ -55,7 +55,7 @@ skipped: 0
 ## Gaps
 
 - truth: "Momentum scrolling toggle disables all inertial coasting when OFF"
-  status: failed
+  status: resolved
   reason: "User reported: Toggling off momentum scrolling works for certain views, especially apps that have web views. But it seems that native apps like the Finder or IA Writer don't respect the momentum scrolling disabled setting. they seem to be providing their own internal momentum."
   severity: major
   test: 1
@@ -71,7 +71,7 @@ skipped: 0
   debug_session: ".planning/debug/native-momentum-bypass.md"
 
 - truth: "Intensity slider affects coasting feel across all apps"
-  status: failed
+  status: resolved
   reason: "User reported: The intensity slider does affect the coasting feel in apps that respect it, which seems to be apps that have web views. That said, native apps seem to ignore this setting entirely."
   severity: major
   test: 4
