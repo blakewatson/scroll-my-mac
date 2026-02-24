@@ -233,7 +233,7 @@ Plans:
 
 **Milestone Goal:** Give users control over scroll feel -- inertia on/off, intensity, direction inversion -- and add a hotkey for toggling click-through mode.
 
-- [x] **Phase 13: Inertia Controls** - On/off toggle and intensity slider for momentum scrolling
+- [ ] **Phase 13: Inertia Controls** - On/off toggle and intensity slider for momentum scrolling (gap closure in progress)
 - [x] **Phase 14: Scroll Direction** - Toggle between natural and inverted scroll direction (completed 2026-02-23)
 - [x] **Phase 15: Click-Through Hotkey** - Configurable hotkey to toggle click-through mode (completed 2026-02-23)
 
@@ -248,11 +248,12 @@ Plans:
   2. User can toggle inertia back on, and releasing a drag produces momentum scrolling as before
   3. User can adjust an intensity slider that controls how far and fast coasting travels (weaker = shorter/slower, stronger = longer/faster)
   4. Inertia toggle defaults to on and intensity defaults to a middle value on fresh install
-**Plans**: 2 plans
+**Plans**: 3 plans
 
 Plans:
 - [x] 13-01-PLAN.md — Parameterize InertiaAnimator with intensity, add AppState persistence, wire ScrollEngine inertia skip
 - [x] 13-02-PLAN.md — Reorganize SettingsView, add momentum toggle and intensity slider with center detent
+- [ ] 13-03-PLAN.md — Gap closure: suppress NSScrollView native momentum so toggle and intensity work in native apps
 
 ### Phase 14: Scroll Direction
 **Goal**: Users can flip scroll direction to match their mental model (natural vs classic)
@@ -302,6 +303,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 10. Menu Bar Icon | v1.3.0 | 1/1 | Complete | 2026-02-18 |
 | 11. Hold-to-Passthrough | v1.3.0 | 1/1 | Complete | 2026-02-18 |
 | 12. Per-App Exclusion | v1.3.0 | 2/2 | Complete | 2026-02-18 |
-| 13. Inertia Controls | v1.4 | Complete    | 2026-02-23 | 2026-02-22 |
-| 14. Scroll Direction | 1/1 | Complete    | 2026-02-23 | - |
-| 15. Click-Through Hotkey | 1/1 | Complete    | 2026-02-23 | - |
+| 13. Inertia Controls | v1.4 | 2/3 | Gap closure | - |
+| 14. Scroll Direction | v1.4 | 1/1 | Complete | 2026-02-23 |
+| 15. Click-Through Hotkey | v1.4 | 1/1 | Complete | 2026-02-23 |
