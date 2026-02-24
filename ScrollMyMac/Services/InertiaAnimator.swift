@@ -109,15 +109,25 @@ class InertiaAnimator {
         }
 
         // If both amplitudes are negligible, don't start.
-        guard abs(amplitudeX) >= 0.5 || abs(amplitudeY) >= 0.5 else { return }
+        // Post momentum cancel so NSScrollView does not start its own momentum.
+        guard abs(amplitudeX) >= 0.5 || abs(amplitudeY) >= 0.5 else {
+            onMomentumScroll?(0, 0, 1) // begin
+            onMomentumScroll?(0, 0, 3) // end
+            return
+        }
 
         lastPositionX = 0
         lastPositionY = 0
         scrollRemainderX = 0
         scrollRemainderY = 0
-        isFirstFrame = true
+        isFirstFrame = false  // First frame already fired below
         startTime = CACurrentMediaTime()
         isCoasting = true
+
+        // Fire first momentum-begin event SYNCHRONOUSLY to claim the momentum
+        // phase before NSScrollView can start its own (~16ms display link gap).
+        // NSScrollView sees momentumPhase=begin and defers to incoming momentum.
+        onMomentumScroll?(0, 0, 1)  // momentumPhase begin, zero deltas
 
         // Create display link from the main screen.
         guard let screen = NSScreen.main else {

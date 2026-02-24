@@ -379,6 +379,12 @@ class ScrollEngine {
                     axis: lockedAxis,
                     intensity: CGFloat(inertiaIntensity)
                 )
+            } else {
+                // Claim the momentum phase immediately so NSScrollView does not
+                // start its own internal momentum animation.
+                // momentumPhase 1 = begin, 3 = end, both with zero deltas.
+                postMomentumScrollEvent(wheel1: 0, wheel2: 0, momentumPhase: 1) // begin
+                postMomentumScrollEvent(wheel1: 0, wheel2: 0, momentumPhase: 3) // end
             }
         }
         onDragStateChanged?(false)
