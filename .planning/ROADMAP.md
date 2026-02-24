@@ -233,7 +233,7 @@ Plans:
 
 **Milestone Goal:** Give users control over scroll feel -- inertia on/off, intensity, direction inversion -- and add a hotkey for toggling click-through mode.
 
-- [ ] **Phase 13: Inertia Controls** - On/off toggle and intensity slider for momentum scrolling (gap closure in progress)
+- [x] **Phase 13: Inertia Controls** - On/off toggle and intensity slider for momentum scrolling, native app gap closure (completed 2026-02-23)
 - [x] **Phase 14: Scroll Direction** - Toggle between natural and inverted scroll direction (completed 2026-02-23)
 - [x] **Phase 15: Click-Through Hotkey** - Configurable hotkey to toggle click-through mode (completed 2026-02-23)
 
@@ -253,7 +253,7 @@ Plans:
 Plans:
 - [x] 13-01-PLAN.md — Parameterize InertiaAnimator with intensity, add AppState persistence, wire ScrollEngine inertia skip
 - [x] 13-02-PLAN.md — Reorganize SettingsView, add momentum toggle and intensity slider with center detent
-- [ ] 13-03-PLAN.md — Gap closure: suppress NSScrollView native momentum so toggle and intensity work in native apps
+- [x] 13-03-PLAN.md — Gap closure: suppress NSScrollView native momentum so toggle and intensity work in native apps
 
 ### Phase 14: Scroll Direction
 **Goal**: Users can flip scroll direction to match their mental model (natural vs classic)
@@ -267,7 +267,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 14-01-PLAN.md — Add scroll direction inversion toggle to AppState, ScrollEngine, and Settings UI
+- [x] 14-01-PLAN.md — Add scroll direction inversion toggle to AppState, ScrollEngine, and Settings UI
 
 ### Phase 15: Click-Through Hotkey
 **Goal**: Users can toggle click-through mode via a keyboard shortcut without opening settings
@@ -281,7 +281,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 15-01-PLAN.md — Add click-through hotkey with HotkeyManager, AppState persistence, and Settings UI recorder
+- [x] 15-01-PLAN.md — Add click-through hotkey with HotkeyManager, AppState persistence, and Settings UI recorder
 
 ## Progress
 
@@ -303,6 +303,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 10. Menu Bar Icon | v1.3.0 | 1/1 | Complete | 2026-02-18 |
 | 11. Hold-to-Passthrough | v1.3.0 | 1/1 | Complete | 2026-02-18 |
 | 12. Per-App Exclusion | v1.3.0 | 2/2 | Complete | 2026-02-18 |
-| 13. Inertia Controls | v1.4 | 2/3 | Gap closure | - |
+| 13. Inertia Controls | v1.4 | 3/3 | Complete | 2026-02-23 |
 | 14. Scroll Direction | v1.4 | 1/1 | Complete | 2026-02-23 |
 | 15. Click-Through Hotkey | v1.4 | 1/1 | Complete | 2026-02-23 |

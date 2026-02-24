@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-22)
 
 **Core value:** Users can scroll any scrollable area by clicking and dragging with the mouse pointer, with natural inertia -- no scroll wheel or trackpad required.
-**Current focus:** Phase 15 — Click-Through Hotkey (v1.1)
+**Current focus:** All v1.4 phases complete
 
 ## Current Position
 
-Phase: 15 of 15 (Click-Through Hotkey)
-Plan: 1 of 1
-Status: Phase 15 complete
-Last activity: 2026-02-23 — Completed 15-01 click-through hotkey
+Phase: 15 of 15 (all complete)
+Plan: All plans complete
+Status: v1.4 milestone complete (Phases 13, 14, 15 all done)
+Last activity: 2026-02-23 — Completed 13-03 native momentum gap closure
 
 Progress: [████████████████████████] 100% (15/15 phases)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 22
-- Average duration: 30min
-- Total execution time: ~10 hours
+- Total plans completed: 23
+- Average duration: 33min
+- Total execution time: ~12 hours
 
 **By Phase:**
 
@@ -39,15 +39,16 @@ Progress: [███████████████████████
 | 10-menu-bar-icon | 1 | 2min | 2min |
 | 11-hold-to-passthrough | 1 | 2min | 2min |
 | 12-per-app-exclusion | 2 | 17min | 9min |
-| 13-inertia-controls | 2 | 17min | 9min |
+| 13-inertia-controls | 3 | 135min | 45min |
 | 14-scroll-direction | 1 | 2min | 2min |
 | 15-click-through-hotkey | 1 | 2min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 15min, 2min, 15min, 2min, 2min
-- Trend: Stable
+- Last 5 plans: 2min, 15min, 2min, 2min, 118min
+- Trend: Variable (gap closure plan required extensive iterative testing)
 
 *Updated after each plan completion*
+| Phase 13 P03 | 118min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -64,6 +65,10 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - Direction inversion applied at ScrollEngine level, not in InertiaAnimator -- keeps animator generic
 - Default scroll direction is natural (false) -- matches touchscreen mental model
 - Click-through hotkey uses second HotkeyManager instance, defaults to None (keyCode -1)
+- [Phase 13]: Velocity ramp injection: post intensity-scaled scrollPhaseChanged events before scrollPhaseEnded to control NSScrollView native momentum
+- [Phase 13]: Separate native (0.25x-4.0x) and web-app (0.4x-2.0x) intensity scale ranges to compensate for NSScrollView dampening
+- [Phase 13]: Quadratic tail acceleration decay formula exp(-t/tau - tailAccel*t^2) for sharper web-app deceleration cutoff
+- [Phase 13]: Drag-distance progressive scaling (80pt threshold) prevents short-drag velocity amplification in velocity ramp
 
 ### Pending Todos
 
@@ -89,5 +94,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-23
-Stopped at: Completed 15-01-PLAN.md (Phase 15 complete -- all phases done)
+Stopped at: Completed 13-03-PLAN.md (Phase 13 gap closure complete -- all v1.4 phases done)
 Resume file: --
