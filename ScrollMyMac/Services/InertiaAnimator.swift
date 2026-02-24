@@ -37,11 +37,11 @@ class InertiaAnimator {
     /// intensity 1.0 -> nativeScaleMax (much longer coast)
     private let nativeScaleMin: CGFloat = 0.25
     private let nativeScaleMid: CGFloat = 1.0
-    private let nativeScaleMax: CGFloat = 3.5
+    private let nativeScaleMax: CGFloat = 5.0
 
     /// Stop threshold: remaining amplitude below this is considered negligible.
     /// Higher values cut the deceleration tail shorter (web apps felt too long).
-    private let stopThreshold: CGFloat = 2.0
+    private let stopThreshold: CGFloat = 5.0
 
     /// Computed tau for the current coasting animation (set per startCoasting call).
     private var tau: CFTimeInterval = 0.400
