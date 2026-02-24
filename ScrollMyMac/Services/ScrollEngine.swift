@@ -96,6 +96,9 @@ class ScrollEngine {
         inertiaAnimator.onMomentumScroll = { [weak self] wheel1, wheel2, momentumPhase in
             self?.postMomentumScrollEvent(wheel1: wheel1, wheel2: wheel2, momentumPhase: momentumPhase)
         }
+        inertiaAnimator.onCoastingScroll = { [weak self] wheel1, wheel2 in
+            self?.postCoastingScrollEvent(wheel1: wheel1, wheel2: wheel2)
+        }
 
         guard eventTap == nil else {
             // Tap already exists — just re-enable.
@@ -435,6 +438,29 @@ class ScrollEngine {
         // During momentum: scrollPhase = 0 (none), only momentumPhase carries state.
         scrollEvent.setIntegerValueField(.scrollWheelEventScrollPhase, value: 0)
         scrollEvent.setIntegerValueField(.scrollWheelEventMomentumPhase, value: momentumPhase)
+        scrollEvent.post(tap: .cgSessionEventTap)
+    }
+
+    /// Posts a phase-less scroll event used by InertiaAnimator for coasting.
+    /// NSScrollView (native apps) ignores momentum-phase deltas and uses its
+    /// own internal velocity calculation.  Phase-less events bypass that and
+    /// move content directly in both native and web-view apps.
+    private func postCoastingScrollEvent(wheel1: Int32, wheel2: Int32) {
+        let scrollEvent = CGEvent(
+            scrollWheelEvent2Source: nil,
+            units: .pixel,
+            wheelCount: 3,
+            wheel1: wheel1,
+            wheel2: wheel2,
+            wheel3: 0
+        )
+
+        guard let scrollEvent else { return }
+
+        // No phase information — treated as legacy discrete scroll events
+        // that all scroll views obey directly.
+        scrollEvent.setIntegerValueField(.scrollWheelEventScrollPhase, value: 0)
+        scrollEvent.setIntegerValueField(.scrollWheelEventMomentumPhase, value: 0)
         scrollEvent.post(tap: .cgSessionEventTap)
     }
 

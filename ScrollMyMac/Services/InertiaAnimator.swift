@@ -32,12 +32,17 @@ class InertiaAnimator {
     /// Computed tau for the current coasting animation (set per startCoasting call).
     private var tau: CFTimeInterval = 0.400
 
-    // MARK: - Callback
+    // MARK: - Callbacks
 
-    /// Called each frame with (deltaY, deltaX, momentumPhase).
+    /// Called to post momentum-phase events (begin / end) for cancellation.
     /// ScrollEngine provides this to post momentum scroll events.
     /// Phase values: 1 = begin, 2 = continue, 3 = end.
     var onMomentumScroll: ((Int32, Int32, Int64) -> Void)?
+
+    /// Called each frame with (deltaY, deltaX) to post phase-less scroll events
+    /// that move content directly.  Phase-less events are obeyed by both
+    /// NSScrollView (native) and WKWebView (web) apps.
+    var onCoastingScroll: ((Int32, Int32) -> Void)?
 
     // MARK: - State
 
@@ -51,7 +56,6 @@ class InertiaAnimator {
     private var lastPositionX: CGFloat = 0
     private var lastPositionY: CGFloat = 0
     private var lockedAxis: ScrollEngine.Axis?
-    private var isFirstFrame: Bool = true
     private var scrollRemainderX: CGFloat = 0
     private var scrollRemainderY: CGFloat = 0
 
@@ -120,14 +124,17 @@ class InertiaAnimator {
         lastPositionY = 0
         scrollRemainderX = 0
         scrollRemainderY = 0
-        isFirstFrame = false  // First frame already fired below
         startTime = CACurrentMediaTime()
         isCoasting = true
 
-        // Fire first momentum-begin event SYNCHRONOUSLY to claim the momentum
-        // phase before NSScrollView can start its own (~16ms display link gap).
-        // NSScrollView sees momentumPhase=begin and defers to incoming momentum.
-        onMomentumScroll?(0, 0, 1)  // momentumPhase begin, zero deltas
+        // Cancel NSScrollView's native momentum FIRST by posting a complete
+        // momentum sequence (begin + end) with zero deltas.  This tells
+        // NSScrollView "momentum happened and finished" so it does NOT start
+        // its own internal momentum animation.  Then the display link will
+        // begin a NEW momentum sequence (begin + continue... + end) with OUR
+        // intensity-scaled deltas, which is the only coasting the user sees.
+        onMomentumScroll?(0, 0, 1)  // momentumPhase begin  (zero deltas)
+        onMomentumScroll?(0, 0, 3)  // momentumPhase end    (zero deltas)
 
         // Create display link from the main screen.
         guard let screen = NSScreen.main else {
@@ -142,13 +149,9 @@ class InertiaAnimator {
         displayLink?.add(to: .main, forMode: .common)
     }
 
-    /// Stops momentum coasting immediately.
-    /// Posts a momentum-end event (phase 3) and invalidates the display link.
+    /// Stops momentum coasting immediately and invalidates the display link.
     func stopCoasting() {
         guard isCoasting else { return }
-
-        // Post final momentum event with zero deltas and phase 3 (end).
-        onMomentumScroll?(0, 0, 3)
 
         invalidateDisplayLink()
         isCoasting = false
@@ -183,15 +186,6 @@ class InertiaAnimator {
             return
         }
 
-        // Determine momentum phase.
-        let momentumPhase: Int64
-        if isFirstFrame {
-            momentumPhase = 1 // kCGMomentumScrollPhaseBegin
-            isFirstFrame = false
-        } else {
-            momentumPhase = 2 // kCGMomentumScrollPhaseContinue
-        }
-
         // Accumulate fractional remainders so sub-pixel deltas aren't lost.
         scrollRemainderY += deltaY
         scrollRemainderX += deltaX
@@ -200,7 +194,10 @@ class InertiaAnimator {
         scrollRemainderY -= CGFloat(scrollDeltaY)
         scrollRemainderX -= CGFloat(scrollDeltaX)
 
-        onMomentumScroll?(scrollDeltaY, scrollDeltaX, momentumPhase)
+        // Post phase-less scroll events.  NSScrollView obeys these directly
+        // (unlike momentum-phase events whose deltas it ignores in favour of
+        // its own internal velocity calculation).
+        onCoastingScroll?(scrollDeltaY, scrollDeltaX)
     }
 
     // MARK: - Private
