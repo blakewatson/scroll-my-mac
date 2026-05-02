@@ -332,8 +332,7 @@ struct MainSettingsView: View {
         panel.message = "Select an app to exclude from scroll mode"
 
         if panel.runModal() == .OK, let selectedURL = panel.url {
-            let normalizedURL = selectedURL.standardizedFileURL
-            let identifier = Bundle(url: normalizedURL)?.bundleIdentifier ?? normalizedURL.path
+            let identifier = resolveAppIdentifier(for: selectedURL.standardizedFileURL)
             appState.addExcludedApp(bundleID: identifier)
         }
     }
@@ -344,6 +343,48 @@ struct MainSettingsView: View {
             return userApps
         }
         return URL(fileURLWithPath: "/Applications")
+    }
+
+    /// Returns the best available identifier for an app bundle.
+    /// Tries (in order): direct CFBundleIdentifier → Steam wrapper resolution → bundle path.
+    private func resolveAppIdentifier(for appURL: URL) -> String {
+        if let id = Bundle(url: appURL)?.bundleIdentifier { return id }
+        if let id = resolveSteamBundleID(wrapperURL: appURL) { return id }
+        return appURL.path
+    }
+
+    /// For app bundles that are Steam launcher wrappers (run.sh containing `open steam://run/<AppID>`),
+    /// locates the real installed game bundle via the Steam app manifest and returns its bundle ID.
+    private func resolveSteamBundleID(wrapperURL: URL) -> String? {
+        let runScript = wrapperURL.appendingPathComponent("Contents/MacOS/run.sh")
+        guard let script = try? String(contentsOf: runScript, encoding: .utf8) else { return nil }
+
+        guard let regex = try? NSRegularExpression(pattern: #"steam://run/(\d+)"#),
+              let match = regex.firstMatch(in: script, range: NSRange(script.startIndex..., in: script)),
+              let idRange = Range(match.range(at: 1), in: script) else { return nil }
+        let steamAppID = String(script[idRange])
+
+        let steamApps = FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent("Library/Application Support/Steam/steamapps")
+        let manifestURL = steamApps.appendingPathComponent("appmanifest_\(steamAppID).acf")
+        guard let manifest = try? String(contentsOf: manifestURL, encoding: .utf8) else { return nil }
+
+        guard let dirRegex = try? NSRegularExpression(pattern: #""installdir"\s+"([^"]+)""#),
+              let dirMatch = dirRegex.firstMatch(in: manifest, range: NSRange(manifest.startIndex..., in: manifest)),
+              let dirRange = Range(dirMatch.range(at: 1), in: manifest) else { return nil }
+        let installDir = String(manifest[dirRange])
+
+        let gameDir = steamApps.appendingPathComponent("common").appendingPathComponent(installDir)
+        guard let contents = try? FileManager.default.contentsOfDirectory(at: gameDir, includingPropertiesForKeys: nil) else { return nil }
+
+        let wrapperName = wrapperURL.deletingPathExtension().lastPathComponent
+        var fallback: String?
+        for entry in contents where entry.pathExtension == "app" {
+            guard let bundleID = Bundle(url: entry)?.bundleIdentifier else { continue }
+            if entry.deletingPathExtension().lastPathComponent == wrapperName { return bundleID }
+            if fallback == nil { fallback = bundleID }
+        }
+        return fallback
     }
 
     // MARK: - Safety Timeout
