@@ -105,7 +105,9 @@ class AppExclusionManager {
         }
 
         let bundleID = frontmost.bundleIdentifier ?? ""
-        let isExcluded = storedBundleIDs.contains(bundleID)
+        let bundlePath = frontmost.bundleURL?.standardizedFileURL.path ?? ""
+        let isExcluded = storedBundleIDs.contains(bundleID) ||
+                         (!bundlePath.isEmpty && storedBundleIDs.contains(bundlePath))
         let appName = isExcluded ? frontmost.localizedName : nil
         updateState(isExcluded: isExcluded, appName: appName)
     }

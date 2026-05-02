@@ -297,6 +297,9 @@ struct MainSettingsView: View {
     // MARK: - Excluded App Helpers
 
     private func iconForBundleID(_ bundleID: String) -> NSImage {
+        if bundleID.hasPrefix("/") {
+            return NSWorkspace.shared.icon(forFile: bundleID)
+        }
         if let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleID) {
             return NSWorkspace.shared.icon(forFile: url.path)
         }
@@ -304,6 +307,9 @@ struct MainSettingsView: View {
     }
 
     private func displayNameForBundleID(_ bundleID: String) -> String {
+        if bundleID.hasPrefix("/") {
+            return URL(fileURLWithPath: bundleID).deletingPathExtension().lastPathComponent
+        }
         if let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleID),
            let bundle = Bundle(url: url) {
             if let displayName = bundle.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String {
@@ -322,14 +328,22 @@ struct MainSettingsView: View {
         panel.canChooseFiles = true
         panel.canChooseDirectories = false
         panel.allowsMultipleSelection = false
-        panel.directoryURL = URL(fileURLWithPath: "/Applications")
+        panel.directoryURL = preferredAppsDirectory()
         panel.message = "Select an app to exclude from scroll mode"
 
         if panel.runModal() == .OK, let selectedURL = panel.url {
-            if let bundleID = Bundle(url: selectedURL)?.bundleIdentifier {
-                appState.addExcludedApp(bundleID: bundleID)
-            }
+            let normalizedURL = selectedURL.standardizedFileURL
+            let identifier = Bundle(url: normalizedURL)?.bundleIdentifier ?? normalizedURL.path
+            appState.addExcludedApp(bundleID: identifier)
         }
+    }
+
+    private func preferredAppsDirectory() -> URL {
+        let userApps = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Applications")
+        if FileManager.default.fileExists(atPath: userApps.path) {
+            return userApps
+        }
+        return URL(fileURLWithPath: "/Applications")
     }
 
     // MARK: - Safety Timeout

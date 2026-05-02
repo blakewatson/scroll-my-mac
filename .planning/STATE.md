@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-24)
 Phase: v1.4 complete — all 15 phases shipped
 Plan: All plans complete
 Status: v1.4 milestone archived — ready for next milestone
-Last activity: 2026-02-24 — Archived v1.4 milestone
+Last activity: 2026-05-02 - Completed quick task 9: Fix exclusion list not adding apps from ~/Applications without CFBundleIdentifier
 
 Progress: v1.0-v1.4 shipped (15 phases, 23 plans)
 
@@ -77,6 +77,7 @@ None.
 | 6 | Fix Dock auto-reveal not working when switching from excluded app to non-excluded app | 2026-02-19 | 35137e0 | [6-fix-dock-auto-reveal-not-working-when-sw](./quick/6-fix-dock-auto-reveal-not-working-when-sw/) |
 | 7 | Fix settings window click-through on secondary displays | 2026-02-21 | 7c8ec9a | [7-the-scroll-my-mac-settings-window-should](./quick/7-the-scroll-my-mac-settings-window-should/) |
 | 8 | Fix scroll engine on WKWebView-based apps (MarkEdit) | 2026-02-23 | 970a4a5 | [8-investigate-why-scroll-engine-doesn-t-wo](./quick/8-investigate-why-scroll-engine-doesn-t-wo/) |
+| 9 | Fix exclusion list not adding apps from ~/Applications without CFBundleIdentifier | 2026-05-02 | TBD | [9-fix-exclusion-list-apps-without-bundle-id](./quick/9-fix-exclusion-list-apps-without-bundle-id/) |
 
 ## Session Continuity
 
