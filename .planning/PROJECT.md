@@ -39,6 +39,7 @@ Users can scroll any scrollable area by clicking and dragging with the mouse poi
 - ✓ Inertia intensity slider controlling coasting speed and duration — v1.4
 - ✓ Direction inversion toggle (natural default, inverted flips scroll direction) — v1.4
 - ✓ Configurable hotkey to toggle click-through mode on/off — v1.4
+- ✓ Apps without a direct bundle identifier can be excluded, including resolution of Steam launcher wrappers to the running game's bundle identifier — v1.4.1
 
 ### Active
 
@@ -54,7 +55,7 @@ Users can scroll any scrollable area by clicking and dragging with the mouse poi
 
 ## Context
 
-Shipped v1.4 with 2,830 LOC Swift. Tech stack: SwiftUI, CGEventTap, Accessibility APIs, CADisplayLink.
+Shipped v1.4.1 with approximately 2,900 lines of Swift. Tech stack: SwiftUI, CGEventTap, Accessibility APIs, CADisplayLink.
 
 The user has a disability that makes trackpad and scroll wheel use difficult or impossible. They currently:
 - Click and drag scroll bars (works but scroll bars are sometimes hidden or too small)
@@ -85,4 +86,4 @@ The accessibility keyboard (on-screen keyboard) is used for typing and will be u
 | Direction inversion at ScrollEngine level | Keeps InertiaAnimator generic and reusable | ✓ Good |
 
 ---
-*Last updated: 2026-02-24 after v1.4 milestone*
+*Last updated: 2026-08-20 during maintenance-workflow refresh*

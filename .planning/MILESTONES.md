@@ -1,4 +1,6 @@
-# Milestones
+# Legacy GSD Milestone Summary
+
+> Historical record only. GSD is no longer used for this project. For current work, read [`STATE.md`](./STATE.md), [`ROADMAP.md`](./ROADMAP.md), and [`README.md`](./README.md).
 
 ## v1.4 Configurable Inertial Scrolling (Shipped: 2026-02-24)
 
@@ -13,4 +15,3 @@
 - Click-through hotkey for toggling click-through without opening settings
 
 ---
-

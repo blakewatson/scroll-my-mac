@@ -2,7 +2,15 @@
 
 ## Overview
 
-This roadmap delivers a macOS accessibility app that converts click-and-drag into scrolling system-wide. The journey starts with permissions and app scaffolding, builds core scroll functionality, hardens click safety, adds inertia polish, and finishes with user-facing settings. v1.1 extends the app with Accessibility Keyboard awareness so typing on the on-screen keyboard is uninterrupted by scroll mode. v1.2 packages the app for public distribution with a custom icon, code signing, notarization, and a GitHub release with documentation. v1.3.0 adds a menu bar status icon for quick toggle access, hold-to-passthrough for normal drag operations without leaving scroll mode, and per-app exclusion to disable scrolling in specific applications. v1.4 gives users control over scroll feel with inertia on/off and intensity settings, scroll direction inversion, and a dedicated hotkey for toggling click-through mode.
+This roadmap records the delivered path of a macOS accessibility app that converts click-and-drag into scrolling system-wide. v1.1 added Accessibility Keyboard awareness, v1.2 prepared public distribution, v1.3.0 added menu-bar controls and pass-through options, and v1.4 added configurable inertia, direction, and click-through controls. The current release baseline is v1.4.1, which also improves exclusions for apps launched through Steam wrappers.
+
+## Current Planning
+
+There is no active feature milestone. New product work should be added here only after its priority and intended outcome are chosen.
+
+### Unscheduled maintenance
+
+- [ ] Refresh the public `README.md` roadmap so it no longer lists shipped v1.4 capabilities as unfinished.
 
 ## Milestones
 

@@ -1,86 +1,43 @@
 # Project State
 
-## Project Reference
+_Updated: 2026-08-20_
 
-See: .planning/PROJECT.md (updated 2026-02-24)
+## Snapshot
 
-**Core value:** Users can scroll any scrollable area by clicking and dragging with the mouse pointer, with natural inertia -- no scroll wheel or trackpad required.
-**Current focus:** Planning next milestone
+- **Core value:** Users can scroll any scrollable area by clicking and dragging the mouse pointer, with optional natural inertia and no scroll wheel or trackpad.
+- **Release baseline:** v1.4.1 (`0533855`), macOS 14+, Apple Silicon.
+- **Current focus:** Maintenance; no active feature milestone.
+- **Status:** Shipped and stable enough for normal maintenance. No work is currently in progress after the planning-workflow refresh.
+- **Latest maintenance:** Adopted a lightweight, repo-local planning and state workflow. See [`work/2026-08-19-lightweight-planning-workflow/`](./work/2026-08-19-lightweight-planning-workflow/).
 
-## Current Position
-
-Phase: v1.4 complete — all 15 phases shipped
-Plan: All plans complete
-Status: v1.4 milestone archived — ready for next milestone
-Last activity: 2026-05-02 - Completed quick task 9: Fix exclusion list not adding apps from ~/Applications without CFBundleIdentifier
-
-Progress: v1.0-v1.4 shipped (15 phases, 23 plans)
-
-## Performance Metrics
-
-**Velocity:**
-- Total plans completed: 23
-- Average duration: 33min
-- Total execution time: ~12 hours
-
-**By Phase:**
-
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| 01-permissions-app-shell | 2 | 59min | 30min |
-| 02-core-scroll-mode | 2 | 6h 3min | 3h 2min |
-| 03-click-safety | 2 | 4min | 2min |
-| 04-inertia | 2 | 8min | 4min |
-| 05-settings-polish | 2 | 8min | 4min |
-| 06-osk-aware-click-pass-through | 1 | 1h 53min | 1h 53min |
-| 07-app-icon | 1 | 12min | 12min |
-| 08-code-signing-notarization | 1 | 30min | 30min |
-| 09-release-documentation | 1 | 1min | 1min |
-| 10-menu-bar-icon | 1 | 2min | 2min |
-| 11-hold-to-passthrough | 1 | 2min | 2min |
-| 12-per-app-exclusion | 2 | 17min | 9min |
-| 13-inertia-controls | 3 | 135min | 45min |
-| 14-scroll-direction | 1 | 2min | 2min |
-| 15-click-through-hotkey | 1 | 2min | 2min |
-
-**Recent Trend:**
-- Last 5 plans: 2min, 15min, 2min, 2min, 118min
-- Trend: Variable (gap closure plan required extensive iterative testing)
-
-*Updated after each plan completion*
-| Phase 13 P03 | 118min | 2 tasks | 2 files |
-
-## Accumulated Context
-
-### Decisions
-
-Decisions are logged in PROJECT.md Key Decisions table.
-v1.4 decisions archived — see .planning/milestones/v1.4-ROADMAP.md for full history.
-
-### Pending Todos
-
-None yet.
-
-### Blockers/Concerns
+## Active Work
 
 None.
 
-### Quick Tasks Completed
+## Planned Next
 
-| # | Description | Date | Commit | Directory |
-|---|-------------|------|--------|-----------|
-| 1 | Add MIT license and update README accordingly | 2026-02-17 | a8fb027 | [1-add-mit-license-and-update-readme-accord](./quick/1-add-mit-license-and-update-readme-accord/) |
-| 2 | Add safety timeout note to README | 2026-02-16 | db7a8b9 | [2-add-safety-timeout-note-to-readme](./quick/2-add-safety-timeout-note-to-readme/) |
-| 3 | Move CGEventTap to background thread | 2026-02-17 | a2838da | [3-move-cgeventtap-to-background-thread](./quick/3-move-cgeventtap-to-background-thread/) |
-| 4 | Change hold-to-passthrough wording in settings window | 2026-02-18 | 3ef52e2 | [4-change-hold-to-passthrough-wording-in-se](./quick/4-change-hold-to-passthrough-wording-in-se/) |
-| 5 | Fix settings window not showing on launch and appearing twice on dock click, and fix menu bar icon toggle not restoring icon | 2026-02-18 | 27da4b8 | [5-fix-settings-window-not-showing-on-launc](./quick/5-fix-settings-window-not-showing-on-launc/) |
-| 6 | Fix Dock auto-reveal not working when switching from excluded app to non-excluded app | 2026-02-19 | 35137e0 | [6-fix-dock-auto-reveal-not-working-when-sw](./quick/6-fix-dock-auto-reveal-not-working-when-sw/) |
-| 7 | Fix settings window click-through on secondary displays | 2026-02-21 | 7c8ec9a | [7-the-scroll-my-mac-settings-window-should](./quick/7-the-scroll-my-mac-settings-window-should/) |
-| 8 | Fix scroll engine on WKWebView-based apps (MarkEdit) | 2026-02-23 | 970a4a5 | [8-investigate-why-scroll-engine-doesn-t-wo](./quick/8-investigate-why-scroll-engine-doesn-t-wo/) |
-| 9 | Fix exclusion list not adding apps from ~/Applications without CFBundleIdentifier | 2026-05-02 | 8bf243c | [9-fix-exclusion-list-apps-without-bundle-id](./quick/9-fix-exclusion-list-apps-without-bundle-id/) |
+No product work has been prioritized. The next maintainer should choose a concrete issue or milestone before creating a work plan.
 
-## Session Continuity
+One confirmed documentation-maintenance candidate is to refresh the public `README.md` roadmap, which still shows v1.4 capabilities as unfinished.
 
-Last session: 2026-02-24
-Stopped at: v1.4 milestone archived
-Resume file: --
+## Known Concerns
+
+- There is no automated test target. Swift and Xcode changes require a Debug build plus targeted manual verification.
+- Global mouse-event behavior, Accessibility Keyboard pass-through, excluded apps, multiple displays, native `NSScrollView` momentum, and web-view scrolling cannot be considered verified from compilation alone.
+- The event-tap callback is latency-sensitive. Expensive system queries must remain outside the input callback and use cached state.
+- Signing and notarization require local credentials and should run only for an explicitly requested release.
+
+## Recent Outcomes
+
+- **2026-08-20:** Replaced the retired GSD operating process with lightweight project instructions, a repo-local maintenance skill, living state, and per-change plan/outcome records.
+- **2026-05-02:** Released v1.4.1 and resolved Steam launcher wrappers to the actual running game bundle identifier for app exclusions (`efae0d8`, `0533855`).
+- **2026-05-02:** Added fallback path identifiers for app bundles without `CFBundleIdentifier` (`8bf243c`).
+- **2026-02-24:** Shipped v1.4 with configurable inertia, direction inversion, and a click-through hotkey.
+
+Older milestone and quick-task history remains under `.planning/milestones/` and `.planning/quick/`.
+
+## Resume Here
+
+1. Read `AGENTS.md`, this file, and the relevant code.
+2. Confirm the requested maintenance item against Git and current behavior.
+3. Use `$project-maintenance` and create a work plan if the change is meaningful.

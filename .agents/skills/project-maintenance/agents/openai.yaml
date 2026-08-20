@@ -1,0 +1,4 @@
+interface:
+  display_name: "Project Maintenance"
+  short_description: "Plan and record Scroll My Mac maintenance"
+  default_prompt: "Use $project-maintenance to plan and record this Scroll My Mac maintenance task."
