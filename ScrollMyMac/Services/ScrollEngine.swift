@@ -69,6 +69,8 @@ class ScrollEngine {
     private var lockedAxis: Axis?
     private var accumulatedDelta: CGPoint = .zero
     private var isFirstDragEvent: Bool = true
+    private var scrollRemainderX: CGFloat = 0
+    private var scrollRemainderY: CGFloat = 0
 
     private let axisLockThreshold: CGFloat = 5.0
 
@@ -138,7 +140,7 @@ class ScrollEngine {
         inertiaAnimator.stopCoasting()
 
         // Post scroll-ended if a scroll was in progress, so apps see a clean end.
-        if isDragging {
+        if isDragging && !isFirstDragEvent {
             postScrollEvent(wheel1: 0, wheel2: 0, phase: 4) // kCGScrollPhaseEnded
         }
         if let tap = eventTap {
@@ -159,7 +161,7 @@ class ScrollEngine {
         inertiaAnimator.stopCoasting()
 
         // Post scroll-ended if a scroll was in progress, so apps see a clean end.
-        if isDragging {
+        if isDragging && !isFirstDragEvent {
             postScrollEvent(wheel1: 0, wheel2: 0, phase: 4) // kCGScrollPhaseEnded
         }
         if let tap = eventTap {
@@ -205,6 +207,8 @@ class ScrollEngine {
         }
 
         passedThroughClick = false
+        scrollRemainderX = 0
+        scrollRemainderY = 0
 
         if clickThroughEnabled {
             // Hold-and-decide: suppress click, wait to see if user drags.
@@ -266,14 +270,12 @@ class ScrollEngine {
                 isFirstDragEvent = true
                 lockedAxis = nil
                 accumulatedDelta = .zero
-                lastDragPoint = currentPoint
+                // Keep the mouse-down anchor so this threshold-crossing event
+                // contributes the full pointer displacement to scrolling.
+                lastDragPoint = pendingMouseDownLocation
                 onDragStateChanged?(true)
-                // Return nil for THIS event — the next mouseDragged will be the
-                // first scroll event with a real delta. Falling through here would
-                // post a kCGScrollPhaseBegan with zero deltas (lastDragPoint ==
-                // currentPoint), which causes WKWebView-based apps (e.g. MarkEdit)
-                // to ignore the entire scroll sequence.
-                return nil
+                // Fall through and post a nonzero scroll-began event. Zero-delta
+                // events are filtered below so WKWebView scroll sequences remain valid.
             } else {
                 return nil // Still in dead zone, suppress drag.
             }
@@ -301,8 +303,33 @@ class ScrollEngine {
         // Drag down = positive deltaY in CG coords. Positive wheel1 = content moves down.
         // When inverted, negate both axes so drag down = content moves up (classic scroll bar).
         let directionMultiplier: CGFloat = isScrollDirectionInverted ? -1.0 : 1.0
-        let scrollY = Int32(deltaY * directionMultiplier)
-        let scrollX = Int32(deltaX * directionMultiplier)
+        let directedDeltaY = deltaY * directionMultiplier
+        let directedDeltaX = deltaX * directionMultiplier
+
+        // Carry fractional pointer movement between events instead of truncating
+        // every event independently. This keeps total emitted scrolling within
+        // one point of the pointer displacement regardless of event cadence.
+        let scrollY: Int32
+        let scrollX: Int32
+        if let axis = lockedAxis {
+            switch axis {
+            case .vertical:
+                scrollY = consumePixelDelta(directedDeltaY, remainder: &scrollRemainderY)
+                scrollX = 0
+                scrollRemainderX = 0
+            case .horizontal:
+                scrollY = 0
+                scrollX = consumePixelDelta(directedDeltaX, remainder: &scrollRemainderX)
+                scrollRemainderY = 0
+            }
+        } else {
+            scrollY = consumePixelDelta(directedDeltaY, remainder: &scrollRemainderY)
+            scrollX = consumePixelDelta(directedDeltaX, remainder: &scrollRemainderX)
+        }
+
+        // Keep accumulating until there is real movement to begin or continue
+        // the scroll sequence. WKWebView may discard a sequence that begins at zero.
+        guard scrollY != 0 || scrollX != 0 else { return nil }
 
         // Determine scroll phase
         let phase: Int64
@@ -313,18 +340,7 @@ class ScrollEngine {
             phase = 2 // kCGScrollPhaseChanged
         }
 
-        // Post synthetic scroll event on the locked axis
-        if let axis = lockedAxis {
-            switch axis {
-            case .vertical:
-                postScrollEvent(wheel1: scrollY, wheel2: 0, phase: phase)
-            case .horizontal:
-                postScrollEvent(wheel1: 0, wheel2: scrollX, phase: phase)
-            }
-        } else {
-            // Not yet locked — still accumulating. Post both axes so movement isn't lost.
-            postScrollEvent(wheel1: scrollY, wheel2: scrollX, phase: phase)
-        }
+        postScrollEvent(wheel1: scrollY, wheel2: scrollX, phase: phase)
 
         return nil // Suppress the original drag event.
     }
@@ -366,7 +382,7 @@ class ScrollEngine {
             return nil // Suppress original mouseUp; synthetic pair was posted.
         }
 
-        if isDragging {
+        if isDragging && !isFirstDragEvent {
             // Start inertia coasting if enabled and velocity is above threshold.
             if isInertiaEnabled, let velocity = velocityTracker.computeVelocity() {
                 let dirMultiplier: CGFloat = isScrollDirectionInverted ? -1.0 : 1.0
@@ -462,6 +478,15 @@ class ScrollEngine {
         guard total >= axisLockThreshold else { return nil }
 
         return accumulatedDelta.y >= accumulatedDelta.x ? .vertical : .horizontal
+    }
+
+    /// Converts a precise pointer delta into whole pixel-scroll units while
+    /// preserving the fractional remainder for the next drag event.
+    private func consumePixelDelta(_ delta: CGFloat, remainder: inout CGFloat) -> Int32 {
+        let preciseDelta = delta + remainder
+        let wholePixels = Int32(preciseDelta.rounded(.towardZero))
+        remainder = preciseDelta - CGFloat(wholePixels)
+        return wholePixels
     }
 
     private func postScrollEvent(wheel1: Int32, wheel2: Int32, phase: Int64) {
@@ -576,6 +601,8 @@ class ScrollEngine {
         lockedAxis = nil
         accumulatedDelta = .zero
         isFirstDragEvent = true
+        scrollRemainderX = 0
+        scrollRemainderY = 0
         velocityTracker.reset()
         cancelHoldTimer()
         isInPassthroughMode = false

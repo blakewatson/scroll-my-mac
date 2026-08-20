@@ -6,7 +6,11 @@ This roadmap records the delivered path of a macOS accessibility app that conver
 
 ## Current Planning
 
-There is no active feature milestone. New product work should be added here only after its priority and intended outcome are chosen.
+There is no active feature milestone. The pointer-accurate drag implementation is complete and user-verified during click-and-drag testing.
+
+### Recently completed maintenance
+
+- [x] Make drag scrolling preserve the full pointer displacement and fractional deltas without retuning release momentum. See [`work/2026-08-20-pointer-accurate-drag/`](./work/2026-08-20-pointer-accurate-drag/).
 
 ### Unscheduled maintenance
 
