@@ -28,7 +28,7 @@ Users can scroll any scrollable area by clicking and dragging with the mouse poi
 - ✓ App is released on GitHub as a downloadable zipped .app bundle — v1.2
 - ✓ Cached app window frames for thread-safe click pass-through — v1.2.2
 - ✓ Only match app windows when app is frontmost (occluded window fix) — v1.2.2
-- ✓ CGEventTap runs on dedicated background thread — v1.2.2
+- CGEventTap is installed on the calling run loop; current AppState activation calls it from the main-thread UI path (verified in code 2026-09-14). The earlier dedicated-background-thread claim does not match current implementation.
 - ✓ Menu bar icon shows scroll mode state (on/off), left-click toggles, right-click context menu for settings — v1.3.0
 - ✓ Menu bar icon is optional (can be disabled in settings) — v1.3.0
 - ✓ Hold-to-passthrough: hold still in dead zone for configurable delay, then drag passes through for text selection/window resize — v1.3.0

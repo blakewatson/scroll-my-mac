@@ -6,9 +6,11 @@ This roadmap records the delivered path of a macOS accessibility app that conver
 
 ## Current Planning
 
-There is no active feature milestone. The pointer-accurate drag implementation is complete and user-verified during click-and-drag testing.
+No active feature milestone. The macOS 27 hold-to-passthrough window-drag fix and pointer-accurate drag implementation are complete and user-verified.
 
 ### Recently completed maintenance
+
+- [x] Restore hold-to-passthrough window dragging on macOS 27. User confirmed restored dragging and accepted closure after the focused regression checklist. See [work record](./work/2026-09-14-macos27-window-drag/OUTCOME.md).
 
 - [x] Make drag scrolling preserve the full pointer displacement and fractional deltas without retuning release momentum. See [`work/2026-08-20-pointer-accurate-drag/`](./work/2026-08-20-pointer-accurate-drag/).
 
